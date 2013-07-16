@@ -73,7 +73,7 @@ class WPChaosClient {
 					$setting['title'],
 					array(&$this,'create_setting_field'),
 					$this->menu_page,
-					'default',
+					$section['name'],
 					$setting);
 		 	
 		 		register_setting($this->menu_page,$setting['name']);
@@ -128,6 +128,13 @@ class WPChaosClient {
 	 */
 	public function create_setting_field($args) {
 		switch($args['type']) {
+			case 'select':
+				echo '<select name="'.$args['name'].'">';
+				foreach($args['list'] as $key => $value) {
+					echo '<option value="'.$key.'" '.selected( get_option($args['name']), $key, false).'>'.$value.'</option>';
+				}
+				echo '</select>';
+				break;
 			case 'text':
 			default:
 				echo '<input name="'.$args['name'].'" type="text" value="'.get_option($args['name']).'" />';
