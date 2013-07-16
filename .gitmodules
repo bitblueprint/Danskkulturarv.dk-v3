@@ -1,0 +1,3 @@
+[submodule "wp-content/plugins/wpchaosclient/lib/chaos-client"]
+	path = wp-content/plugins/wpchaosclient/lib/chaos-client
+	url = git@github.com:CHAOS-Community/CHAOS.Portal.Client-PHP.git
