@@ -1,12 +1,12 @@
 <?php
 /**
- * @package Hello_Dolly
+ * @package WP Chaos Client
  * @version 1.0
  */
 /*
 Plugin Name: WordPress Chaos Client
 Plugin URI: 
-Description: 
+Description: Easily connect to CHAOS Portal
 Author: 
 Version: 1.0
 Author URI: 
@@ -28,7 +28,7 @@ class WPChaosClient {
 
 	/**
 	 * Singleton instance of Chaos Portal
-	 * @var [type]
+	 * @var WPPortalClient
 	 */
 	public static $instance;
 
@@ -37,23 +37,9 @@ class WPChaosClient {
 	 */
 	public function __construct() {
 
-		$this->settings = array(
-			array(
-				'name' => 'wpchaos-servicepath',
-				'title' => 'Service Path',
-				'type' => 'text'
-			),
-			array(
-				'name' => 'wpchaos-clientguid',
-				'title' => 'Client GUID',
-				'type' => 'text'
-			),
-			array(
-				'name' => 'wpchaos-apguid',
-				'title' => 'Access Point GUID',
-				'type' => 'text'
-			)
-		);
+		$this->load_dependencies();
+
+		$this->settings = apply_filters('wpchaos-config', include('config.php'));
 
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
@@ -65,28 +51,35 @@ class WPChaosClient {
 	 */
 	public function register_settings() {
 
-	 	add_settings_section('default',
-			'General settings',
-			null,
-			$this->menu_page);
+		foreach($this->settings as $section) {
 
-	 	// Loop through each setting
-	 	foreach($this->settings as $setting) {
+			//Validate
+			if(!isset($section['name'],$section['title'],$section['fields'])) 
+				continue;
 
-	 		//Validate
-	 		if(!isset($setting['title'],$setting['name'],$setting['type']))
-	 			continue;
+			add_settings_section(
+				$section['name'],
+				$section['title'],
+				null,
+				$this->menu_page
+			);
 
-	 		add_settings_field($setting['name'],
-				$setting['title'],
-				array(&$this,'create_setting_field'),
-				$this->menu_page,
-				'default',
-				$setting);
-	 	
-	 		register_setting($this->menu_page,$setting['name']);
-	 	}
-	 	
+			foreach($section['fields'] as $setting) {
+				//Validate
+		 		if(!isset($setting['title'],$setting['name'],$setting['type']))
+		 			continue;
+
+		 		add_settings_field($setting['name'],
+					$setting['title'],
+					array(&$this,'create_setting_field'),
+					$this->menu_page,
+					'default',
+					$setting);
+		 	
+		 		register_setting($this->menu_page,$setting['name']);
+			}
+
+		}	 	
 	 	
 	 }
 
@@ -111,12 +104,20 @@ class WPChaosClient {
 	 */
 	public function create_submenu_page() {
 		echo '<div class="wrap"><h2>'.get_admin_page_title().'</h2>'."\n";
+
+		try {
+			WPChaosClient::instance()->SessionGUID();
+			echo '<div class="updated"><p>Connection established to CHAOS.</p></div>';
+		} catch(Exception $e) {
+			echo '<div class="error"><p>Could not connect to CHAOS. Please check the details below.</p></div>';
+		} 
+
 		echo '<form method="POST" action="options.php">'."\n";
 		settings_fields($this->menu_page);
 		do_settings_sections($this->menu_page);
 		submit_button();
 		echo '</form></div>'."\n";
-		//echo "SessionGUID: " . WPChaosClient::instance()->SessionGUID() . "<br>";
+		
 
 	}
 
@@ -138,23 +139,29 @@ class WPChaosClient {
 	 * @return WPPortalClient 
 	 */
 	public static function instance() {
-		if(WPChaosClient::$instance == null) {
+		if(self::$instance == null) {
 			//Instantiate CHAOS Portal
-			WPChaosClient::$instance = new WPPortalClient(get_option('wpchaos-servicepath'),get_option('wpchaos-clientguid'));
+			self::$instance = new WPPortalClient(get_option('wpchaos-servicepath'),get_option('wpchaos-clientguid'));
 		}
-		return $this->instance;
+		return self::$instance;
+	}
+
+	/**
+	 * Load files and libraries
+	 * @return void 
+	 */
+	private function load_dependencies() {
+		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ ."/lib/chaos-client/src/");
+
+		require_once("CaseSensitiveAutoload.php");
+
+		spl_autoload_extensions(".php");
+		spl_autoload_register("CaseSensitiveAutoload");
 	}
 
 }
+//Instantiate
 new WPChaosClient();
-
-
-set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ ."/lib/chaos-client/src/"); // <-- Relative path to Portal Client
-
-require_once("CaseSensitiveAutoload.php");
-
-spl_autoload_extensions(".php");
-spl_autoload_register("CaseSensitiveAutoload");
 
 use CHAOS\Portal\Client\PortalClient;
 class WPPortalClient extends PortalClient {
@@ -163,11 +170,9 @@ class WPPortalClient extends PortalClient {
 		if(!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) {
 			$parameters['accessPointGUID'] = get_option('wpchaos-apguid');
 		}
-		parent::CallService($path, $method, $parameters, $requiresSession);
+		return parent::CallService($path, $method, $parameters, $requiresSession);
 	}
 
 }
- 
- //WPChaosClient::instance()->;
 
 //eol
