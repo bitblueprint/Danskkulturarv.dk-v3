@@ -26,8 +26,16 @@ class WPChaosSearch {
 
 		add_filter('wpchaos-config',array(&$this,'settings'));
 
+		add_shortcode( 'chaosresults', array(&$this,'shortcode_searchresults'));
+
 	}
 
+	/**
+	 * CHAOS settings for this module
+	 * 
+	 * @param  array $settings Other CHAOS settings
+	 * @return array           Merged CHAOS settings
+	 */
 	public function settings($settings) {
 
 		$pages = array(); 
@@ -52,6 +60,11 @@ class WPChaosSearch {
 		return array_merge($settings,$new_settings);
 	}
 
+	/**
+	 * Register widgets for administration
+	 * 
+	 * @return void 
+	 */
 	public function register_widgets() {
 	    register_widget( 'WPChaos_Search_Widget' );
 	}
@@ -67,7 +80,45 @@ class WPChaosSearch {
 	// 		exit();
 	// 	}
 	// }
+	
+	/**
+	 * Wrap shortcode around search results
+	 * @param  string $args 
+	 * @return [type]       
+	 */
+	public function shortcode_searchresults( $args ) {
+		$args = shortcode_atts( array(
+			'foo' => 'something',
+			'bar' => 'something else',
+			'query' => $_GET['cq']
+		), $args );
 
+		return $this->get_searchresults($args);
+	}
+
+	public function get_searchresults($args) {
+		$fields = [
+		  "5906a41b-feae-48db-bfb7-714b3e105396",
+		  "00000000-0000-0000-0000-000063c30000",
+		  "00000000-0000-0000-0000-000065c30000"
+		];
+
+		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
+		  $args['query'],       // search string
+		  $fields,      // fields to search
+		  "da",         // language code
+		  $accessPointGUID,
+		  0,            // pageIndex
+		  20,           // pageSize
+		  true,         // includeMetadata
+		  true,         // includeFiles
+		  true          // includeObjectRelations
+		);
+		echo "Got " . $serviceResult->MCM()->Count() . "/" . $serviceResult->MCM()->TotalCount();
+
+		var_dump($objects = $serviceResult->MCM()->Results());
+
+	}
 
 	public static function create_search_form($placeholder = "") {
 		if(get_option('wpchaos-searchpage')) {
@@ -87,11 +138,6 @@ class WPChaosSearch {
 		echo '</div>'."\n";
 
 		echo '</form>'."\n";
-
-
-    
-    
-      
 	}
 
 	/**

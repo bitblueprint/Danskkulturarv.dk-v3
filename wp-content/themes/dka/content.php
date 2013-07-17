@@ -6,11 +6,6 @@
 ?>
 
 	<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-		<?php if ( is_sticky() && is_home() && ! is_paged() ) : ?>
-		<div class="featured-post">
-			<?php _e( 'Featured post', 'dka' ); ?>
-		</div>
-		<?php endif; ?>
 		<header class="entry-header">
 			<?php the_post_thumbnail(); ?>
 			<?php if ( is_single() ) : ?>
@@ -20,11 +15,6 @@
 				<a href="<?php the_permalink(); ?>" title="<?php echo esc_attr( sprintf( __( 'Permalink to %s', 'dka' ), the_title_attribute( 'echo=0' ) ) ); ?>" rel="bookmark"><?php the_title(); ?></a>
 			</h1>
 			<?php endif; // is_single() ?>
-			<?php if ( comments_open() ) : ?>
-				<div class="comments-link">
-					<?php comments_popup_link( '<span class="leave-reply">' . __( 'Leave a reply', 'dka' ) . '</span>', __( '1 Reply', 'dka' ), __( '% Replies', 'dka' ) ); ?>
-				</div><!-- .comments-link -->
-			<?php endif; // comments_open() ?>
 		</header><!-- .entry-header -->
 
 		<?php if ( is_search() ) : // Only display Excerpts for Search ?>
