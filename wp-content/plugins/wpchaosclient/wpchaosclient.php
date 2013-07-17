@@ -39,8 +39,6 @@ class WPChaosClient {
 
 		$this->load_dependencies();
 
-		$this->settings = apply_filters('wpchaos-config', include('config.php'));
-
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
 	}
@@ -50,6 +48,8 @@ class WPChaosClient {
 	 * @return void 
 	 */
 	public function register_settings() {
+
+		$this->settings = apply_filters('wpchaos-config', include('config.php'));
 
 		foreach($this->settings as $section) {
 

@@ -30,10 +30,10 @@ class WPChaosSearch {
 
 	public function settings($settings) {
 
-	$pages = array(); 
-	foreach(get_pages() as $page) {
-		$pages[$page->ID] = $page->post_title;
-	}
+		$pages = array(); 
+		foreach(get_pages() as $page) {
+			$pages[$page->ID] = $page->post_title;
+		}
 
 		$new_settings = array(array(
 			/*Sections*/
@@ -57,15 +57,19 @@ class WPChaosSearch {
 	}
 
 	// public function my_page_template_redirect() {
-	// 	if(isset($_GET['cq'])) {
+	// index.php?&org=1&slug=2 => /org/slug/
+	// /org&guid
+	// 	if(get chaos) {
+	// 	
 	// 		include (TEMPLATEPATH . '/post-with-permalink-hello-world.php');
+	// 		get_template_part
 	// 		wp_redirect( home_url( '/search/' ) );
 	// 		exit();
 	// 	}
 	// }
 
 
-	public static function create_search_form() {
+	public static function create_search_form($placeholder = "") {
 		if(get_option('wpchaos-searchpage')) {
 			$page = get_permalink(get_option('wpchaos-searchpage'));
 		} else {
@@ -73,7 +77,7 @@ class WPChaosSearch {
 		}
 		
 		echo '<form method="GET" action="'.$page.'">';
-		echo '<input type="text" name="cq" value="'.$_GET['cq'].'" placeholder="" /> <input type="submit" value="Search" />';
+		echo '<input type="text" name="cq" value="'.$_GET['cq'].'" placeholder="'.$placeholder.'" /> <input type="submit" value="Search" />';
 		echo '</form>';
 	}
 

@@ -6,7 +6,18 @@
 
 class WPChaos_Search_Widget extends WP_Widget {
 
-	function __construct() {
+	private $fields = array(
+		array(
+			'title' => 'Title',
+			'name' => 'title'
+		),
+		array(
+			'title' => 'Placeholder',
+			'name' => 'placeholder'
+		)
+	);
+
+	public function __construct() {
 		parent::__construct(
 			'chaos-search',
 			'CHAOS Search',
@@ -21,7 +32,7 @@ class WPChaos_Search_Widget extends WP_Widget {
 		if ( ! empty( $title ) )
 			echo $args['before_title'] . $title . $args['after_title'];
 		
-		WPChaosSearch::create_search_form();
+		WPChaosSearch::create_search_form($instance['placeholder']);
 		
 		echo $args['after_widget'];
 	}
@@ -34,21 +45,22 @@ class WPChaos_Search_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		if ( isset( $instance[ 'title' ] ) ) {
-			$title = $instance[ 'title' ];
+		
+		foreach($this->fields as $field) {
+			$title = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : "";
+			echo '<p>';
+			echo '<label for="'.$this->get_field_name( $field['name'] ).'">'.$field['title'].'</label>';
+			echo '<input class="widefat" id="'.$this->get_field_id( $field['name'] ).'" name="'.$this->get_field_name( $field['name'] ).'" type="text" value="'.esc_attr( $title ).'" />';
+			echo '</p>';
 		}
-
-		?>
-		<p>
-		<label for="<?php echo $this->get_field_name( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
-		<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
-		</p>
-		<?php 
 	}
 
 	public function update( $new_instance, $old_instance ) {
+
 		$instance = array();
-		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		foreach($this->fields as $field) {
+			$instance[$field['name']] = ( ! empty( $new_instance[$field['name']] ) ) ? strip_tags( $new_instance[$field['name']] ) : '';
+		}
 
 		return $instance;
 	}
