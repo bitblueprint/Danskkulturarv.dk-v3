@@ -1,0 +1,214 @@
+// danskkulturarv.dk custom styles
+
+// --------------------------------------------------
+// VARIABLES
+// --------------------------------------------------
+
+// grays
+
+@black:                 #000;
+@grayDarker:            #222;
+@grayDark:              #333;
+@gray:                  #555;
+//@grayLight:             #777;
+@grayLight:             #646464;
+//@grayLighter:           #eee;
+@grayLighter:           #888888;
+@grayBorder:            #eeeded;
+@white:                 #fff;
+
+// accent colors
+
+@blue:                  #2f94fd;
+@orange:                #ff7e21;
+
+// other
+
+@baseBorderRadius:      3px;
+
+@navbarCollapseWidth: 500px;
+
+
+// --------------------------------------------------
+// GENERAL
+// --------------------------------------------------
+
+html, body { 
+  //height: 100%;
+  //margin: 0;
+  //padding: 0;
+}
+
+body {
+  padding-top: 71px;
+}
+
+// --------------------------------------------------
+// Sprites
+// --------------------------------------------------
+
+@spriteGrid: 26px; // 16ps sprite + 10px padding on the spritesheet
+.sprite(@x, @y) {
+   background-image: url(../img/sprite-100.png);
+   background-repeat: no-repeat;
+   background-position: -(@x*@spriteGrid) -(@y*@spriteGrid);
+}
+
+@spriteGrid16: 19px;
+.sprite(@x, @y) {
+   background: url(../img/sprite-100.png) no-repeat;
+   background-position: -(@x*@spriteGrid16) -(@y*@spriteGrid16+33);
+   display: inline-block;
+   content: "";
+}
+
+// --------------------------------------------------
+// HEADER
+// --------------------------------------------------
+
+.navbar {
+  
+  .brand {
+    padding: 25px 20px 0 20px;
+  }
+
+  .nav {
+
+    padding: 20px 0;
+
+    > li + li {
+      margin-left: 15px;
+    }
+
+    > li > a {
+      padding: 5px 10px;
+      color: #fff;
+      background-color: @grayLight;
+      .border-radius(6px);
+      .box-shadow(none);
+      .transition(0.25s);
+
+      &:hover {
+        background-color: @gray;
+      }
+
+      .caret {
+        border-top-color: @white;
+        border-bottom-color: @white;
+      }
+    }
+  }
+}
+
+// --------------------------------------------------
+// SEARCH
+// --------------------------------------------------
+
+.container.search {
+  border: 1px solid @grayBorder;
+  border-top: 0;
+  padding: 20px;
+
+  form {
+    display: inline-block;
+    margin-bottom: 0;
+
+    .input-append {
+      margin-bottom: 0;
+    }
+  }
+
+  input {
+    height: 34px;
+  }
+
+  .btn-search {
+    color: @white;
+    border: none;
+    background: @blue;
+    line-height: 22px;
+    text-decoration: none;
+    text-shadow: none;
+  }
+
+  .btn-advanced-search {
+    background: none;
+    background-color: @white;
+  }
+  
+}
+
+
+// --------------------------------------------------
+// CONTENT
+// --------------------------------------------------
+
+// results
+
+.blue {
+  color: @blue;
+}
+
+// thumbs
+
+.thumbnails img {
+  width: 100%;
+}
+
+.orange {
+  color: @orange;
+}
+
+.thumbnails p.date:before {
+  width: 16px;
+  height: 16px;
+  .sprite(0,11);
+}
+
+.thumbnails span.series:before {
+  width: 16px;
+  height: 16px;
+  .sprite(2,15);
+}
+
+.thumbnails span.views:before {
+  width: 16px;
+  height: 16px;
+  .sprite(1,4);
+}
+
+.thumbnails span.likes:before {
+  width: 16px;
+  height: 16px;
+  .sprite(0,9);
+}
+
+// --------------------------------------------------
+// FOOTER
+// --------------------------------------------------
+
+// sticky footer
+
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  /* Negative indent footer by it's height */
+  margin: 0 auto -100px;
+}
+
+/* Set the fixed height of the footer here */
+#push,
+footer {
+  height: 100px;
+}
+
+footer {
+  background-color: @grayLighter;
+  border-top: 1px solid @grayLight;
+}
+
+#wrap article.container {
+  //padding-top: 160px;
+}

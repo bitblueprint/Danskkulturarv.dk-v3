@@ -76,9 +76,22 @@ class WPChaosSearch {
 			$page = "";
 		}
 		
-		echo '<form method="GET" action="'.$page.'">';
-		echo '<input type="text" name="cq" value="'.$_GET['cq'].'" placeholder="'.$placeholder.'" /> <input type="submit" value="Search" />';
-		echo '</form>';
+		echo '<form method="GET" action="'.$page.'">'."\n";
+
+		echo '<div class="input-append">'."\n";
+		echo '<input class="span7" id="appendedInputButton" type="text" name="cq" value="'.$_GET['cq'].'" placeholder="'.$placeholder.'" /> <button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
+		echo '</div>'."\n";
+
+		echo '<div class="btn-group pull-right span4">'."\n";
+		echo '<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="btn" data-toggle="collapse" href="#advanced-search-container">Præciser søgning<i></i></button>'."\n";
+		echo '</div>'."\n";
+
+		echo '</form>'."\n";
+
+
+    
+    
+      
 	}
 
 	/**
