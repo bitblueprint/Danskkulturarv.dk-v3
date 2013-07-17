@@ -12,9 +12,20 @@
 <!-- sticky footer -->
 <footer>
 	<div class="container text-center">
-		<p>Dansk Kulturarv - fordi kulturarv er noget vi deler</p>
-		<p>Os os &#124; Kontakt &#124; API &#124; Blog &#124; Events &#124; Brugervilkår &#124; Hjælp &#124; Følg med på</p>
-		<p>Copyright &#169; 2012-2013 Dansk Kulturarv</p>
+		<p><?php bloginfo( 'name' ); ?> - <?php bloginfo( 'description' ); ?></p>
+		
+<?php 
+    wp_nav_menu( array(
+        'theme_location' => 'secondary',
+        'depth'      => 1,
+        'container'  => false,
+        'menu_class' => '',
+        'fallback_cb' => false,
+        )
+    );
+?>
+
+		<p>Copyright &#169; 2012-<?php echo date('Y'); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"><?php bloginfo( 'name' ); ?></a></p>
 	</div>
 </footer>
 
