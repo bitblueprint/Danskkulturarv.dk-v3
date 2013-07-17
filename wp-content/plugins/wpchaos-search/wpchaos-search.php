@@ -98,11 +98,11 @@ class WPChaosSearch {
 	}
 
 	public function get_searchresults($args) {
-		$fields = [
+		$fields = array(
 		  "5906a41b-feae-48db-bfb7-714b3e105396",
 		  "00000000-0000-0000-0000-000063c30000",
 		  "00000000-0000-0000-0000-000065c30000"
-		];
+		);
 
 		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
 		  $args['query'],       // search string
