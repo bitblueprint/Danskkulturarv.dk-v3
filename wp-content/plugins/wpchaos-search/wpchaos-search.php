@@ -23,6 +23,7 @@ class WPChaosSearch {
 
 		add_action('admin_init',array(&$this,'check_chaosclient'));
 		add_action('widgets_init', array(&$this,'register_widgets'));
+		add_action('template_redirect', array(&$this,'get_material_page'));
 
 		add_filter('wpchaos-config',array(&$this,'settings'));
 
@@ -69,17 +70,17 @@ class WPChaosSearch {
 	    register_widget( 'WPChaos_Search_Widget' );
 	}
 
-	// public function my_page_template_redirect() {
-	// index.php?&org=1&slug=2 => /org/slug/
-	// /org&guid
-	// 	if(get chaos) {
-	// 	
-	// 		include (TEMPLATEPATH . '/post-with-permalink-hello-world.php');
-	// 		get_template_part
-	// 		wp_redirect( home_url( '/search/' ) );
-	// 		exit();
-	// 	}
-	// }
+	public function get_material_page() {
+	//index.php?&org=1&slug=2 => /org/slug/
+	//org&guid
+		if(isset($_GET['guid'])) {
+			get_header();
+			 echo"material page";
+			 get_footer();
+			//include (TEMPLATEPATH . '/post-with-permalink-hello-world.php');
+			exit();
+		}
+	}
 	
 	/**
 	 * Wrap shortcode around search results
@@ -116,7 +117,12 @@ class WPChaosSearch {
 		);
 		echo "Got " . $serviceResult->MCM()->Count() . "/" . $serviceResult->MCM()->TotalCount();
 
-		var_dump($objects = $serviceResult->MCM()->Results());
+		$objects = $serviceResult->MCM()->Results();
+
+		foreach($objects as $object) {
+			$link = add_query_arg( 'guid', $object->GUID, get_site_url());
+			echo '<p><a href="'.$link.'">'.$object->GUID.'</a></p><br />';
+		}
 
 	}
 
