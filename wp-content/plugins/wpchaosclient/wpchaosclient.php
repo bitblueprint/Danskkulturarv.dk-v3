@@ -6,8 +6,8 @@
 /*
 Plugin Name: WordPress Chaos Client
 Plugin URI: 
-Description: Easily connect to CHAOS Portal
-Author: 
+Description: Adds connectivity to CHAOS Portal and API to manipulate data from CHAOS objects in WordPress.
+Author: Joachim Jensen <joachim@opensourceshift.com>
 Version: 1.0
 Author URI: 
 */
@@ -183,6 +183,58 @@ class WPPortalClient extends PortalClient {
 			$parameters['accessPointGUID'] = get_option('wpchaos-apguid');
 		}
 		return parent::CallService($path, $method, $parameters, $requiresSession);
+	}
+
+}
+
+/**
+ *
+ * Class for CHAOS material
+ * 
+ * @property-read string $title 		Get title
+ * @property-read string $organisation 	Get name of organisation
+ * @property-read string $thumbnail_url Get url to thumbnail
+ * @property-read string $thumbnail_caption Get caption to thumbnail
+ * @property-read string $type 			Get type
+ * @property-read int 	 $views 		Get number of views
+ * @property-read int 	 $likes 		Get number of likes
+ * @property-read string $created_date  Get date of creation (XMLDateTime)
+ * @property-read array  $tags 			Get list of tags
+ * @property-read mixed  $var
+ */
+class WPChaosObject {
+
+	/**
+	 * Object retrieved from CHAOS
+	 * 
+	 * @var stdClass
+	 */
+	protected $chaos_object;
+
+	/**
+	 * Constructor
+	 * 
+	 * @param stdClass $chaos_object
+	 */
+	public function __construct(\stdClass $chaos_object) {
+		//TODO: wrap a CHAOS\Portal\Client\Data\Object
+		$this->chaos_object = $chaos_object;
+	}
+
+	/**
+	 * Magic getter for various metadata in CHAOS object
+	 * Use like $class->$name
+	 * Add filters like add_filter('wpchaos-object-'.$name,callback,priority,2)
+	 * 
+	 * @param  string $name Variable to get
+	 * @return mixed 		Filtered data (from $chaos_object)
+	 */
+	public function __get($name) {
+		//If no filters exist for this variable, it should probably not be used
+		if(!array_key_exists('wpchaos-object-'.$name, $GLOBALS['wp_filter'])) {
+			throw new RuntimeException("There are no filters for this variable: $".$name);
+		}
+		return apply_filters('wpchaos-object-'.$name, $value, $this->chaos_object);
 	}
 
 }

@@ -7,7 +7,7 @@
 Plugin Name: WordPress Chaos Search
 Plugin URI: 
 Description: Module enabling search in CHAOS. Depends on WordPress Chaos Client.
-Author: 
+Author: Joachim Jensen <joachim@opensourceshift.com>
 Version: 1.0
 Author URI: 
 */
@@ -16,7 +16,7 @@ class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'cq';
 	public $plugin_dependencies = array(
-		'WPChaosClient' => 'WP Chaos Client',
+		'WPChaosClient' => 'WordPress Chaos Client',
 	);
 
 	/**
@@ -60,12 +60,6 @@ class WPChaosSearch {
 					'title' => 'Page for search results',
 					'type' => 'select',
 					'list' => $pages
-				),
-				array(
-					'name' => 'wpchaos-objectclass',
-					'title' => 'Class used for object presentation',
-					'type' => 'select',
-					'list' => null
 				)
 			)
 		));
@@ -133,6 +127,9 @@ class WPChaosSearch {
 		$objects = $serviceResult->MCM()->Results();
 
 		foreach($objects as $object) {
+			$test_object = new WPChaosObject($object);
+			echo $test_object->variousshit;
+			//var_dump($test_object);
 			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
 			echo '<p><a href="'.$link.'">'.$object->GUID.'</a></p><br />';
 		}
