@@ -84,21 +84,27 @@ class WPChaosSearch {
 	//index.php?&org=1&slug=2 => /org/slug/
 	//org&guid
 		if(isset($_GET['guid'])) {
-			get_header();
-			 echo"material page";
-			 get_footer();
-			//include (TEMPLATEPATH . '/post-with-permalink-hello-world.php');
+
+			//do some chaos here
+
+			//Look in theme dir and include if found
+			if(locate_template('chaos-object-page.php', true) != "") {
+			
+			//Include from plugin
+			} else {
+				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
+			}
 			exit();
 		}
 
 		//Include template for search results
-		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-search-page'))) {
 			//Look in theme dir and include if found
 			if(locate_template('chaos-searchresults.php', true) != "") {
 			
 			//Include from plugin
 			} else {
-				include(plugin_dir_path(__FILE__)."/templates/searchresults.php");
+				include(plugin_dir_path(__FILE__)."/templates/search-results.php");
 			}
 			exit();
 		}
@@ -179,6 +185,9 @@ class WPChaosSearch {
 		 */
 
 		foreach($objects as $object) :
+
+			//include template for each object
+
 			$test_object = new WPChaosObject($object);
 			
 			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
