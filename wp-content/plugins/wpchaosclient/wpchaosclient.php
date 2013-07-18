@@ -57,6 +57,7 @@ class WPChaosClient {
 			if(!isset($section['name'],$section['title'],$section['fields'])) 
 				continue;
 
+			//Add section to WordPress
 			add_settings_section(
 				$section['name'],
 				$section['title'],
@@ -69,13 +70,23 @@ class WPChaosClient {
 		 		if(!isset($setting['title'],$setting['name'],$setting['type']))
 		 			continue;
 
+		 		//Are there any preconditions for this field to work properly?
+		 		if(isset($setting['precond'])) {
+		 			foreach($setting['precond'] as $precondition) {
+		 				if(!$precondition['cond'])
+		 					add_action( 'admin_notices', function() use(&$precondition) { echo '<div class="error"><p>'.$precondition['message'].'</p></div>'; },10);
+		 			} 				
+		 		}
+
+		 		// Add field to section
 		 		add_settings_field($setting['name'],
 					$setting['title'],
 					array(&$this,'create_setting_field'),
 					$this->menu_page,
 					$section['name'],
 					$setting);
-		 	
+
+		 		// Register field to be manipulated with
 		 		register_setting($this->menu_page,$setting['name']);
 			}
 
