@@ -14,6 +14,11 @@ Author URI:
 
 class WPChaosSearch {
 
+	const QUERY_KEY_FREETEXT = 'cq';
+	public $plugin_dependencies = array(
+		'WPChaosClient' => 'WP Chaos Client',
+	);
+
 	/**
 	 * Construct
 	 */
@@ -55,6 +60,12 @@ class WPChaosSearch {
 					'title' => 'Page for search results',
 					'type' => 'select',
 					'list' => $pages
+				),
+				array(
+					'name' => 'wpchaos-objectclass',
+					'title' => 'Class used for object presentation',
+					'type' => 'select',
+					'list' => null
 				)
 			)
 		));
@@ -91,7 +102,7 @@ class WPChaosSearch {
 		$args = shortcode_atts( array(
 			'foo' => 'something',
 			'bar' => 'something else',
-			'query' => $_GET['cq']
+			'query' => $_GET
 		), $args );
 
 		return $this->get_searchresults($args);
@@ -104,8 +115,10 @@ class WPChaosSearch {
 		  "00000000-0000-0000-0000-000065c30000"
 		);
 
+		//$query = apply_filters('solr-query',$args['query'] ...);
+
 		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
-		  $args['query'],       // search string
+		  $args['query'][self::QUERY_KEY_FREETEXT],       // search string
 		  $fields,      // fields to search
 		  "da",         // language code
 		  $accessPointGUID,
@@ -120,7 +133,7 @@ class WPChaosSearch {
 		$objects = $serviceResult->MCM()->Results();
 
 		foreach($objects as $object) {
-			$link = add_query_arg( 'guid', $object->GUID, get_site_url());
+			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
 			echo '<p><a href="'.$link.'">'.$object->GUID.'</a></p><br />';
 		}
 
@@ -136,7 +149,7 @@ class WPChaosSearch {
 		echo '<form method="GET" action="'.$page.'">'."\n";
 
 		echo '<div class="input-append">'."\n";
-		echo '<input class="span7" id="appendedInputButton" type="text" name="cq" value="'.$_GET['cq'].'" placeholder="'.$placeholder.'" /> <button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
+		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$_GET[self::QUERY_KEY_FREETEXT].'" placeholder="'.$placeholder.'" /> <button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
 		echo '</div>'."\n";
 
 		echo '<div class="btn-group pull-right span4">'."\n";
@@ -153,9 +166,17 @@ class WPChaosSearch {
 	 */
 	public function check_chaosclient() {
 		$plugin = plugin_basename( __FILE__ );
-		if(is_plugin_active($plugin) && !class_exists("WPChaosClient")) {
-			deactivate_plugins(array($plugin));
-			add_action( 'admin_notices', array(&$this,'deactivate_notice'));
+		$dep = array();
+		if(is_plugin_active($plugin)) {
+			foreach($this->plugin_dependencies as $class => $name) {
+				if(!class_exists($class)) {
+					$dep[] = $name;
+				}	
+			}
+			if(!empty($dep)) {
+				deactivate_plugins(array($plugin));
+				add_action( 'admin_notices', function() use (&$dep) { $this->deactivate_notice($dep); },10);
+			}
 		}
 	}
 
@@ -164,8 +185,8 @@ class WPChaosSearch {
 	 * 
 	 * @return void 
 	 */
-	public function deactivate_notice() {
-		echo '<div class="error"><p>WordPress Chaos Search needs WordPress Chaos Client to be activated.</p></div>';
+	public function deactivate_notice($classes) {
+		echo '<div class="error"><p>WordPress Chaos Search needs '.implode(',',(array)$classes).' to be activated.</p></div>';
 	}
 
 	/**

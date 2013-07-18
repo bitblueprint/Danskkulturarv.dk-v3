@@ -128,7 +128,12 @@ class WPChaosClient {
 	 */
 	public function create_setting_field($args) {
 		switch($args['type']) {
+			case 'textarea':
+				echo '<textarea name="'.$args['name'].'" >'.get_option($args['name']).'</textarea>';
+				break;
 			case 'select':
+				if(!is_array($args['list']))
+					$args['list'] = array();
 				echo '<select name="'.$args['name'].'">';
 				foreach($args['list'] as $key => $value) {
 					echo '<option value="'.$key.'" '.selected( get_option($args['name']), $key, false).'>'.$value.'</option>';
