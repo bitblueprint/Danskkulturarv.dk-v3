@@ -244,7 +244,7 @@ class WPChaosObject {
 		if(!array_key_exists('wpchaos-object-'.$name, $GLOBALS['wp_filter'])) {
 			throw new RuntimeException("There are no filters for this variable: $".$name);
 		}
-		return apply_filters('wpchaos-object-'.$name, $value, $this->chaos_object);
+		return apply_filters('wpchaos-object-'.$name, "", $this->chaos_object);
 	}
 
 }

@@ -33,9 +33,10 @@ class WPDKAObject {
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka2', 'http://www.danskkulturarv.dk/DKA2.xsd');
 		
 		// Defining the filters - used to present the object.
+		
 		add_filter('wpchaos-object-title', function($value, $object) {
-			return $value . $object->metadata(self::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
-		});
+			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
+		}, 10, 2);
 
 	}
 
