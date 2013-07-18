@@ -217,8 +217,7 @@ class WPChaosObject {
 	 * @param stdClass $chaos_object
 	 */
 	public function __construct(\stdClass $chaos_object) {
-		//TODO: wrap a CHAOS\Portal\Client\Data\Object
-		$this->chaos_object = $chaos_object;
+		$this->chaos_object = new \CHAOS\Portal\Client\Data\Object($chaos_object);
 	}
 
 	/**
