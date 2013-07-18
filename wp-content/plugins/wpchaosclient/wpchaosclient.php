@@ -32,6 +32,8 @@ class WPChaosClient {
 	 */
 	public static $instance;
 
+	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
+
 	/**
 	 * Construct
 	 */
@@ -240,12 +242,22 @@ class WPChaosObject {
 	 * @return mixed 		Filtered data (from $chaos_object)
 	 */
 	public function __get($name) {
+
+		// $method = 'get_'.$name;
+		// if(method_exists($this, $method)) {
+		// 	return $this->$method();
+		// }
+
 		//If no filters exist for this variable, it should probably not be used
-		if(!array_key_exists('wpchaos-object-'.$name, $GLOBALS['wp_filter'])) {
+		if(!array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
 			throw new RuntimeException("There are no filters for this variable: $".$name);
 		}
-		return apply_filters('wpchaos-object-'.$name, "", $this->chaos_object);
+		return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this->chaos_object);
 	}
+
+	// public function get_type() {
+	// 	var_dump($this->chaos_object->getObject()->Files);
+	// }
 
 }
 

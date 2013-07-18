@@ -17,7 +17,7 @@ class WPDKAObject {
 	public $plugin_dependencies = array(
 		'WPChaosClient' => 'WordPress Chaos Client',
 	);
-	
+
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
 	const FREETEXT_LANGUAGE = 'da';
@@ -29,24 +29,58 @@ class WPDKAObject {
 	public function __construct() {
 
 		add_action('admin_init',array(&$this,'check_chaosclient'));
+
+		// Define the free-text search filter.
+		$this->define_attribute_filters();
+
+		// Define the free-text search filter.
+		$this->define_search_filters();
+	}
+
+	const TYPE_VIDEO = 'series';
+	const TYPE_AUDIO = 'audio';
+	const TYPE_UNKNOWN = 'unknown';
+
+	public static function determine_type($object) {
 		
+		foreach($object->getObject()->Files as $file) {
+			if($file->FormatType == 'Video')
+				return self::TYPE_VIDEO;
+		}
+		return self::TYPE_UNKNOWN;
+	}
+	
+	public function define_attribute_filters() {
 		// Registering namespaces.
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka', 'http://www.danskkulturarv.dk/DKA.xsd');
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka2', 'http://www.danskkulturarv.dk/DKA2.xsd');
 		
-		// Defining the filters - used to present the object.
-		add_filter('wpchaos-object-title', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
 		}, 10, 2);
+		
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Organization/text()');
+		}, 10, 2);
+	
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:FirstPublishedDate/text()');
+		}, 10, 2);
 
-		// Define the free-text search filter.
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
+			return $value = WPDKAObject::determine_type($object);
+		}, 10, 2);
+	}
+	
+	public function define_search_filters() {
+		// Free text search.
 		add_filter('wpchaos-solr-query', function($query, $GET) {
 			if($query) {
 				$query = array($query);
 			} else {
 				$query = array();
 			}
-			
+				
 			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $GET)) {
 				// For each known metadata schema, loop and add freetext search on this.
 				$freetext = $GET[WPChaosSearch::QUERY_KEY_FREETEXT];
@@ -57,7 +91,7 @@ class WPDKAObject {
 				}
 				$query[] = '(' . implode("+OR+", $searches) . ')';
 			}
-			
+				
 			return implode("+AND+", $query);
 		}, 10, 2);
 	}
