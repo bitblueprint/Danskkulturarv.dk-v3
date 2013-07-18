@@ -59,7 +59,11 @@ class WPChaosSearch {
 					'name' => 'wpchaos-searchpage',
 					'title' => 'Page for search results',
 					'type' => 'select',
-					'list' => $pages
+					'list' => $pages,
+					'precond' => array(array(
+						'cond' => (get_option('permalink_structure') != ''),
+						'message' => 'Permalinks must be enabled for CHAOS search to work properly'
+					))
 				)
 			)
 		));
@@ -162,6 +166,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function check_chaosclient() {
+
 		$plugin = plugin_basename( __FILE__ );
 		$dep = array();
 		if(is_plugin_active($plugin)) {
