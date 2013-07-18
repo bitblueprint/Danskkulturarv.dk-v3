@@ -117,43 +117,35 @@ class WPChaosSearch {
 	 */
 	public function shortcode_searchresults( $args ) {
 		$args = shortcode_atts( array(
-			'foo' => 'something',
-			'bar' => 'something else',
-			'query' => $_GET
+			'query' => ""
 		), $args );
 
 		return $this->get_searchresults($args);
 	}
 
 	public function get_searchresults($args) {
-		$fields = array(
-		  "5906a41b-feae-48db-bfb7-714b3e105396",
-		  "00000000-0000-0000-0000-000063c30000",
-		  "00000000-0000-0000-0000-000065c30000"
-		);
 		
 		// C4C2B8DA-A980-11E1-814B-02CEA2621172
 		$accessPointGUID = get_option("wpchaos-accesspoint-guid");
 
-		if(isset($args['query'][self::QUERY_KEY_PAGEINDEX])) {
-			$pageindex = (int)$args['query'][self::QUERY_KEY_PAGEINDEX];
+		if(isset($_GET[self::QUERY_KEY_PAGEINDEX])) {
+			$pageindex = (int)$_GET[self::QUERY_KEY_PAGEINDEX];
 			$pageindex = ($pageindex >= 0?$pageindex:0);
 		} else {
 			$pageindex = 0;
 		}
 
-		//$query = apply_filters('solr-query',$args['query'] ...);
-
-		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
-		  $args['query'][self::QUERY_KEY_FREETEXT],       // search string
-		  $fields,      // fields to search
-		  "da",         // language code
-		  $accessPointGUID,
-		  $pageindex,            // pageIndex
-		  20,           // pageSize
-		  true,         // includeMetadata
-		  true,         // includeFiles
-		  true          // includeObjectRelations
+		$query = apply_filters('wpchaos-solr-query', $args['query'], $_GET);
+		
+		$serviceResult = WPChaosClient::instance()->Object()->Get(
+			$query,	// Search query
+			null,	// Sort
+			null,	// AccessPoint given by settings.
+			$pageindex,		// pageIndex
+			20,		// pageSize
+			true,	// includeMetadata
+			true,	// includeFiles
+			true	// includeObjectRelations
 		);
 		
 		$objects = $serviceResult->MCM()->Results();
@@ -163,7 +155,7 @@ class WPChaosSearch {
 		<article class="container search-results">
 	    <div class="row">
 		    <div class="span6">
-		    <p>Søgningen på <strong class="blue"><?php echo esc_html($args['query'][self::QUERY_KEY_FREETEXT]); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
+		    <p>Søgningen på <strong class="blue"><?php echo esc_html($_GET[self::QUERY_KEY_FREETEXT]); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
 		    </div>
 		    <div class="span1 pull-right">
 	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $pageindex+1); ?>">Næste ></a>
