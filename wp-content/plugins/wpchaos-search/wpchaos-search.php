@@ -117,32 +117,31 @@ class WPChaosSearch {
 	 */
 	public function shortcode_searchresults( $args ) {
 		$args = shortcode_atts( array(
-			'query' => ""
+			'query' => "",
+			'pageindex' => 0,
+			'pagesize' => 20,
+			'sort' => null,
+			'accesspoint' => null
 		), $args );
 
 		return $this->get_searchresults($args);
 	}
 
 	public function get_searchresults($args) {
-		
-		// C4C2B8DA-A980-11E1-814B-02CEA2621172
-		$accessPointGUID = get_option("wpchaos-accesspoint-guid");
 
 		if(isset($_GET[self::QUERY_KEY_PAGEINDEX])) {
-			$pageindex = (int)$_GET[self::QUERY_KEY_PAGEINDEX];
-			$pageindex = ($pageindex >= 0?$pageindex:0);
-		} else {
-			$pageindex = 0;
+			$args['pageindex'] = (int)$_GET[self::QUERY_KEY_PAGEINDEX];
+			$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
 		}
 
 		$query = apply_filters('wpchaos-solr-query', $args['query'], $_GET);
 		
 		$serviceResult = WPChaosClient::instance()->Object()->Get(
 			$query,	// Search query
-			null,	// Sort
-			null,	// AccessPoint given by settings.
-			$pageindex,		// pageIndex
-			20,		// pageSize
+			$args['sort'],	// Sort
+			$args['accesspoint'],	// AccessPoint given by settings.
+			$args['pageindex'],		// pageIndex
+			$args['pagesize'],		// pageSize
 			true,	// includeMetadata
 			true,	// includeFiles
 			true	// includeObjectRelations
@@ -158,10 +157,10 @@ class WPChaosSearch {
 		    <p>Søgningen på <strong class="blue"><?php echo esc_html($_GET[self::QUERY_KEY_FREETEXT]); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
 		    </div>
 		    <div class="span1 pull-right">
-	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $pageindex+1); ?>">Næste ></a>
+	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Næste ></a>
 	      </div>
 	      <div class="span1 pull-right">
-	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $pageindex-1); ?>">< Forrige</a>
+	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">< Forrige</a>
 	      </div>
 	    </div>
 	    <ul class="row thumbnails">
