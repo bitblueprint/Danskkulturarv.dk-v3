@@ -56,15 +56,24 @@ class WPDKAObject {
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka2', 'http://www.danskkulturarv.dk/DKA2.xsd');
 		
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
+			return $value . $object->metadata(
+				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+				array('/dka2:DKA/dka2:Title/text()', '/DKA/Title/text()')
+			);
 		}, 10, 2);
 		
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Organization/text()');
+			return $value . $object->metadata(
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:Organization/text()', '/DKA/Organization/text()')
+			);
 		}, 10, 2);
 	
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:FirstPublishedDate/text()');
+			return $value . $object->metadata(
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:FirstPublishedDate/text()', '/DKA/FirstPublishedDate/text()')
+			);
 		}, 10, 2);
 
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
