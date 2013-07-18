@@ -89,6 +89,18 @@ class WPChaosSearch {
 			//include (TEMPLATEPATH . '/post-with-permalink-hello-world.php');
 			exit();
 		}
+
+		//Include template for search results
+		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+			//Look in theme dir and include if found
+			if(locate_template('chaos-searchresults.php', true) != "") {
+			
+			//Include from plugin
+			} else {
+				include(plugin_dir_path(__FILE__)."/templates/searchresults.php");
+			}
+			exit();
+		}
 	}
 	
 	/**
