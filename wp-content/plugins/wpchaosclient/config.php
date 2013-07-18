@@ -17,7 +17,7 @@ return array(
 				'type' => 'text'
 			),
 			array(
-				'name' => 'wpchaos-apguid',
+				'name' => 'wpchaos-accesspoint-guid',
 				'title' => 'Access Point GUID',
 				'type' => 'text'
 			)

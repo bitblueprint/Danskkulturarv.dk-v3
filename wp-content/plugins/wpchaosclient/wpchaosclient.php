@@ -191,7 +191,7 @@ class WPPortalClient extends PortalClient {
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
 		if(!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) {
-			$parameters['accessPointGUID'] = get_option('wpchaos-apguid');
+			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
 		}
 		return parent::CallService($path, $method, $parameters, $requiresSession);
 	}

@@ -124,6 +124,9 @@ class WPChaosSearch {
 		  "00000000-0000-0000-0000-000063c30000",
 		  "00000000-0000-0000-0000-000065c30000"
 		);
+		
+		// C4C2B8DA-A980-11E1-814B-02CEA2621172
+		$accessPointGUID = get_option("wpchaos-accesspoint-guid");
 
 		//$query = apply_filters('solr-query',$args['query'] ...);
 
