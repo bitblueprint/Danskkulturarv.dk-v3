@@ -7901,6 +7901,21 @@ a.badge:focus {
 body {
   padding-top: 71px;
 }
+h1 {
+  font-size: 1.6em;
+}
+h2 {
+  font-size: 1.2em;
+  line-height: 1.4em;
+}
+/*
+@spriteGrid: 26px; // 16ps sprite + 10px padding on the spritesheet
+.sprite(@x, @y) {
+   background-image: url(../img/sprite-100.png);
+   background-repeat: no-repeat;
+   background-position: -(@x*@spriteGrid) -(@y*@spriteGrid);
+}
+*/
 .navbar .brand {
   padding: 25px 20px 0 20px;
 }
@@ -7959,6 +7974,13 @@ body {
   background: none;
   background-color: #ffffff;
 }
+.search-object .title,
+.search-object .organization {
+  width: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .blue {
   color: #2f94fd;
 }
@@ -7971,46 +7993,76 @@ body {
 .thumbnails p.date:before {
   width: 16px;
   height: 16px;
-  background-image: url(../img/sprite-100.png);
-  background-repeat: no-repeat;
-  background-position: 0px -286px;
   background: url(../img/sprite-100.png) no-repeat;
   background-position: 0px -242px;
   display: inline-block;
   content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
 }
 .thumbnails span.series:before {
   width: 16px;
   height: 16px;
-  background-image: url(../img/sprite-100.png);
-  background-repeat: no-repeat;
-  background-position: -52px -390px;
   background: url(../img/sprite-100.png) no-repeat;
   background-position: -38px -318px;
   display: inline-block;
   content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
 }
 .thumbnails span.views:before {
   width: 16px;
   height: 16px;
-  background-image: url(../img/sprite-100.png);
-  background-repeat: no-repeat;
-  background-position: -26px -104px;
   background: url(../img/sprite-100.png) no-repeat;
   background-position: -19px -109px;
   display: inline-block;
   content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
 }
 .thumbnails span.likes:before {
   width: 16px;
   height: 16px;
-  background-image: url(../img/sprite-100.png);
-  background-repeat: no-repeat;
-  background-position: 0px -234px;
   background: url(../img/sprite-100.png) no-repeat;
   background-position: 0px -204px;
   display: inline-block;
   content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+.single-material .info {
+  border: 1px solid #eeeded;
+  padding: 10px;
+}
+.single-material .info .views:before {
+  width: 16px;
+  height: 16px;
+  background: url(../img/sprite-100.png) no-repeat;
+  background-position: -19px -109px;
+  display: inline-block;
+  content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+.single-material .info .share:before {
+  width: 16px;
+  height: 16px;
+  background: url(../img/sprite-100.png) no-repeat;
+  background-position: -19px -90px;
+  display: inline-block;
+  content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
+}
+.single-material .info .short-url:before {
+  width: 16px;
+  height: 16px;
+  background: url(../img/sprite-100.png) no-repeat;
+  background-position: -19px -128px;
+  display: inline-block;
+  content: "";
+  margin-right: 5px;
+  vertical-align: text-top;
 }
 /* Wrapper for page content to push down footer */
 #wrap {

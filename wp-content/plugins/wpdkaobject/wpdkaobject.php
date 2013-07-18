@@ -17,7 +17,7 @@ class WPDKAObject {
 	public $plugin_dependencies = array(
 		'WPChaosClient' => 'WordPress Chaos Client',
 	);
-	
+
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
 
@@ -34,9 +34,37 @@ class WPDKAObject {
 		
 		// Defining the filters - used to present the object.
 		
-		add_filter('wpchaos-object-title', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
 		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Organization/text()');
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:FirstPublishedDate/text()');
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
+
+			return $value = WPDKAObject::determine_type($object);
+
+		}, 10, 2);
+
+	}
+
+	const TYPE_VIDEO = 'series';
+	const TYPE_AUDIO = 'audio';
+	const TYPE_UNKNOWN = 'unknown';
+
+	public static function determine_type($object) {
+		
+		foreach($object->getObject()->Files as $file) {
+			if($file->FormatType == 'Video')
+				return self::TYPE_VIDEO;
+		}
+		return self::TYPE_UNKNOWN;
 
 	}
 

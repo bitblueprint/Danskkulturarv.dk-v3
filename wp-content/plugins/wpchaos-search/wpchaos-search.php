@@ -15,6 +15,7 @@ Author URI:
 class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'cq';
+	const QUERY_KEY_PAGEINDEX = 'i';
 	public $plugin_dependencies = array(
 		'WPChaosClient' => 'WordPress Chaos Client',
 	);
@@ -128,6 +129,13 @@ class WPChaosSearch {
 		// C4C2B8DA-A980-11E1-814B-02CEA2621172
 		$accessPointGUID = get_option("wpchaos-accesspoint-guid");
 
+		if(isset($args['query'][self::QUERY_KEY_PAGEINDEX])) {
+			$pageindex = (int)$args['query'][self::QUERY_KEY_PAGEINDEX];
+			$pageindex = ($pageindex >= 0?$pageindex:0);
+		} else {
+			$pageindex = 0;
+		}
+
 		//$query = apply_filters('solr-query',$args['query'] ...);
 
 		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
@@ -135,23 +143,68 @@ class WPChaosSearch {
 		  $fields,      // fields to search
 		  "da",         // language code
 		  $accessPointGUID,
-		  0,            // pageIndex
+		  $pageindex,            // pageIndex
 		  20,           // pageSize
 		  true,         // includeMetadata
 		  true,         // includeFiles
 		  true          // includeObjectRelations
 		);
-		echo "Got " . $serviceResult->MCM()->Count() . "/" . $serviceResult->MCM()->TotalCount();
-
+		
 		$objects = $serviceResult->MCM()->Results();
 
-		foreach($objects as $object) {
+		?>
+
+		<article class="container search-results">
+	    <div class="row">
+		    <div class="span6">
+		    <p>Søgningen på <strong class="blue"><?php echo esc_html($args['query'][self::QUERY_KEY_FREETEXT]); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
+		    </div>
+		    <div class="span1 pull-right">
+	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $pageindex+1); ?>">Næste ></a>
+	      </div>
+	      <div class="span1 pull-right">
+	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $pageindex-1); ?>">< Forrige</a>
+	      </div>
+	    </div>
+	    <ul class="row thumbnails">
+
+		<?php
+
+		/*
+		
+		 <img src="img/turell.jpg" alt="">
+          
+          <span class="series"></span><span class="views">19</span><span class="likes">3</span>
+
+		 */
+
+		foreach($objects as $object) :
 			$test_object = new WPChaosObject($object);
-			echo $test_object->title;
-			//var_dump($test_object);
+			
 			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
-			echo '<p><a href="'.$link.'">'.$object->GUID.'</a></p><br />';
-		}
+
+			?>
+
+			<li class="search-object span3">
+				<a class="thumbnail" href="<?php echo $link; ?>">
+					<h2 class="title"><strong><?php echo $test_object->title; ?></strong></h2>
+					<div class="organization"><strong class="strong orange"><?php echo $test_object->organization; ?></strong></div>
+					<p class="date"><?php echo $test_object->published; ?></p>
+					<hr>
+					<span class="<?php echo $test_object->type; ?>"></span>
+				</a>
+			</li>
+
+			<?php
+
+		endforeach;
+
+		?>
+
+		</ul>
+		</article>
+
+		<?php
 
 	}
 
@@ -161,15 +214,17 @@ class WPChaosSearch {
 		} else {
 			$page = "";
 		}
+
+		$text = esc_attr(isset($_GET[self::QUERY_KEY_FREETEXT])?$_GET[self::QUERY_KEY_FREETEXT]:'');
 		
 		echo '<form method="GET" action="'.$page.'">'."\n";
 
 		echo '<div class="input-append">'."\n";
-		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$_GET[self::QUERY_KEY_FREETEXT].'" placeholder="'.$placeholder.'" /> <button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
+		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$text.'" placeholder="'.$placeholder.'" /><button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
 		echo '</div>'."\n";
 
 		echo '<div class="btn-group pull-right span4">'."\n";
-		echo '<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="btn" data-toggle="collapse" href="#advanced-search-container">Præciser søgning<i></i></button>'."\n";
+		echo '<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning</button>'."\n";
 		echo '</div>'."\n";
 
 		echo '</form>'."\n";
