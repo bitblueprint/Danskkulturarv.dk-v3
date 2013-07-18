@@ -132,7 +132,7 @@ class WPChaosSearch {
 
 		foreach($objects as $object) {
 			$test_object = new WPChaosObject($object);
-			echo $test_object->variousshit;
+			echo $test_object->title;
 			//var_dump($test_object);
 			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
 			echo '<p><a href="'.$link.'">'.$object->GUID.'</a></p><br />';
