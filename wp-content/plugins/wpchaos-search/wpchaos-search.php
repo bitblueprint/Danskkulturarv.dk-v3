@@ -110,31 +110,23 @@ class WPChaosSearch {
 	 */
 	public function shortcode_searchresults( $args ) {
 		$args = shortcode_atts( array(
-			'foo' => 'something',
-			'bar' => 'something else',
-			'query' => $_GET
+			'query' => ""
 		), $args );
 
 		return $this->get_searchresults($args);
 	}
 
 	public function get_searchresults($args) {
-		$fields = array(
-		  "5906a41b-feae-48db-bfb7-714b3e105396",
-		  "00000000-0000-0000-0000-000063c30000",
-		  "00000000-0000-0000-0000-000065c30000"
-		);
 		
 		// C4C2B8DA-A980-11E1-814B-02CEA2621172
 		$accessPointGUID = get_option("wpchaos-accesspoint-guid");
 
-		//$query = apply_filters('solr-query',$args['query'] ...);
+		$query = apply_filters('wpchaos-solr-query', $args['query'], $_GET);
 
-		$serviceResult = WPChaosClient::instance()->Object()->GetSearchSchemas(
-		  $args['query'][self::QUERY_KEY_FREETEXT],       // search string
-		  $fields,      // fields to search
-		  "da",         // language code
-		  $accessPointGUID,
+		$serviceResult = WPChaosClient::instance()->Object()->Get(
+		  $query,       // search string
+		  null,         // Sort
+		  null,			// AccessPoint given by settings.
 		  0,            // pageIndex
 		  20,           // pageSize
 		  true,         // includeMetadata

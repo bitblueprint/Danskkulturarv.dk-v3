@@ -20,6 +20,8 @@ class WPDKAObject {
 	
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
+	const FREETEXT_LANGUAGE = 'da';
+	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
 
 	/**
 	 * Construct
@@ -33,11 +35,31 @@ class WPDKAObject {
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka2', 'http://www.danskkulturarv.dk/DKA2.xsd');
 		
 		// Defining the filters - used to present the object.
-		
 		add_filter('wpchaos-object-title', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA2_SCHEMA_GUID, '/dka2:DKA/dka2:Title/text()');
 		}, 10, 2);
 
+		// Define the free-text search filter.
+		add_filter('wpchaos-solr-query', function($query, $GET) {
+			if($query) {
+				$query = array($query);
+			} else {
+				$query = array();
+			}
+			
+			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $GET)) {
+				// For each known metadata schema, loop and add freetext search on this.
+				$freetext = $GET[WPChaosSearch::QUERY_KEY_FREETEXT];
+				$freetext = WPDKAObject::escapeSolrValue($freetext);
+				$searches = array();
+				foreach(WPDKAObject::$ALL_SCHEMA_GUIDS as $schemaGUID) {
+					$searches[] = sprintf("(m%s_%s_all:(%s))", $schemaGUID, WPDKAObject::FREETEXT_LANGUAGE, $freetext);
+				}
+				$query[] = '(' . implode("+OR+", $searches) . ')';
+			}
+			
+			return implode("+AND+", $query);
+		}, 10, 2);
 	}
 
 	/**
@@ -68,6 +90,15 @@ class WPDKAObject {
 	 */
 	public function deactivate_notice($classes) {
 		echo '<div class="error"><p>WordPress Chaos Search needs '.implode(',',(array)$classes).' to be activated.</p></div>';
+	}
+	
+	public static function escapeSolrValue($string)
+	{
+		$match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');
+		$replace = array('\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
+		$string = str_replace($match, $replace, $string);
+	
+		return $string;
 	}
 
 }
