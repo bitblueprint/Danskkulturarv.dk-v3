@@ -32,6 +32,18 @@ class WPChaosClient {
 	 */
 	public static $instance;
 
+	/**
+	 * Container for current Chaos object
+	 * @var WPChaosObject|null
+	 */
+	public static $object;
+
+	/**
+	 * List of attributes that has a filter
+	 * @var array
+	 */
+	public static $attributes;
+
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
 
 	/**
@@ -44,7 +56,10 @@ class WPChaosClient {
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
 		add_action('admin_init', array(&$this,'settings_updated'));
-	} 
+		add_action('template_redirect', array(&$this,'get_object_page'));
+		add_action('widgets_init', array(&$this,'add_widget_areas'),99);
+
+	}
 
 	/**
 	 * Create and register setting fields for administration
@@ -132,7 +147,90 @@ class WPChaosClient {
 		submit_button();
 		echo '</form></div>'."\n";
 		
+	}
 
+	function add_widget_areas() {
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-featured',
+			'name' => 'CHAOS Object - Featured',
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget' => '</div>',
+			'before_title' => '<h3 class="widget-title">',
+			'after_title' => '</h3>',
+		) );
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-main',
+			'name' => 'CHAOS Object - Main',
+			'before_widget' => '',
+			'after_widget' => '',
+			'before_title' => '<h3 class="widget-title">',
+			'after_title' => '</h3>',
+		) );
+
+		 register_widget( 'WPChaosObjectAttrWidget' );
+		 register_widget( 'WPChaosObjectMultiWidget' );
+	}
+
+
+	public static function get_chaos_attributes() {
+		global $wp_filter;
+		if(empty(self::$attributes)) {
+			$matches = array();
+			foreach($wp_filter as $filter => $arr) {
+				if(preg_match('/^'.self::OBJECT_FILTER_PREFIX.'(.*)/',$filter,$matches)) {
+					self::$attributes[$matches[1]] = ucfirst($matches[1]);
+				}
+			}
+		}
+
+		return self::$attributes;
+	}
+
+	public function get_object_page() {
+	//index.php?&org=1&slug=2 => /org/slug/
+	//org&guid
+		if(isset($_GET['guid'])) {
+
+			//do some chaos here
+			//
+			$serviceResult = self::instance()->Object()->Get(
+			WPDKAObject::escapeSolrValue($_GET['guid']),	// Search query
+			null,	// Sort
+			null,	// AccessPoint given by settings.
+			0,		// pageIndex
+			1,		// pageSize
+			true,	// includeMetadata
+			true,	// includeFiles
+			true	// includeObjectRelations
+		);
+			
+			//Set 404 if no content is found
+			if($serviceResult->MCM()->TotalCount() < 1) {
+				  global $wp_query;
+				  $wp_query->set_404();
+				  status_header( 404 );
+				  get_template_part( 404 );
+				  exit();
+
+			//Set up object and include template
+			} else {
+				$object = $serviceResult->MCM()->Results()[0];
+				self::set_object($object);
+				$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
+			}
+
+			//Look in theme dir and include if found
+			if(locate_template('chaos-object-page.php', true) != "") {
+			
+			//Include from plugin
+			} else {
+				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
+			}
+			self::reset_object();
+			exit();
+		}
 	}
 
 	/**
@@ -187,93 +285,54 @@ class WPChaosClient {
 	}
 
 	/**
+	 * Get instance of current CHAOS object (if any)
+	 * @return WPChaosObject|null
+	 */
+	public static function get_object() {
+		return self::$object;
+	}
+	/**
+	 * Set current CHAOS object
+	 * @param WPChaosObject|stdClass|null
+	 * @return void
+	 */
+	public static function set_object($object) {
+		if($object instanceof \stdClass) {
+			$object = new WPChaosObject($object);
+		}
+		self::$object = $object;
+	}
+
+	/**
+	 * Free current object
+	 * @return void 
+	 */
+	public static function reset_object() {
+		self::set_object(null); 
+	}
+
+	/**
 	 * Load files and libraries
 	 * @return void 
 	 */
 	private function load_dependencies() {
+
+		//For CHAOS lib
 		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ ."/lib/chaos-client/src/");
-
 		require_once("CaseSensitiveAutoload.php");
-
 		spl_autoload_extensions(".php");
 		spl_autoload_register("CaseSensitiveAutoload");
+
+		require_once("wpportalclient.php");
+		require_once("wpchaosobject.php");
+		require_once("wpchaosobjectattrwidget.php");
+		require_once("wpchaosobjectmultiwidget.php");
+
+
 	}
 
 }
 //Instantiate
 new WPChaosClient();
-
-use CHAOS\Portal\Client\PortalClient;
-class WPPortalClient extends PortalClient {
-
-	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
-		if(!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) {
-			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
-		}
-		return parent::CallService($path, $method, $parameters, $requiresSession);
-	}
-
-}
-
-/**
- *
- * Class for CHAOS material
- * 
- * @property-read string $title 		Get title
- * @property-read string $organisation 	Get name of organisation
- * @property-read string $thumbnail_url Get url to thumbnail
- * @property-read string $thumbnail_caption Get caption to thumbnail
- * @property-read string $type 			Get type
- * @property-read int 	 $views 		Get number of views
- * @property-read int 	 $likes 		Get number of likes
- * @property-read string $created_date  Get date of creation (XMLDateTime)
- * @property-read array  $tags 			Get list of tags
- * @property-read mixed  $var
- */
-class WPChaosObject {
-
-	/**
-	 * Object retrieved from CHAOS
-	 * 
-	 * @var stdClass
-	 */
-	protected $chaos_object;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param stdClass $chaos_object
-	 */
-	public function __construct(\stdClass $chaos_object) {
-		$this->chaos_object = new \CHAOS\Portal\Client\Data\Object($chaos_object);
-	}
-
-	/**
-	 * Magic getter for various metadata in CHAOS object
-	 * Use like $class->$name
-	 * Add filters like add_filter('wpchaos-object-'.$name,callback,priority,2)
-	 * 
-	 * @param  string $name Variable to get
-	 * @return mixed 		Filtered data (from $chaos_object)
-	 */
-	public function __get($name) {
-
-		// $method = 'get_'.$name;
-		// if(method_exists($this, $method)) {
-		// 	return $this->$method();
-		// }
-
-		//If no filters exist for this variable, it should probably not be used
-		if(!array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
-			throw new RuntimeException("There are no filters for this variable: $".$name);
-		}
-		return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this->chaos_object);
-	}
-
-	// public function get_type() {
-	// 	var_dump($this->chaos_object->getObject()->Files);
-	// }
-
-}
 
 //eol

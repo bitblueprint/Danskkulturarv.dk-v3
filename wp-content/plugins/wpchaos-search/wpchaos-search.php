@@ -29,7 +29,7 @@ class WPChaosSearch {
 
 		add_action('admin_init',array(&$this,'check_chaosclient'));
 		add_action('widgets_init', array(&$this,'register_widgets'));
-		add_action('template_redirect', array(&$this,'get_material_page'));
+		add_action('template_redirect', array(&$this,'get_search_page'));
 
 		add_filter('wpchaos-config',array(&$this,'settings'));
 
@@ -105,31 +105,15 @@ class WPChaosSearch {
 		}
 	}
 
-	public function get_material_page() {
-	//index.php?&org=1&slug=2 => /org/slug/
-	//org&guid
-		if(isset($_GET['guid'])) {
-
-			//do some chaos here
-
-			//Look in theme dir and include if found
-			if(locate_template('chaos-object-page.php', true) != "") {
-			
-			//Include from plugin
-			} else {
-				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
-			}
-			exit();
-		}
-
+	public function get_search_page() {
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-search-page'))) {
 			//Look in theme dir and include if found
-			if(locate_template('chaos-searchresults.php', true) != "") {
+			if(locate_template('chaos-full-width.php', true) != "") {
 			
 			//Include from plugin
 			} else {
-				include(plugin_dir_path(__FILE__)."/templates/search-results.php");
+				include(plugin_dir_path(__FILE__)."/templates/full-width.php");
 			}
 			exit();
 		}
@@ -170,63 +154,12 @@ class WPChaosSearch {
 		);
 		
 		$objects = $serviceResult->MCM()->Results();
-
-		?>
-
-		<article class="container search-results">
-	    <div class="row">
-		    <div class="span6">
-		    <p>Søgningen <?php if(isset($_GET[self::QUERY_KEY_FREETEXT])):?>på <strong class="blue"><?php echo esc_html($_GET[self::QUERY_KEY_FREETEXT]); ?></strong><?php endif;?> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
-		    </div>
-		    <div class="span1 pull-right">
-	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Næste ></a>
-	      </div>
-	      <div class="span1 pull-right">
-	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">< Forrige</a>
-	      </div>
-	    </div>
-	    <ul class="row thumbnails">
-
-		<?php
-
-		/*
-		
-		 <img src="img/turell.jpg" alt="">
-          
-          <span class="series"></span><span class="views">19</span><span class="likes">3</span>
-
-		 */
-
-		foreach($objects as $object) :
-
-			//include template for each object
-
-			$test_object = new WPChaosObject($object);
-			
-			$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
-
-			?>
-
-			<li class="search-object span3">
-				<a class="thumbnail" href="<?php echo $link; ?>">
-					<h2 class="title"><strong><?php echo $test_object->title; ?></strong></h2>
-					<div class="organization"><strong class="strong orange"><?php echo $test_object->organization; ?></strong></div>
-					<p class="date"><?php echo $test_object->published; ?></p>
-					<hr>
-					<span class="<?php echo $test_object->type; ?>"></span>
-				</a>
-			</li>
-
-			<?php
-
-		endforeach;
-
-		?>
-
-		</ul>
-		</article>
-
-		<?php
+		//Look in theme dir and include if found
+		if(locate_template('chaos-search-results.php', true) != "") {		
+			//Include from plugin
+		} else {
+			include(plugin_dir_path(__FILE__)."/templates/search-results.php");
+		}
 
 	}
 
