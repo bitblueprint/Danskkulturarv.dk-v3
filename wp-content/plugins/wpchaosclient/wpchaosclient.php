@@ -156,11 +156,13 @@ class WPChaosClient {
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-main',
 			'name' => 'CHAOS Object - Main',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'before_widget' => '<div id="%1$s" class="row %2$s">',
 			'after_widget' => '</div>',
 			'before_title' => '<h3 class="widget-title">',
 			'after_title' => '</h3>',
 		) );
+
+		 register_widget( 'WPChaosObjectAttrWidget' );
 	}
 
 	public function get_object_page() {
@@ -277,89 +279,22 @@ class WPChaosClient {
 	 * @return void 
 	 */
 	private function load_dependencies() {
+
+		//For CHAOS lib
 		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ ."/lib/chaos-client/src/");
-
 		require_once("CaseSensitiveAutoload.php");
-
 		spl_autoload_extensions(".php");
 		spl_autoload_register("CaseSensitiveAutoload");
+
+		require_once("wpportalclient.php");
+		require_once("wpchaosobject.php");
+		require_once("wpchaosobjectattrwidget.php");
+
+
 	}
 
 }
 //Instantiate
 new WPChaosClient();
-
-use CHAOS\Portal\Client\PortalClient;
-class WPPortalClient extends PortalClient {
-
-	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
-		if(!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) {
-			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
-		}
-		return parent::CallService($path, $method, $parameters, $requiresSession);
-	}
-
-}
-
-/**
- *
- * Class for CHAOS material
- * 
- * @property-read string $title 		Get title
- * @property-read string $organisation 	Get name of organisation
- * @property-read string $thumbnail_url Get url to thumbnail
- * @property-read string $thumbnail_caption Get caption to thumbnail
- * @property-read string $type 			Get type
- * @property-read int 	 $views 		Get number of views
- * @property-read int 	 $likes 		Get number of likes
- * @property-read string $created_date  Get date of creation (XMLDateTime)
- * @property-read array  $tags 			Get list of tags
- * @property-read mixed  $var
- */
-class WPChaosObject {
-
-	/**
-	 * Object retrieved from CHAOS
-	 * 
-	 * @var stdClass
-	 */
-	protected $chaos_object;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param stdClass $chaos_object
-	 */
-	public function __construct(\stdClass $chaos_object) {
-		$this->chaos_object = new \CHAOS\Portal\Client\Data\Object($chaos_object);
-	}
-
-	/**
-	 * Magic getter for various metadata in CHAOS object
-	 * Use like $class->$name
-	 * Add filters like add_filter('wpchaos-object-'.$name,callback,priority,2)
-	 * 
-	 * @param  string $name Variable to get
-	 * @return mixed 		Filtered data (from $chaos_object)
-	 */
-	public function __get($name) {
-
-		// $method = 'get_'.$name;
-		// if(method_exists($this, $method)) {
-		// 	return $this->$method();
-		// }
-
-		//If no filters exist for this variable, it should probably not be used
-		if(!array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
-			throw new RuntimeException("There are no filters for this variable: $".$name);
-		}
-		return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this->chaos_object);
-	}
-
-	// public function get_type() {
-	// 	var_dump($this->chaos_object->getObject()->Files);
-	// }
-
-}
 
 //eol
