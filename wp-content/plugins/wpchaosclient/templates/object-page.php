@@ -4,7 +4,9 @@ get_header(); ?>
 <article class="container single-material">
 	<div class="row">
 		<div class="span9">
-			<?php dynamic_sidebar( 'wpchaos-obj-main' ); ?>
+			<div class="row">
+				<?php dynamic_sidebar( 'wpchaos-obj-main' ); ?>
+			</div>
 		</div>
 		<div class="span3">
 			<div class="">

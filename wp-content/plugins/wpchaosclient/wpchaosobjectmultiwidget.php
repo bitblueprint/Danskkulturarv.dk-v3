@@ -4,30 +4,23 @@
  * @version 1.0
  */
 
-class WPChaosObjectAttrWidget extends WP_Widget {
+class WPChaosObjectMultiWidget extends WP_Widget {
 
 	private $fields = array(
-		array(
-			'title' => 'Attribute',
-			'name' => 'attribute',
-			'type' => 'select',
-			'list' => array(),
-			'val' => '',
-		),
 		array(
 			'title' => 'Markup',
 			'name' => 'markup',
 			'type' => 'textarea',
-			'val' => '%s',
+			'val' => '',
 		)
 	);
 
 	public function __construct() {
 		
 		parent::__construct(
-			'chaos-object-attribute-widget',
-			'CHAOS Object Attribute',
-			array( 'description' => 'Style and display data from a CHAOS object' )
+			'chaos-object-multi-widget',
+			'CHAOS Object Multi Attributes',
+			array( 'description' => 'Style and display several data from a CHAOS object' )
 		);
 
 	}
@@ -35,9 +28,13 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		if(WPChaosClient::get_object()) {
 			echo $args['before_widget'];
-			printf($instance['markup'], WPChaosClient::get_object()->$instance['attribute']);
+			
+			echo preg_replace_callback("/\[(\w+)\]/", 
+				function($matches) {
 
-			//echo preg_replace_callback("/\[(\w+)\]/", function($matches) { WPChaosClient::get_object()->$matches[0]}, )
+					return WPChaosClient::get_object()->$matches[1];
+
+				}, $instance['markup']);
 
 			echo $args['after_widget'];
 		}
@@ -52,15 +49,6 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 
-		// Populate list of attributes (added filters)
-		
-		$this->fields[0]['list'] = WPChaosClient::get_chaos_attributes();
-
-		//Set title of widget
-		$title = isset( $instance[ 'attribute' ]) ? ucfirst($instance['attribute']) : "";
-		echo '<input type="hidden" id="'.$this->get_field_id('title').'" value="'.$title.'">';
-
-
 		foreach($this->fields as $field) {
 			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $field['val'];
 			$name = $this->get_field_name( $field['name'] );
@@ -71,7 +59,7 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 			echo '<label for="'.$name.'">'.$title.'</label>';
 			switch($field['type']) {
 				case 'textarea':
-					echo '<textarea class="widefat" name="'.$name.'" >'.$value.'</textarea>';
+					echo '<textarea class="widefat" rows="16" cols="20" name="'.$name.'" >'.$value.'</textarea>';
 					break;
 				case 'select':
 					echo '<select class="widefat" name="'.$name.'">';
@@ -85,8 +73,9 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 					echo '<input class="widefat" id="'.$id.'" name="'.$name.'" type="text" value="'.esc_attr( $value ).'" />';
 			}
 			echo '</p>';
-
 		}
+		echo '<p>Allowed attributes:<br>';
+		echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
 		}
 
 	public function update( $new_instance, $old_instance ) {

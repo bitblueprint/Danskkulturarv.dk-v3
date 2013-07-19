@@ -38,6 +38,12 @@ class WPChaosClient {
 	 */
 	public static $object;
 
+	/**
+	 * List of attributes that has a filter
+	 * @var array
+	 */
+	public static $attributes;
+
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
 
 	/**
@@ -156,13 +162,29 @@ class WPChaosClient {
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-main',
 			'name' => 'CHAOS Object - Main',
-			'before_widget' => '<div id="%1$s" class="row %2$s">',
-			'after_widget' => '</div>',
+			'before_widget' => '',
+			'after_widget' => '',
 			'before_title' => '<h3 class="widget-title">',
 			'after_title' => '</h3>',
 		) );
 
 		 register_widget( 'WPChaosObjectAttrWidget' );
+		 register_widget( 'WPChaosObjectMultiWidget' );
+	}
+
+
+	public static function get_chaos_attributes() {
+		global $wp_filter;
+		if(empty(self::$attributes)) {
+			$matches = array();
+			foreach($wp_filter as $filter => $arr) {
+				if(preg_match('/^'.self::OBJECT_FILTER_PREFIX.'(.*)/',$filter,$matches)) {
+					self::$attributes[$matches[1]] = ucfirst($matches[1]);
+				}
+			}
+		}
+
+		return self::$attributes;
 	}
 
 	public function get_object_page() {
@@ -289,6 +311,7 @@ class WPChaosClient {
 		require_once("wpportalclient.php");
 		require_once("wpchaosobject.php");
 		require_once("wpchaosobjectattrwidget.php");
+		require_once("wpchaosobjectmultiwidget.php");
 
 
 	}
