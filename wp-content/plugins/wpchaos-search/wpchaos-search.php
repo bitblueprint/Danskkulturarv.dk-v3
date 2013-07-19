@@ -86,6 +86,32 @@ class WPChaosSearch {
 		if(isset($_GET['guid'])) {
 
 			//do some chaos here
+			//
+			$serviceResult = WPChaosClient::instance()->Object()->Get(
+			WPDKAObject::escapeSolrValue($_GET['guid']),	// Search query
+			null,	// Sort
+			null,	// AccessPoint given by settings.
+			0,		// pageIndex
+			1,		// pageSize
+			true,	// includeMetadata
+			true,	// includeFiles
+			true	// includeObjectRelations
+		);
+			
+			//Set 404 if no content is found
+			if($serviceResult->MCM()->TotalCount() < 1) {
+				  global $wp_query;
+				  $wp_query->set_404();
+				  status_header( 404 );
+				  get_template_part( 404 );
+				  exit();
+
+			//Set up object and include template
+			} else {
+				$object = $serviceResult->MCM()->Results()[0];
+				WPChaosClient::set_object($object);
+				$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
+			}
 
 			//Look in theme dir and include if found
 			if(locate_template('chaos-object-page.php', true) != "") {

@@ -54,6 +54,7 @@ class WPDKAObject {
 		// Registering namespaces.
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka', 'http://www.danskkulturarv.dk/DKA.xsd');
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka2', 'http://www.danskkulturarv.dk/DKA2.xsd');
+		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('xhtml', 'http://www.w3.org/1999/xhtml');
 		
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, $object) {
 			return $value . $object->metadata(
@@ -66,6 +67,13 @@ class WPDKAObject {
 			return $value . $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:Organization/text()', '/DKA/Organization/text()')
+			);
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, $object) {
+			return $value . $object->metadata(
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:Description/text()', '/DKA/Description/text()')
 			);
 		}, 10, 2);
 	

@@ -20,20 +20,20 @@
 		 */
 
 foreach($objects as $object) :
-	$wp_object = new WPChaosObject($object);
+	WPChaosClient::set_object($object);
 
 	$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
 
 ?>
 		<li class="search-object span3">
 			<a class="thumbnail" href="<?php echo $link; ?>">
-				<h2 class="title"><strong><?php echo $wp_object->title; ?></strong></h2>
-				<div class="organization"><strong class="strong orange"><?php echo $wp_object->organization; ?></strong></div>
-				<p class="date"><?php echo $wp_object->published; ?></p>
+				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
+				<div class="organization"><strong class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></strong></div>
+				<p class="date"><?php echo WPChaosClient::get_object()->published; ?></p>
 				<hr>
-				<span class="<?php echo $wp_object->type; ?>"></span>
+				<span class="<?php echo WPChaosClient::get_object()->type; ?>"></span>
 			</a>
 		</li>
- <?php endforeach; ?>
+ <?php endforeach; WPChaosClient::reset_object(); ?>
 	</ul>
 </article>
