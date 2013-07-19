@@ -57,6 +57,7 @@ add_action( 'wp_enqueue_scripts', 'dka_scripts_styles' );
 function dka_widgets_init() {
 
 	register_sidebar( array(
+		'id' => 'sidebar-1',
 		'name' => 'Sidebar',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget' => '</aside>',
@@ -65,6 +66,7 @@ function dka_widgets_init() {
 	) );
 
 	register_sidebar( array(
+		'id' => 'sidebar-2',
 		'name' => 'Top',
 		'before_widget' => '<div id="%1$s" class="widget %2$s">',
 		'after_widget' => '</div>',

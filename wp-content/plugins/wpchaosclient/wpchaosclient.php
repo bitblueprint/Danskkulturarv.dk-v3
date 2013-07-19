@@ -50,6 +50,7 @@ class WPChaosClient {
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
 		add_action('template_redirect', array(&$this,'get_object_page'));
+		add_action('widgets_init', array(&$this,'add_widget_areas'),99);
 
 	}
 
@@ -141,6 +142,27 @@ class WPChaosClient {
 		
 	}
 
+	function add_widget_areas() {
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-featured',
+			'name' => 'CHAOS Object - Featured',
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget' => '</div>',
+			'before_title' => '<h3 class="widget-title">',
+			'after_title' => '</h3>',
+		) );
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-main',
+			'name' => 'CHAOS Object - Main',
+			'before_widget' => '<div id="%1$s" class="widget %2$s">',
+			'after_widget' => '</div>',
+			'before_title' => '<h3 class="widget-title">',
+			'after_title' => '</h3>',
+		) );
+	}
+
 	public function get_object_page() {
 	//index.php?&org=1&slug=2 => /org/slug/
 	//org&guid
@@ -181,6 +203,7 @@ class WPChaosClient {
 			} else {
 				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
 			}
+			self::reset_object();
 			exit();
 		}
 	}
