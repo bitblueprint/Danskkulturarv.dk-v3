@@ -33,11 +33,14 @@ class WPChaosSearch {
 
 		add_filter('wpchaos-config',array(&$this,'settings'));
 
-		add_shortcode( 'chaosresults', array(&$this,'shortcode_searchresults'));
+		add_shortcode('chaosresults', array(&$this,'shortcode_searchresults'));
 		
 		// Add rewrite rules when activating and when settings update.
 		register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
 		add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
+		
+		// Rewrite tags should always be added.
+		add_action('init', array(&$this, 'add_rewrite_tags'));
 	}
 
 	/**
@@ -184,14 +187,16 @@ class WPChaosSearch {
 
 		echo '</form>'."\n";
 	}
+
+	public function add_rewrite_tags() {
+		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([^/]+)');
+		add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
+	}
 	
 	public function add_rewrite_rules() {
 		if(get_option('wpchaos-searchpage')) {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
-			
-			add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([^/]+)');
-			add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
 			
 			$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
