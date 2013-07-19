@@ -43,7 +43,8 @@ class WPChaosClient {
 
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
-	}
+		add_action('admin_init', array(&$this,'settings_updated'));
+	} 
 
 	/**
 	 * Create and register setting fields for administration
@@ -156,6 +157,20 @@ class WPChaosClient {
 			case 'text':
 			default:
 				echo '<input name="'.$args['name'].'" type="text" value="'.get_option($args['name']).'" />';
+		}
+	}
+	
+	/**
+	 * This is called on admin_init to check if this plugins options was updated.
+	 */
+	public function settings_updated() {
+		global $pagenow;
+		$on_options_page = ($pagenow == 'options-general.php');
+		$on_plugins_page = (isset($_GET['page']) && $_GET['page'] == $this->menu_page);
+		$just_updated = (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true');
+		
+		if($on_options_page && $on_plugins_page && $just_updated) {
+			do_action('chaos-settings-updated');
 		}
 	}
 

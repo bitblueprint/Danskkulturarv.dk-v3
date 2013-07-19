@@ -14,8 +14,8 @@ Author URI:
 
 class WPChaosSearch {
 
-	const QUERY_KEY_FREETEXT = 'cq';
-	const QUERY_KEY_PAGEINDEX = 'i';
+	const QUERY_KEY_FREETEXT = 'text';
+	const QUERY_KEY_PAGEINDEX = 'pageIndex';
 	public $plugin_dependencies = array(
 		'WPChaosClient' => 'WordPress Chaos Client',
 	);
@@ -34,7 +34,10 @@ class WPChaosSearch {
 		add_filter('wpchaos-config',array(&$this,'settings'));
 
 		add_shortcode( 'chaosresults', array(&$this,'shortcode_searchresults'));
-
+		
+		// Add rewrite rules when activating and when settings update.
+		register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
+		add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
 	}
 
 	/**
@@ -78,6 +81,28 @@ class WPChaosSearch {
 	 */
 	public function register_widgets() {
 	    register_widget( 'WPChaos_Search_Widget' );
+	}
+	
+	public static function get_search_vars() {
+		global $wp_query;
+		return array_merge(array(), $_GET, $wp_query->query_vars);
+	}
+	
+	public static function get_search_var($query_key, $escape = false) {
+		$query_vars = self::get_search_vars();
+		if(array_key_exists($query_key, $query_vars)) {
+			if($escape !== false) {
+				if(function_exists($escape)) {
+					return $escape($query_vars[$query_key]);
+				} else {
+					throw new InvalidArgumentException('The $escape argument must be false or a 1-argument function.');
+				}
+			} else {
+				return $query_vars[$query_key];
+			}
+		} else {
+			return '';
+		}
 	}
 
 	public function get_material_page() {
@@ -128,13 +153,10 @@ class WPChaosSearch {
 	}
 
 	public function get_searchresults($args) {
-
-		if(isset($_GET[self::QUERY_KEY_PAGEINDEX])) {
-			$args['pageindex'] = (int)$_GET[self::QUERY_KEY_PAGEINDEX];
-			$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
-		}
-
-		$query = apply_filters('wpchaos-solr-query', $args['query'], $_GET);
+		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGEINDEX, 'intval');
+		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
+		
+		$query = apply_filters('wpchaos-solr-query', $args['query'], WPChaosSearch::get_search_vars());
 		
 		$serviceResult = WPChaosClient::instance()->Object()->Get(
 			$query,	// Search query
@@ -154,7 +176,7 @@ class WPChaosSearch {
 		<article class="container search-results">
 	    <div class="row">
 		    <div class="span6">
-		    <p>Søgningen på <strong class="blue"><?php echo esc_html($_GET[self::QUERY_KEY_FREETEXT]); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
+		    <p>Søgningen <?php if(isset($_GET[self::QUERY_KEY_FREETEXT])):?>på <strong class="blue"><?php echo esc_html($_GET[self::QUERY_KEY_FREETEXT]); ?></strong><?php endif;?> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
 		    </div>
 		    <div class="span1 pull-right">
 	        <a href="<?php echo add_query_arg(self::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Næste ></a>
@@ -214,13 +236,13 @@ class WPChaosSearch {
 		} else {
 			$page = "";
 		}
-
-		$text = esc_attr(isset($_GET[self::QUERY_KEY_FREETEXT])?$_GET[self::QUERY_KEY_FREETEXT]:'');
+		
+		$freetext = WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr');
 		
 		echo '<form method="GET" action="'.$page.'">'."\n";
 
 		echo '<div class="input-append">'."\n";
-		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$text.'" placeholder="'.$placeholder.'" /><button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
+		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$freetext.'" placeholder="'.$placeholder.'" /><button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
 		echo '</div>'."\n";
 
 		echo '<div class="btn-group pull-right span4">'."\n";
@@ -229,6 +251,26 @@ class WPChaosSearch {
 
 		echo '</form>'."\n";
 	}
+	
+	public function add_rewrite_rules() {
+		if(get_option('wpchaos-searchpage')) {
+			$searchPageID = intval(get_option('wpchaos-searchpage'));
+			$searchPageName = get_page_uri($searchPageID);
+			
+			add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([^/]+)');
+			add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
+			
+			$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
+			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
+			add_rewrite_rule($regex, $redirect, 'top');
+			
+			$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
+			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
+			add_rewrite_rule($regex, $redirect, 'top');
+			
+			flush_rewrite_rules(true);
+		}
+	}
 
 	/**
 	 * Check if dependent plugin is active
@@ -236,7 +278,6 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function check_chaosclient() {
-
 		$plugin = plugin_basename( __FILE__ );
 		$dep = array();
 		if(is_plugin_active($plugin)) {

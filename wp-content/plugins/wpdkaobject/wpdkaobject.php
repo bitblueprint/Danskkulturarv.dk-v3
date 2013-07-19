@@ -83,16 +83,16 @@ class WPDKAObject {
 	
 	public function define_search_filters() {
 		// Free text search.
-		add_filter('wpchaos-solr-query', function($query, $GET) {
+		add_filter('wpchaos-solr-query', function($query, $query_vars) {
 			if($query) {
 				$query = array($query);
 			} else {
 				$query = array();
 			}
 				
-			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $GET)) {
+			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $query_vars)) {
 				// For each known metadata schema, loop and add freetext search on this.
-				$freetext = $GET[WPChaosSearch::QUERY_KEY_FREETEXT];
+				$freetext = $query_vars[WPChaosSearch::QUERY_KEY_FREETEXT];
 				$freetext = WPDKAObject::escapeSolrValue($freetext);
 				$searches = array();
 				foreach(WPDKAObject::$ALL_SCHEMA_GUIDS as $schemaGUID) {
