@@ -75,8 +75,13 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 			echo '</p>';
 		}
 		echo '<p>Allowed attributes:<br>';
-		echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
+		if(count(WPChaosClient::get_chaos_attributes()) > 0) {
+			echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
+		} else {
+			echo 'None';
 		}
+		
+	}
 
 	public function update( $new_instance, $old_instance ) {
 
