@@ -20,6 +20,8 @@
  * @property-read mixed  $var
  */
 class WPChaosObject {
+	
+	const CHAOS_OBJECT_CONSTRUCTION_FILTER = 'chaos-object-constrution';
 
 	/**
 	 * Object retrieved from CHAOS
@@ -34,7 +36,7 @@ class WPChaosObject {
 	 * @param stdClass $chaos_object
 	 */
 	public function __construct(\stdClass $chaos_object) {
-		$this->chaos_object = new \CHAOS\Portal\Client\Data\Object($chaos_object);
+		$this->chaos_object = apply_filters(self::CHAOS_OBJECT_CONSTRUCTION_FILTER, new \CHAOS\Portal\Client\Data\Object($chaos_object));
 	}
 
 	/**
