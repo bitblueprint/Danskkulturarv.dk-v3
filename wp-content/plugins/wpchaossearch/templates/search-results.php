@@ -33,11 +33,16 @@ foreach($objects as $object) :
 ?>
 		<li class="search-object span3">
 			<a class="thumbnail" href="<?php echo $link; ?>">
+				<div class="thumb" style="background-image: url('http://placekitten.com/202/145')">
+					<div class="duration">1:30:22</div>
+				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
 				<div class="organization"><strong class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></strong></div>
 				<p class="date"><?php echo WPChaosClient::get_object()->published; ?></p>
 				<hr>
-				<span class="<?php echo WPChaosClient::get_object()->type; ?>"></span>
+				<div class="media-type-container">
+					<span class="<?php echo WPChaosClient::get_object()->type; ?>"></span>
+				</div>
 			</a>
 		</li>
  <?php endforeach; WPChaosClient::reset_object(); ?>
