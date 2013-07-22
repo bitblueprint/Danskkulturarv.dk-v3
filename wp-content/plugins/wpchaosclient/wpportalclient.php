@@ -5,6 +5,12 @@
  */
 
 use CHAOS\Portal\Client\PortalClient;
+
+/**
+ * WordPress Portal Client that automatically
+ * retrieves and sets the accessPointGUID
+ * stored in the database
+ */
 class WPPortalClient extends PortalClient {
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {

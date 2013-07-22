@@ -1,11 +1,19 @@
 <?php
 /**
- * @package WP Chaos Search
+ * @package WP Chaos Client
  * @version 1.0
  */
 
+/**
+ * WordPress Widget that makes it possible to style
+ * and display one data attribute from a CHAOs object
+ */
 class WPChaosObjectAttrWidget extends WP_Widget {
 
+	/**
+	 * Fields in widget. Defines keys for values
+	 * @var array
+	 */
 	private $fields = array(
 		array(
 			'title' => 'Attribute',
@@ -22,6 +30,9 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 		)
 	);
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		
 		parent::__construct(
@@ -32,35 +43,37 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 
 	}
 
+	/**
+	 * GUI for widget content
+	 * 
+	 * @param  array $args Sidebar arguments
+	 * @param  array $instance Widget values from database
+	 * @return void 
+	 */
 	public function widget( $args, $instance ) {
 		if(WPChaosClient::get_object()) {
 			echo $args['before_widget'];
 			printf($instance['markup'], WPChaosClient::get_object()->$instance['attribute']);
-
-			//echo preg_replace_callback("/\[(\w+)\]/", function($matches) { WPChaosClient::get_object()->$matches[0]}, )
-
 			echo $args['after_widget'];
 		}
 	}
 
 	/**
-	 * Back-end widget form.
-	 *
-	 * @see WP_Widget::form()
-	 *
-	 * @param array $instance Previously saved values from database.
+	 * GUI for widget form in the administration
+	 * 
+	 * @param  array $instance Widget values from database
+	 * @return void           
 	 */
 	public function form( $instance ) {
 
-		// Populate list of attributes (added filters)
-		
+		// Populate list of allowed attributes (added filters)
 		$this->fields[0]['list'] = WPChaosClient::get_chaos_attributes();
 
-		//Set title of widget
+		//Set attribute as title of widget for better UX
 		$title = isset( $instance[ 'attribute' ]) ? ucfirst($instance['attribute']) : "";
 		echo '<input type="hidden" id="'.$this->get_field_id('title').'" value="'.$title.'">';
 
-
+		//Print each field based on its type
 		foreach($this->fields as $field) {
 			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $field['val'];
 			$name = $this->get_field_name( $field['name'] );
@@ -87,8 +100,15 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 			echo '</p>';
 
 		}
-		}
+	}
 
+	/**
+	 * Callback for whenever the widget values should be saved
+	 * 
+	 * @param  array $new_instance New values from the form
+	 * @param  array $old_instance Previously saved values
+	 * @return array               Values to be saved
+	 */
 	public function update( $new_instance, $old_instance ) {
 
 		$instance = array();

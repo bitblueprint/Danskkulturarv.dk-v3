@@ -4,8 +4,16 @@
  * @version 1.0
  */
 
+/**
+ * WordPress Widget that display a search form
+ * to be used with CHAOS
+ */
 class WPChaos_Search_Widget extends WP_Widget {
 
+	/**
+	 * Fields in widget. Defines keys for values
+	 * @var array
+	 */
 	private $fields = array(
 		array(
 			'title' => 'Title',
@@ -17,6 +25,9 @@ class WPChaos_Search_Widget extends WP_Widget {
 		)
 	);
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		parent::__construct(
 			'chaos-search',
@@ -25,6 +36,13 @@ class WPChaos_Search_Widget extends WP_Widget {
 		);
 	}
 
+	/**
+	 * GUI for widget content
+	 * 
+	 * @param  array $args Sidebar arguments
+	 * @param  array $instance Widget values from database
+	 * @return void 
+	 */
 	public function widget( $args, $instance ) {
 		$title = apply_filters( 'widget_title', $instance['title'] );
 
@@ -38,11 +56,10 @@ class WPChaos_Search_Widget extends WP_Widget {
 	}
 
 	/**
-	 * Back-end widget form.
-	 *
-	 * @see WP_Widget::form()
-	 *
-	 * @param array $instance Previously saved values from database.
+	 * GUI for widget form in the administration
+	 * 
+	 * @param  array $instance Widget values from database
+	 * @return void           
 	 */
 	public function form( $instance ) {
 		
@@ -55,6 +72,13 @@ class WPChaos_Search_Widget extends WP_Widget {
 		}
 	}
 
+	/**
+	 * Callback for whenever the widget values should be saved
+	 * 
+	 * @param  array $new_instance New values from the form
+	 * @param  array $old_instance Previously saved values
+	 * @return array               Values to be saved
+	 */
 	public function update( $new_instance, $old_instance ) {
 
 		$instance = array();

@@ -12,10 +12,19 @@ Version: 1.0
 Author URI: 
 */
 
+/**
+ * WordPress Chaos Search enables functionality
+ * to search for and display CHAOS material
+ */
 class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGEINDEX = 'pageIndex';
+
+	/**
+	 * Plugins depending on
+	 * @var array
+	 */
 	public $plugin_dependencies = array(
 		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
 	);
@@ -95,12 +104,22 @@ class WPChaosSearch {
 	public function register_widgets() {
 	    register_widget( 'WPChaos_Search_Widget' );
 	}
-	
+
+	/**
+	 * Get search parameters
+	 * @return array 
+	 */
 	public static function get_search_vars() {
 		global $wp_query;
 		return array_merge(array(), $_GET, $wp_query->query_vars);
 	}
 	
+	/**
+	 * Get a search parameter for a specific key
+	 * @param  string  $query_key 
+	 * @param  boolean $escape    
+	 * @return string             
+	 */
 	public static function get_search_var($query_key, $escape = false) {
 		$query_vars = self::get_search_vars();
 		if(array_key_exists($query_key, $query_vars)) {
@@ -118,6 +137,10 @@ class WPChaosSearch {
 		}
 	}
 
+	/**
+	 * Get template for a search page
+	 * @return void 
+	 */
 	public function get_search_page() {
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-search-page'))) {
@@ -135,7 +158,7 @@ class WPChaosSearch {
 	/**
 	 * Wrap shortcode around search results
 	 * @param  string $args 
-	 * @return [type]       
+	 * @return void       
 	 */
 	public function shortcode_searchresults( $args ) {
 		$args = shortcode_atts( array(
@@ -149,6 +172,11 @@ class WPChaosSearch {
 		return $this->get_searchresults($args);
 	}
 
+	/**
+	 * Get data and include template for search results
+	 * @param  array $args 
+	 * @return void       
+	 */
 	public function get_searchresults($args) {
 		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGEINDEX, 'intval');
 		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
@@ -176,6 +204,11 @@ class WPChaosSearch {
 
 	}
 
+	/**
+	 * Render HTML for search form
+	 * @param  string $placeholder 
+	 * @return void              
+	 */
 	public static function create_search_form($placeholder = "") {
 		if(get_option('wpchaos-searchpage')) {
 			$page = get_permalink(get_option('wpchaos-searchpage'));
@@ -198,11 +231,17 @@ class WPChaosSearch {
 		echo '</form>'."\n";
 	}
 
+	/**
+	 * Add rewrite tags to WordPress installation
+	 */
 	public function add_rewrite_tags() {
 		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([^/]+)');
 		add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
 	}
-	
+
+	/**
+	 * Add rewrite rules to WordPress installation
+	 */
 	public function add_rewrite_rules() {
 		if(get_option('wpchaos-searchpage')) {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
@@ -273,7 +312,7 @@ class WPChaosSearch {
 	}
 
 	/**
-	 * Check if dependent plugin is active
+	 * Check if dependent plugins are active
 	 * 
 	 * @return void 
 	 */

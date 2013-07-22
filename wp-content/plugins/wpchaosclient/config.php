@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package WP Chaos Client
+ * @version 1.0
+ */
 return array(
 	array(
 		/*Sections*/
@@ -24,5 +28,4 @@ return array(
 		)
 	)
 );
-
 //eol

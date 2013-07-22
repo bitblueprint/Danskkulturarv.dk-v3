@@ -15,7 +15,7 @@ Author URI:
 class WPChaosClient {
 
 	/**
-	 * Name for setting section
+	 * Name for setting page
 	 * @var string
 	 */
 	protected $menu_page = 'wpchaos-settings';
@@ -44,10 +44,13 @@ class WPChaosClient {
 	 */
 	public static $attributes;
 
+	/**
+	 * Prefix for filters to be used on WPChaosObject
+	 */
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
 
 	/**
-	 * Construct
+	 * Constructor
 	 */
 	public function __construct() {
 
@@ -67,6 +70,7 @@ class WPChaosClient {
 	 */
 	public function register_settings() {
 
+		//Populate
 		$this->settings = apply_filters('wpchaos-config', include('config.php'));
 
 		foreach($this->settings as $section) {
@@ -149,7 +153,11 @@ class WPChaosClient {
 		
 	}
 
-	function add_widget_areas() {
+	/**
+	 * Register widget areas and widgets in WordPress
+	 * @return  void
+	 */
+	public function add_widget_areas() {
 
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-featured',
@@ -173,7 +181,11 @@ class WPChaosClient {
 		 register_widget( 'WPChaosObjectMultiWidget' );
 	}
 
-
+	/**
+	 * Get list of attributes for the CHAOS objects,
+	 * i.e. the list of registered filters for the WPChaosObject
+	 * @return array
+	 */
 	public static function get_chaos_attributes() {
 		global $wp_filter;
 		if(empty(self::$attributes)) {
@@ -188,6 +200,10 @@ class WPChaosClient {
 		return self::$attributes;
 	}
 
+	/**
+	 * Get data and include template for a single CHAOS object
+	 * @return void 
+	 */
 	public function get_object_page() {
 	//index.php?&org=1&slug=2 => /org/slug/
 	//org&guid
@@ -261,6 +277,7 @@ class WPChaosClient {
 	
 	/**
 	 * This is called on admin_init to check if this plugins options was updated.
+	 * @return void 
 	 */
 	public function settings_updated() {
 		global $pagenow;
@@ -328,8 +345,6 @@ class WPChaosClient {
 		require_once("wpchaosobject.php");
 		require_once("wpchaosobjectattrwidget.php");
 		require_once("wpchaosobjectmultiwidget.php");
-
-
 	}
 
 }
