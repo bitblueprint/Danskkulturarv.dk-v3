@@ -342,7 +342,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	private function load_dependencies() {
-		require_once('widget-search.php');
+		require_once('wpchaossearchwidget.php');
 	}
 
 }
