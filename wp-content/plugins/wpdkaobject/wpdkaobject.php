@@ -15,7 +15,7 @@ Author URI:
 class WPDKAObject {
 
 	public $plugin_dependencies = array(
-		'WPChaosClient' => 'WordPress Chaos Client',
+		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
 	);
 
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
@@ -28,13 +28,16 @@ class WPDKAObject {
 	 */
 	public function __construct() {
 
-		add_action('admin_init',array(&$this,'check_chaosclient'));
+		//add_action('admin_init',array(&$this,'check_chaosclient'));
 
-		// Define the free-text search filter.
-		$this->define_attribute_filters();
+		if($this->check_chaosclient()) {
+			// Define the free-text search filter.
+			$this->define_attribute_filters();
 
-		// Define the free-text search filter.
-		$this->define_search_filters();
+			// Define the free-text search filter.
+			$this->define_search_filters();
+		}
+
 	}
 
 	const TYPE_VIDEO = 'series';
@@ -119,28 +122,23 @@ class WPDKAObject {
 	 * @return void 
 	 */
 	public function check_chaosclient() {
-		$plugin = plugin_basename( __FILE__ );
+		//$plugin = plugin_basename( __FILE__ );
 		$dep = array();
-		if(is_plugin_active($plugin)) {
+		//if(is_plugin_active($plugin)) {
 			foreach($this->plugin_dependencies as $class => $name) {
-				if(!class_exists($class)) {
+				if(!in_array($class,get_option('active_plugins'))) {
 					$dep[] = $name;
-				}	
+				}
 			}
 			if(!empty($dep)) {
-				deactivate_plugins(array($plugin));
-				add_action( 'admin_notices', function() use (&$dep) { $this->deactivate_notice($dep); },10);
+				//deactivate_plugins(array($plugin));
+				add_action( 'admin_notices', function() use (&$dep) { 
+					echo '<div class="error"><p><strong>WordPress DKA Object</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
+				},10);
+				return false;
 			}
-		}
-	}
-
-	/**
-	 * Render admin notice when dependent plugin is inactive
-	 * 
-	 * @return void 
-	 */
-	public function deactivate_notice($classes) {
-		echo '<div class="error"><p>WordPress Chaos Search needs '.implode(',',(array)$classes).' to be activated.</p></div>';
+		//}
+		return true;
 	}
 	
 	public static function escapeSolrValue($string)

@@ -17,7 +17,7 @@ class WPChaosSearch {
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGEINDEX = 'pageIndex';
 	public $plugin_dependencies = array(
-		'WPChaosClient' => 'WordPress Chaos Client',
+		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
 	);
 
 	/**
@@ -25,22 +25,27 @@ class WPChaosSearch {
 	 */
 	public function __construct() {
 
-		$this->load_dependencies();
+		if($this->check_chaosclient()) {
 
-		add_action('admin_init',array(&$this,'check_chaosclient'));
-		add_action('widgets_init', array(&$this,'register_widgets'));
-		add_action('template_redirect', array(&$this,'get_search_page'));
+			$this->load_dependencies();
 
-		add_filter('wpchaos-config',array(&$this,'settings'));
+			add_action('admin_init',array(&$this,'check_chaosclient'));
+			add_action('widgets_init', array(&$this,'register_widgets'));
+			add_action('template_redirect', array(&$this,'get_search_page'));
 
-		add_shortcode('chaosresults', array(&$this,'shortcode_searchresults'));
-		
-		// Add rewrite rules when activating and when settings update.
-		register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
-		add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
-		
-		// Rewrite tags should always be added.
-		add_action('init', array(&$this, 'add_rewrite_tags'));
+			add_filter('wpchaos-config',array(&$this,'settings'));
+
+			add_shortcode('chaosresults', array(&$this,'shortcode_searchresults'));
+			
+			// Add rewrite rules when activating and when settings update.
+			register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
+			add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
+			
+			// Rewrite tags should always be added.
+			add_action('init', array(&$this, 'add_rewrite_tags'));
+
+		}
+
 	}
 
 	/**
@@ -216,28 +221,23 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function check_chaosclient() {
-		$plugin = plugin_basename( __FILE__ );
+		//$plugin = plugin_basename( __FILE__ );
 		$dep = array();
-		if(is_plugin_active($plugin)) {
+		//if(is_plugin_active($plugin)) {
 			foreach($this->plugin_dependencies as $class => $name) {
-				if(!class_exists($class)) {
+				if(!in_array($class,get_option('active_plugins'))) {
 					$dep[] = $name;
-				}	
+				}
 			}
 			if(!empty($dep)) {
-				deactivate_plugins(array($plugin));
-				add_action( 'admin_notices', function() use (&$dep) { $this->deactivate_notice($dep); },10);
+				//deactivate_plugins(array($plugin));
+				add_action( 'admin_notices', function() use (&$dep) { 
+					echo '<div class="error"><p><strong>WordPress DKA Object</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
+				},10);
+				return false;
 			}
-		}
-	}
-
-	/**
-	 * Render admin notice when dependent plugin is inactive
-	 * 
-	 * @return void 
-	 */
-	public function deactivate_notice($classes) {
-		echo '<div class="error"><p>WordPress Chaos Search needs '.implode(',',(array)$classes).' to be activated.</p></div>';
+		//}
+		return true;
 	}
 
 	/**
