@@ -47,7 +47,7 @@
 			</div>
 		</div><!-- end navigation -->
 		<!-- start search -->
-		<div class="container search"><?php dynamic_sidebar( 'Top' ); ?></div>
+		<div class="container search"><div class="row"><?php dynamic_sidebar( 'Top' ); ?></div></div>
 		<!-- end search -->
 
 		<article class="container">

@@ -12,7 +12,7 @@
 <!-- sticky footer -->
 <footer>
 	<div class="container text-center">
-		<p><?php bloginfo( 'name' ); ?> - <?php bloginfo( 'description' ); ?></p>
+		<div class="bloginfo-footer"><?php bloginfo( 'name' ); ?> <span>- <?php bloginfo( 'description' ); ?></span></div>
 		
 <?php 
     wp_nav_menu( array(
@@ -25,7 +25,7 @@
     );
 ?>
 
-		<p>Copyright &#169; 2012-<?php echo date('Y'); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"><?php bloginfo( 'name' ); ?></a></p>
+		<div class="copyright">Copyright &#169; 2012-<?php echo date('Y'); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"><?php bloginfo( 'name' ); ?></a></div>
 	</div>
 </footer>
 

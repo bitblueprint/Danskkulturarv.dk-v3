@@ -223,13 +223,13 @@ class WPChaosSearch {
 		
 		$freetext = WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr');
 		
-		echo '<form method="GET" action="'.$page.'">'."\n";
+		echo '<form method="GET" action="'.$page.'" class="span12">'."\n";
 
 		echo '<div class="input-append">'."\n";
 		echo '<input class="span7" id="appendedInputButton" type="text" name="'.self::QUERY_KEY_FREETEXT.'" value="'.$freetext.'" placeholder="'.$placeholder.'" /><button type="submit" class="btn btn-large btn-search">Søg</button>'."\n";
 		echo '</div>'."\n";
 
-		echo '<div class="btn-group pull-right span4">'."\n";
+		echo '<div class="btn-group span4 pull-right btn-advanced-search-container">'."\n";
 		echo '<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning</button>'."\n";
 		echo '</div>'."\n";
 
