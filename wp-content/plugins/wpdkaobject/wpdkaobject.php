@@ -159,6 +159,7 @@ class WPDKAObject {
 				
 				// TODO: Set this metadata schema, when it's created in the service.
 				//var_dump(htmlentities($metadataXML->asXML()));
+				// TODO: Check that the XML validates against the schema.
 				/*
 				WPChaosClient::instance()->Metadata()->Set(
 					$objectGUID,
