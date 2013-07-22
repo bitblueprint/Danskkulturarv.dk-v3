@@ -46,18 +46,19 @@ class WPChaosSearch {
 
 			add_shortcode('chaosresults', array(&$this,'shortcode_searchresults'));
 			
-			// Add rewrite rules when activating and when settings update.
-			register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
-			add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
-			if(WP_DEBUG) {
-				add_action('admin_init', array(&$this, 'add_rewrite_rules'));
-			}
+			// Rewrite tags and rules should always be added.
+			add_action('init', array(&$this, 'add_rewrite_tags'));
+			add_action('init', array(&$this, 'add_rewrite_rules'));
 			
+			// Add some custom rewrite rules.
 			add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
 			
-			// Rewrite tags should always be added.
-			add_action('init', array(&$this, 'add_rewrite_tags'));
-
+			// Add rewrite rules when activating and when settings update.
+			register_activation_hook(__FILE__, array(&$this, 'flush_rewrite_rules'));
+			add_action('chaos-settings-updated', array(&$this, 'flush_rewrite_rules'));
+			if(WP_DEBUG) {
+				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
+			}
 		}
 
 	}
@@ -254,8 +255,6 @@ class WPChaosSearch {
 			$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
 			add_rewrite_rule($regex, $redirect, 'top');
-			
-			$this->maybe_rewrite_rules();
 		}
 	}
 	
@@ -294,21 +293,26 @@ class WPChaosSearch {
 	 * if 48hrs has passed. Set WP_DEBUG true to make this work.
 	 * @see http://codex.wordpress.org/Function_Reference/flush_rewrite_rules
 	 */
-	public function maybe_rewrite_rules() {
+	public function maybe_flush_rewrite_rules() {
 		$ver = filemtime( __FILE__ ); // Get the file time for this file as the version number
 		$defaults = array( 'version' => 0, 'time' => time() );
 		$r = wp_parse_args( get_option( __CLASS__ . '_flush', array() ), $defaults );
 		
 		if ( $r['version'] != $ver || $r['time'] + 172800 < time() ) { // Flush if ver changes or if 48hrs has passed.
-			flush_rewrite_rules(true);
+			$this->flush_rewrite_rules();
 			if(WP_DEBUG) {
-				echo( 'Rewrite rules flushed ..' );
+				add_action( 'admin_notices', function() { 
+					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
+				}, 10);
 			}
-			// trace( 'flushed' );
 			$args = array( 'version' => $ver, 'time' => time() );
 			if ( ! update_option( __CLASS__ . '_flush', $args ) )
 				add_option( __CLASS__ . '_flush', $args );
 		}
+	}
+	
+	public function flush_rewrite_rules() {
+		flush_rewrite_rules(true);
 	}
 
 	/**
