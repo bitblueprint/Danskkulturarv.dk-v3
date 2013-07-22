@@ -38,13 +38,13 @@ class WPChaosSearch {
 
 			$this->load_dependencies();
 
-			add_action('admin_init',array(&$this,'check_chaosclient'));
-			add_action('widgets_init', array(&$this,'register_widgets'));
-			add_action('template_redirect', array(&$this,'get_search_page'));
+			add_action('admin_init', array(&$this, 'check_chaosclient'));
+			add_action('widgets_init', array(&$this, 'register_widgets'));
+			add_action('template_redirect', array(&$this, 'get_search_page'));
 
-			add_filter('wpchaos-config',array(&$this,'settings'));
+			add_filter('wpchaos-config', array(&$this, 'settings'));
 
-			add_shortcode('chaosresults', array(&$this,'shortcode_searchresults'));
+			add_shortcode('chaosresults', array(&$this, 'shortcode_searchresults'));
 			
 			// Rewrite tags and rules should always be added.
 			add_action('init', array(&$this, 'add_rewrite_tags'));
@@ -139,7 +139,7 @@ class WPChaosSearch {
 	}
 
 	/**
-	 * Get template for a search page
+	 * Get (and print) template for a search page
 	 * @return void 
 	 */
 	public function get_search_page() {
@@ -170,15 +170,15 @@ class WPChaosSearch {
 			'accesspoint' => null
 		), $args );
 
-		return $this->get_searchresults($args);
+		return $this->generate_searchresults($args);
 	}
 
 	/**
-	 * Get data and include template for search results
+	 * Generate data and include template for search results
 	 * @param  array $args 
-	 * @return void       
+	 * @return string The markup generated.
 	 */
-	public function get_searchresults($args) {
+	public function generate_searchresults($args) {
 		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGEINDEX, 'intval');
 		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
 		
@@ -196,13 +196,17 @@ class WPChaosSearch {
 		);
 		
 		$objects = $serviceResult->MCM()->Results();
+		
+		// Buffering the output as this method is returning markup - not printing it.
+		ob_start();
 		//Look in theme dir and include if found
 		if(locate_template('chaos-search-results.php', true) != "") {		
 			//Include from plugin
 		} else {
 			include(plugin_dir_path(__FILE__)."/templates/search-results.php");
 		}
-
+		// Return the markup generated in the template and clean the output buffer.
+		return ob_get_clean();
 	}
 
 	/**
