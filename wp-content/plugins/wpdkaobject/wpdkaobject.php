@@ -12,9 +12,15 @@ Version: 1.0
 Author URI: 
 */
 
+/**
+ * Class that manages CHAOS data specific to
+ * Dansk Kulturarv and registers attributes
+ * for WPChaosObject
+ */
 class WPDKAObject {
 
-	public $plugin_dependencies = array(
+	//List of plugins depending on
+	private $plugin_dependencies = array(
 		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
 	);
 
@@ -44,6 +50,12 @@ class WPDKAObject {
 	const TYPE_AUDIO = 'audio';
 	const TYPE_UNKNOWN = 'unknown';
 
+	/**
+	 * Determine type of a CHAOS object based
+	 * on the included file formats
+	 * @param  WPChaosObject $object 
+	 * @return string
+	 */
 	public static function determine_type($object) {
 		
 		foreach($object->getObject()->Files as $file) {
@@ -52,7 +64,12 @@ class WPDKAObject {
 		}
 		return self::TYPE_UNKNOWN;
 	}
-	
+
+	/**
+	 * Define attributes to be used on a WPChaosObject
+	 * with XML content
+	 * @return void 
+	 */
 	public function define_attribute_filters() {
 		// Registering namespaces.
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dka', 'http://www.danskkulturarv.dk/DKA.xsd');
@@ -91,7 +108,11 @@ class WPDKAObject {
 			return $value = WPDKAObject::determine_type($object);
 		}, 10, 2);
 	}
-	
+
+	/**
+	 * Convert search parameters to SOLR query
+	 * @return string 
+	 */
 	public function define_search_filters() {
 		// Free text search.
 		add_filter('wpchaos-solr-query', function($query, $query_vars) {
@@ -117,7 +138,7 @@ class WPDKAObject {
 	}
 
 	/**
-	 * Check if dependent plugin is active
+	 * Check if dependent plugins are active
 	 * 
 	 * @return void 
 	 */
@@ -140,7 +161,12 @@ class WPDKAObject {
 		//}
 		return true;
 	}
-	
+
+	/**
+	 * Escape characters to be used in SOLR
+	 * @param  string $string 
+	 * @return string         
+	 */
 	public static function escapeSolrValue($string)
 	{
 		$match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');

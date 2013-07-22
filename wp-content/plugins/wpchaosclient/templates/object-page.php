@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package WP Chaos Client
+ * @version 1.0
+ */
 get_header(); ?>
 
 <article class="container single-material">

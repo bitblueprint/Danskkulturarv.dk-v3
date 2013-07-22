@@ -1,4 +1,8 @@
 <?php
+/**
+ * @package WP Chaos Search
+ * @version 1.0
+ */
 get_header(); ?>
 
 	<div id="primary" class="site-content">

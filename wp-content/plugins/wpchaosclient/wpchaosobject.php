@@ -4,7 +4,6 @@
  * @version 1.0
  */
 
-
 /**
  *
  * Class for CHAOS material

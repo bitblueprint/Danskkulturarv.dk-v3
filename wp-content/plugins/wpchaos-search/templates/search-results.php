@@ -1,3 +1,9 @@
+<?php
+/**
+ * @package WP Chaos Search
+ * @version 1.0
+ */
+?>
 <article class="container search-results">
 	<div class="row">
 		<div class="span6">

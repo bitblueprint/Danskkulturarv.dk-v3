@@ -1,11 +1,19 @@
 <?php
 /**
- * @package WP Chaos Search
+ * @package WP Chaos Client
  * @version 1.0
  */
 
+/**
+ * WordPress Widget that makes it possible to style
+ * and display several data from a CHAOS object
+ */
 class WPChaosObjectMultiWidget extends WP_Widget {
 
+	/**
+	 * Fields in widget. Defines keys for values
+	 * @var array
+	 */
 	private $fields = array(
 		array(
 			'title' => 'Markup',
@@ -15,6 +23,9 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		)
 	);
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		
 		parent::__construct(
@@ -25,10 +36,19 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 
 	}
 
+	/**
+	 * GUI for widget content
+	 * 
+	 * @param  array $args Sidebar arguments
+	 * @param  array $instance Widget values from database
+	 * @return void 
+	 */
 	public function widget( $args, $instance ) {
 		if(WPChaosClient::get_object()) {
 			echo $args['before_widget'];
 			
+			//Find all occurences of [foo] in the markup and replace them
+			//with a foo method on the current CHAOS object.
 			echo preg_replace_callback("/\[(\w+)\]/", 
 				function($matches) {
 
@@ -41,14 +61,14 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	}
 
 	/**
-	 * Back-end widget form.
-	 *
-	 * @see WP_Widget::form()
-	 *
-	 * @param array $instance Previously saved values from database.
+	 * GUI for widget form in the administration
+	 * 
+	 * @param  array $instance Widget values from database
+	 * @return void           
 	 */
 	public function form( $instance ) {
 
+		//Print each field based on its type
 		foreach($this->fields as $field) {
 			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $field['val'];
 			$name = $this->get_field_name( $field['name'] );
@@ -75,6 +95,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 			echo '</p>';
 		}
 		echo '<p>Allowed attributes:<br>';
+		//List the attribute methods defined by WPChaosClient and wrap them with [].
 		if(count(WPChaosClient::get_chaos_attributes()) > 0) {
 			echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
 		} else {
@@ -83,6 +104,13 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		
 	}
 
+	/**
+	 * Callback for whenever the widget values should be saved
+	 * 
+	 * @param  array $new_instance New values from the form
+	 * @param  array $old_instance Previously saved values
+	 * @return array               Values to be saved
+	 */
 	public function update( $new_instance, $old_instance ) {
 
 		$instance = array();
