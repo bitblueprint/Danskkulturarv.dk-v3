@@ -16,3 +16,4 @@ sitemap.xml.gz
 .project
 .settings/
 wp-content/plugins/rewrite-rules-inspector
+.htaccess

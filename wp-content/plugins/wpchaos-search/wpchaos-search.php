@@ -40,6 +40,11 @@ class WPChaosSearch {
 			// Add rewrite rules when activating and when settings update.
 			register_activation_hook(__FILE__, array(&$this, 'add_rewrite_rules'));
 			add_action('chaos-settings-updated', array(&$this, 'add_rewrite_rules'));
+			if(WP_DEBUG) {
+				add_action('admin_init', array(&$this, 'add_rewrite_rules'));
+			}
+			
+			add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
 			
 			// Rewrite tags should always be added.
 			add_action('init', array(&$this, 'add_rewrite_tags'));
@@ -211,7 +216,59 @@ class WPChaosSearch {
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
 			add_rewrite_rule($regex, $redirect, 'top');
 			
+			$this->maybe_rewrite_rules();
+		}
+	}
+	
+	public function custom_mod_rewrite_rules($rules) {
+		// Calculating $home_root - just as in wp-includes/rewrite.php:1640
+		$home_root = parse_url(home_url());
+		if ( isset( $home_root['path'] ) )
+			$home_root = trailingslashit($home_root['path']);
+		else
+			$home_root = '/';
+		
+		$custom_rules = array();
+		$custom_rules[] = "# Custom redirections for search.";
+		$custom_rules[] = "<IfModule mod_rewrite.c>";
+		$custom_rules[] = "RewriteEngine On";
+		$custom_rules[] = "RewriteBase $home_root";
+		
+		$custom_rules[] = ''; // Space is nice ..
+		$custom_rules[] = '# Redirecting the ?text=<?> to search/<?>';
+		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)text=([^&]+)&?(.*)';
+		$custom_rules[] = 'RewriteRule ^search/? search/%2/?%1%3 [L,R=302]';
+
+		$custom_rules[] = ''; // Space is nice ..
+		$custom_rules[] = '# Redirecting the ?pageIndex=<?> to search/.../<?>';
+		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)pageIndex=([^&]+)&?(.*)';
+		$custom_rules[] = 'RewriteRule ^search/([^/]*)/? search/$1/%2/?%1%3 [L,R=302]';
+		
+		$custom_rules[] = "</IfModule>";
+		
+		$rules = implode("\n", $custom_rules) . "\n\n" . $rules;
+		return $rules;
+	}
+	
+	/**
+	 * A method that flushes the rewrite rules when this file is changed or
+	 * if 48hrs has passed. Set WP_DEBUG true to make this work.
+	 * @see http://codex.wordpress.org/Function_Reference/flush_rewrite_rules
+	 */
+	public function maybe_rewrite_rules() {
+		$ver = filemtime( __FILE__ ); // Get the file time for this file as the version number
+		$defaults = array( 'version' => 0, 'time' => time() );
+		$r = wp_parse_args( get_option( __CLASS__ . '_flush', array() ), $defaults );
+		
+		if ( $r['version'] != $ver || $r['time'] + 172800 < time() ) { // Flush if ver changes or if 48hrs has passed.
 			flush_rewrite_rules(true);
+			if(WP_DEBUG) {
+				echo( 'Rewrite rules flushed ..' );
+			}
+			// trace( 'flushed' );
+			$args = array( 'version' => $ver, 'time' => time() );
+			if ( ! update_option( __CLASS__ . '_flush', $args ) )
+				add_option( __CLASS__ . '_flush', $args );
 		}
 	}
 
