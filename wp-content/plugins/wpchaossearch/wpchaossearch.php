@@ -144,7 +144,7 @@ class WPChaosSearch {
 	 */
 	public function get_search_page() {
 		//Include template for search results
-		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-search-page'))) {
+		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
 			//Look in theme dir and include if found
 			if(locate_template('chaos-full-width.php', true) != "") {
 			
