@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.danskkulturarv.dk/DKA-Crowd.xsd" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkac="http://www.danskkulturarv.dk/DKA-Crowd.xsd">
+    <annotation>
+    	<documentation>This metadata schema validates data contributed by the crowd.</documentation></annotation>
+
+
+
+    <element name="DKACrowd">
+    	<complexType>
+    		<sequence>
+    			<element name="Views" type="unsignedInt">
+    				<annotation>
+    					<documentation>The number of views the object has got on the frontend.</documentation>
+    				</annotation></element>
+    			<element name="Shares" type="unsignedInt">
+    				<annotation>
+    					<documentation>The number of object shares on the frontend (facebook/twitter/etc.)</documentation>
+    				</annotation></element>
+    			<element name="Likes" type="unsignedInt">
+    				<annotation>
+    					<documentation>The number of likes the object has received on the frontend.</documentation>
+    				</annotation></element>
+    			<element name="Ratings" type="unsignedInt">
+    				<annotation>
+    					<documentation>The number of ratings the object has received on the frontend.</documentation>
+    				</annotation></element>
+    			<element name="AccumulatedRate" type="unsignedInt">
+    				<annotation>
+    					<documentation>The accumulated rating the object has received on the frontend, devide this by Ratings to get the mean.</documentation>
+    				</annotation></element>
+    			<element name="Slug" type="string">
+    				<annotation>
+    					<documentation>The slug to use on the frontend. Normally the title, lowercased and dashed.</documentation>
+    				</annotation></element>
+    			<element name="ShortSlug" type="string" maxOccurs="1"
+    				minOccurs="0">
+                    <annotation>
+                    	<documentation>A short alphanummeric string used for URL shortners.</documentation>
+                    </annotation>
+    			</element>
+    			<element name="Tags">
+                    <annotation>
+                    	<documentation>Tags contributed by users.</documentation>
+                    </annotation>
+                    <complexType>
+    					<sequence>
+    						<element name="Tag" type="string"
+    							maxOccurs="unbounded" minOccurs="0">
+                                <annotation>
+                                	<documentation>A single lowercased tag.</documentation>
+                                </annotation>
+    						</element>
+    					</sequence>
+    				</complexType>
+    			</element>
+    		</sequence>
+    	</complexType>
+    </element>
+</schema>

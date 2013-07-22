@@ -26,6 +26,8 @@ class WPDKAObject {
 
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
+	const DKA_CROWD_SCHEMA_GUID = '';
+	const DKA_CROWD_LANGUAGE = 'da';
 	const FREETEXT_LANGUAGE = 'da';
 	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
 
@@ -42,6 +44,9 @@ class WPDKAObject {
 
 			// Define the free-text search filter.
 			$this->define_search_filters();
+			
+			// Define a filter for object creation.
+			$this->define_object_construction_filters();
 		}
 
 	}
@@ -135,6 +140,88 @@ class WPDKAObject {
 				
 			return implode("+AND+", $query);
 		}, 10, 2);
+	}
+	
+	public function define_object_construction_filters() {
+		add_filter(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_FILTER, function(\CHAOS\Portal\Client\Data\Object $object) {
+			if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
+				// The object has not been extended with the crowd matadata schema.
+				$objectGUID = $object->getObject()->GUID;
+				$metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkac:DKACrowd xmlns:dkac='http://www.danskkulturarv.dk/DKA.crowd.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'></dkac:DKACrowd>");
+				//$metadataXML->registerXPathNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.crowd.xsd');
+				$metadataXML->addChild('Views', '0');
+				$metadataXML->addChild('Shares', '0');
+				$metadataXML->addChild('Likes', '0');
+				$metadataXML->addChild('Ratings', '0');
+				$metadataXML->addChild('AccumulatedRate', '0');
+				$metadataXML->addChild('Slug', WPDKAObject::generateSlug($object));
+				$metadataXML->addChild('Tags');
+				
+				// TODO: Set this metadata schema, when it's created in the service.
+				//var_dump(htmlentities($metadataXML->asXML()));
+				/*
+				WPChaosClient::instance()->Metadata()->Set(
+					$objectGUID,
+					WPDKAObject::DKA_CROWD_SCHEMA_GUID,
+					WPDKAObject::DKA_CROWD_LANGUAGE,
+					null,
+					$metadataXML
+				);
+				*/
+			}
+			return $object;
+		}, 10, 1);
+	}
+	
+	/**
+	 * Generate a slug from a chaos object.
+	 * @param \CHAOS\Portal\Client\Data\Object $object The object to generate the slug from.
+	 * @return string The slug generated - prepended with a nummeric postfix to prevent douplicates.
+	 */
+	public static function generateSlug(\CHAOS\Portal\Client\Data\Object $object) {
+		$title = apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.'title', "", $object);
+		
+		$postfix = 0;
+		$slug_base = sanitize_title_with_dashes($title);
+		
+		// Check if this results in dublicates.
+		do {
+			if($postfix == 0) {
+				$slug = $slug_base; // Not needed
+			} else {
+				$slug = "$slug_base-$postfix";
+			}
+			$postfix++; // Try the next
+		} while(self::getObjectFromSlug($slug) != null); // Until no object is returned.
+		
+		return $slug;
+	}
+	
+	/**
+	 * Gets an object from the CHAOS Service from an alphanummeric, lowercase slug.
+	 * @param string $slug The slug to search for.
+	 * @throws \RuntimeException If an error occurs in the service.
+	 * @return NULL|\CHAOS\Portal\Client\Data\Object The object matching the slug.
+	 */
+	public static function getObjectFromSlug($slug) {
+		// TODO: Use this instead, when DKA-Slug is added to the index.
+		// $response = WPChaosClient::instance()->Object()->Get("DKA-Slug:'$slug'");
+		
+		$response = WPChaosClient::instance()->Object()->GetSearchSchema($slug, self::DKA_CROWD_SCHEMA_GUID, self::DKA_CROWD_LANGUAGE, null, 0, 1);
+		if(!$response->WasSuccess()) {
+			throw new \RuntimeException("Couldn't get object from slug: ".$response->Error()->Message());
+		} elseif (!$response->MCM()->WasSuccess()) {
+			throw new \RuntimeException("Couldn't get object from slug: ".$response->MCM()->Error()->Message());
+		} else {
+			$count = $response->MCM()->TotalCount();
+			if($count == 0) {
+				return null;
+			} elseif ($count > 1) {
+				warn("CHAOS returned more than one ($count) object for this slug: ". htmlentities($slug));
+			}
+			$result = $response->MCM()->Results();
+			return new \CHAOS\Portal\Client\Data\Object($result[0]);
+		}
 	}
 
 	/**
