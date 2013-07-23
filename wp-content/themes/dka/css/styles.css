@@ -205,8 +205,8 @@ textarea {
 }
 body {
   margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
   line-height: 20px;
   color: #333333;
   background-color: #ffffff;
@@ -892,7 +892,7 @@ p {
 }
 .lead {
   margin-bottom: 20px;
-  font-size: 21px;
+  font-size: 19.5px;
   font-weight: 200;
   line-height: 30px;
 }
@@ -981,34 +981,34 @@ h3 {
   line-height: 40px;
 }
 h1 {
-  font-size: 38.5px;
+  font-size: 35.75px;
 }
 h2 {
-  font-size: 31.5px;
+  font-size: 29.25px;
 }
 h3 {
-  font-size: 24.5px;
+  font-size: 22.75px;
 }
 h4 {
-  font-size: 17.5px;
+  font-size: 16.25px;
 }
 h5 {
-  font-size: 14px;
+  font-size: 13px;
 }
 h6 {
-  font-size: 11.9px;
+  font-size: 11.049999999999999px;
 }
 h1 small {
-  font-size: 24.5px;
+  font-size: 22.75px;
 }
 h2 small {
-  font-size: 17.5px;
+  font-size: 16.25px;
 }
 h3 small {
-  font-size: 14px;
+  font-size: 13px;
 }
 h4 small {
-  font-size: 14px;
+  font-size: 13px;
 }
 .page-header {
   padding-bottom: 9px;
@@ -1117,7 +1117,7 @@ blockquote {
 }
 blockquote p {
   margin-bottom: 0;
-  font-size: 17.5px;
+  font-size: 16.25px;
   font-weight: 300;
   line-height: 1.25;
 }
@@ -1162,7 +1162,7 @@ code,
 pre {
   padding: 0 3px 2px;
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: #333333;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1179,7 +1179,7 @@ pre {
   display: block;
   padding: 9.5px;
   margin: 0 0 10px;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 20px;
   word-break: break-all;
   word-wrap: break-word;
@@ -1220,7 +1220,7 @@ legend {
   width: 100%;
   padding: 0;
   margin-bottom: 20px;
-  font-size: 21px;
+  font-size: 19.5px;
   line-height: 40px;
   color: #333333;
   border: 0;
@@ -1235,7 +1235,7 @@ input,
 button,
 select,
 textarea {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: normal;
   line-height: 20px;
 }
@@ -1243,7 +1243,7 @@ input,
 button,
 select,
 textarea {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 label {
   display: block;
@@ -1270,7 +1270,7 @@ input[type="color"],
   height: 20px;
   padding: 4px 6px;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
   color: #555555;
   -webkit-border-radius: 3px;
@@ -2019,7 +2019,7 @@ select:focus:invalid:focus {
 .input-prepend .dropdown-menu,
 .input-append .popover,
 .input-prepend .popover {
-  font-size: 14px;
+  font-size: 13px;
 }
 .input-append input,
 .input-prepend input,
@@ -2050,7 +2050,7 @@ select:focus:invalid:focus {
   height: 20px;
   min-width: 16px;
   padding: 4px 5px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: normal;
   line-height: 20px;
   text-align: center;
@@ -3283,7 +3283,7 @@ button.close {
   *zoom: 1;
   padding: 4px 12px;
   margin-bottom: 0;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
   text-align: center;
   vertical-align: middle;
@@ -3384,7 +3384,7 @@ button.close {
 }
 .btn-large {
   padding: 11px 19px;
-  font-size: 17.5px;
+  font-size: 16.25px;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
@@ -3395,7 +3395,7 @@ button.close {
 }
 .btn-small {
   padding: 2px 10px;
-  font-size: 11.9px;
+  font-size: 11.049999999999999px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -3410,7 +3410,7 @@ button.close {
 }
 .btn-mini {
   padding: 0 6px;
-  font-size: 10.5px;
+  font-size: 9.75px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -3812,16 +3812,16 @@ input[type="submit"].btn.btn-mini {
 .btn-group > .btn,
 .btn-group > .dropdown-menu,
 .btn-group > .popover {
-  font-size: 14px;
+  font-size: 13px;
 }
 .btn-group > .btn-mini {
-  font-size: 10.5px;
+  font-size: 9.75px;
 }
 .btn-group > .btn-small {
-  font-size: 11.9px;
+  font-size: 11.049999999999999px;
 }
 .btn-group > .btn-large {
-  font-size: 17.5px;
+  font-size: 16.25px;
 }
 .btn-group > .btn:first-child {
   margin-left: 0;
@@ -5079,7 +5079,7 @@ input[type="submit"].btn.btn-mini {
 .pagination-large ul > li > a,
 .pagination-large ul > li > span {
   padding: 11px 19px;
-  font-size: 17.5px;
+  font-size: 16.25px;
 }
 .pagination-large ul > li:first-child > a,
 .pagination-large ul > li:first-child > span {
@@ -5124,12 +5124,12 @@ input[type="submit"].btn.btn-mini {
 .pagination-small ul > li > a,
 .pagination-small ul > li > span {
   padding: 2px 10px;
-  font-size: 11.9px;
+  font-size: 11.049999999999999px;
 }
 .pagination-mini ul > li > a,
 .pagination-mini ul > li > span {
   padding: 0 6px;
-  font-size: 10.5px;
+  font-size: 9.75px;
 }
 .pager {
   margin: 20px 0;
@@ -5600,7 +5600,7 @@ a.thumbnail:focus {
 .badge {
   display: inline-block;
   padding: 2px 4px;
-  font-size: 11.844px;
+  font-size: 10.998px;
   font-weight: bold;
   line-height: 14px;
   color: #ffffff;
@@ -7912,8 +7912,11 @@ h2 {
   font-size: 1.2em;
   line-height: 1.4em;
 }
-> .row {
-  margin-left: 0;
+.container.single-material > .row {
+  margin: 20px 0;
+}
+.container.single-material .span3 {
+  width: 200px;
 }
 /*
 @spriteGrid: 26px; // 16ps sprite + 10px padding on the spritesheet
@@ -8265,11 +8268,24 @@ footer .copyright a {
   
 }
 @media (max-width: 767px) {
-  
+  .container.single-material .span3 {
+    width: 100%;
+    margin-top: 20px;
+  }
+  footer {
+    margin-left: -20px;
+    margin-right: -20px;
+  }
 }
 @media (min-width: 768px) and (max-width: 979px) {
   .btn-advanced-search-container {
     width: 210px;
+  }
+  .container.single-material > .row {
+    margin: 20px 0;
+  }
+  .container.single-material .span3 {
+    width: 140px;
   }
 }
 @media (min-width: 1200px) {
@@ -8280,7 +8296,10 @@ footer .copyright a {
   	margin-left: 0 !important;
   	}
   */
-  > .row {
-    margin-left: 0;
+  .container.single-material > .row {
+    margin: 20px 0;
+  }
+  .container.single-material .span3 {
+    width: 240px;
   }
 }
