@@ -112,7 +112,14 @@ class WPChaosSearch {
 	 */
 	public static function get_search_vars() {
 		global $wp_query;
-		return array_merge(array(), $_GET, $wp_query->query_vars);
+		// Clone the query vars
+		$variables = array_merge(array(), $wp_query->query_vars);
+		foreach($variables as $k => &$v) {
+			if(gettype($v) == 'string') {
+				$v = urldecode($v);
+			}
+		}
+		return array_merge(array(), $_GET, $variables);
 	}
 	
 	/**
@@ -240,7 +247,7 @@ class WPChaosSearch {
 	 * Add rewrite tags to WordPress installation
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([^/]+)');
+		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([\w%+]+)');
 		add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
 	}
 
@@ -252,11 +259,13 @@ class WPChaosSearch {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
 			
-			$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
+			//$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
+			$regex = sprintf('%s/(%s)/?$', $searchPageName, '[\w%+]+');
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
 			add_rewrite_rule($regex, $redirect, 'top');
 			
-			$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
+			//$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
+			$regex = sprintf('%s/(%s)/(\d+)/?$', $searchPageName, '[\w%+]+');
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
 			add_rewrite_rule($regex, $redirect, 'top');
 		}
@@ -277,14 +286,16 @@ class WPChaosSearch {
 		$custom_rules[] = "RewriteBase $home_root";
 		
 		$custom_rules[] = ''; // Space is nice ..
-		$custom_rules[] = '# Redirecting the ?text=<?> to search/<?>';
-		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)text=([^&]+)&?(.*)';
-		$custom_rules[] = 'RewriteRule ^search/? search/%2/?%1%3 [L,R=302]';
+		// Redirecting the ?text={?} to search/{?}
+		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)text=([^&]*)&?(.*)';
+		$custom_rules[] = 'RewriteRule ^search/? search/%2/?%1%3 [L,NE,R=302]';
 
 		$custom_rules[] = ''; // Space is nice ..
-		$custom_rules[] = '# Redirecting the ?pageIndex=<?> to search/.../<?>';
-		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)pageIndex=([^&]+)&?(.*)';
-		$custom_rules[] = 'RewriteRule ^search/([^/]*)/? search/$1/%2/?%1%3 [L,R=302]';
+		// Redirecting the ?pageIndex={?} to search/.../{?}
+		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)pageIndex=([^&]*)&?(.*)';
+		$custom_rules[] = 'RewriteRule ^search/([^/]*)/? search/$1/%2/?%1%3 [L,NE,R=302]';
+		
+		// TODO: Check if ([^/]*) is okay when searching on something with "/" in the freetext.
 		
 		$custom_rules[] = "</IfModule>";
 		
