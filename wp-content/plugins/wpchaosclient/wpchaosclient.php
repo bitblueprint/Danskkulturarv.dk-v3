@@ -239,7 +239,7 @@ class WPChaosClient {
 			//Set up object and include template
 			} else {
 				$objects = $serviceResult->MCM()->Results();
-				$object = $objects[0];
+				$object = new WPChaosObject($objects[0]);
 				self::set_object($object);
 				$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
 			}

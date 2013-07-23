@@ -19,16 +19,9 @@
  * @property-read array  $tags 			Get list of tags
  * @property-read mixed  $var
  */
-class WPChaosObject {
+class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	
-	const CHAOS_OBJECT_CONSTRUCTION_FILTER = 'chaos-object-constrution';
-
-	/**
-	 * Object retrieved from CHAOS
-	 * 
-	 * @var stdClass
-	 */
-	protected $chaos_object;
+	const CHAOS_OBJECT_CONSTRUCTION_ACTION = 'chaos-object-constrution';
 
 	/**
 	 * Constructor
@@ -36,7 +29,8 @@ class WPChaosObject {
 	 * @param stdClass $chaos_object
 	 */
 	public function __construct(\stdClass $chaos_object) {
-		$this->chaos_object = apply_filters(self::CHAOS_OBJECT_CONSTRUCTION_FILTER, new \CHAOS\Portal\Client\Data\Object($chaos_object));
+		parent::__construct($chaos_object);
+		// do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
 	}
 
 	/**
@@ -55,10 +49,12 @@ class WPChaosObject {
 		// }
 
 		//If no filters exist for this variable, it should probably not be used
-		if(!array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
-			throw new RuntimeException("There are no filters for this variable: $".$name);
+		if(array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
+			// throw new RuntimeException("There are no filters for this variable: $".$name);
+			return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this);
+		} else {
+			return parent::__get($name);
 		}
-		return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this->chaos_object);
 	}
 
 	// public function get_type() {

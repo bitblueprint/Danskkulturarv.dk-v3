@@ -69,7 +69,7 @@ class WPDKAObject {
 	 */
 	public static function determine_type($object) {
 		
-		foreach($object->getObject()->Files as $file) {
+		foreach($object->Files as $file) {
 			if($file->FormatType == 'Video')
 				return self::TYPE_VIDEO;
 		}
@@ -149,10 +149,10 @@ class WPDKAObject {
 	}
 	
 	public function define_object_construction_filters() {
-		add_filter(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_FILTER, function(\CHAOS\Portal\Client\Data\Object $object) {
+		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
 			if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
 				// The object has not been extended with the crowd matadata schema.
-				$objectGUID = $object->getObject()->GUID;
+				$objectGUID = $object->GUID;
 				$metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkac:DKACrowd xmlns:dkac='http://www.danskkulturarv.dk/DKA.crowd.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'></dkac:DKACrowd>");
 				//$metadataXML->registerXPathNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.crowd.xsd');
 				$metadataXML->addChild('Views', '0');
@@ -176,7 +176,6 @@ class WPDKAObject {
 				);
 				*/
 			}
-			return $object;
 		}, 10, 1);
 	}
 	
