@@ -152,6 +152,10 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		
 	}
 
+	/**
+	 * Get list of names of found templates
+	 * @return array 
+	 */
 	private function get_template_names() {
 		$templates = array();
 		$matches;
