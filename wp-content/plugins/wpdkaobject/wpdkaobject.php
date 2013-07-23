@@ -283,7 +283,7 @@ class WPDKAObject {
 	 * @return void 
 	 */
 	private function load_dependencies() {
-		require_once('/widgets/player.php');
+		require_once('widgets/player.php');
 	}
 
 }

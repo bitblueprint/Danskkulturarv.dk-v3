@@ -353,8 +353,8 @@ class WPChaosClient {
 
 		require_once("wpportalclient.php");
 		require_once("wpchaosobject.php");
-		require_once("/widgets/attribute.php");
-		require_once("/widgets/multiattribute.php");
+		require_once("widgets/attribute.php");
+		require_once("widgets/multiattribute.php");
 	}
 
 }
