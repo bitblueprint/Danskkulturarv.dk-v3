@@ -33,9 +33,9 @@ class WPChaosObject {
 	/**
 	 * Constructor
 	 * 
-	 * @param stdClass $chaos_object
+	 * @param \CHAOS\Portal\Client\Data\Object $chaos_object
 	 */
-	public function __construct(\stdClass $chaos_object) {
+	public function __construct(\CHAOS\Portal\Client\Data\Object $chaos_object) {
 		$this->chaos_object = apply_filters(self::CHAOS_OBJECT_CONSTRUCTION_FILTER, new \CHAOS\Portal\Client\Data\Object($chaos_object));
 	}
 
