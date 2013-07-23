@@ -26,7 +26,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	/**
 	 * Constructor
 	 * 
-	 * @param stdClass $chaos_object
+	 * @param \CHAOS\Portal\Client\Data\Object $chaos_object
 	 */
 	public function __construct(\stdClass $chaos_object) {
 		parent::__construct($chaos_object);

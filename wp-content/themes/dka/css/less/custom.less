@@ -155,6 +155,70 @@ h2 {
   
 }
 
+#advanced-search-container {
+  .btn.filter-btn {
+    margin: 5px 0;
+    text-align: left;
+    background-image:none;
+    width: 100%;
+    color: @black;
+    border: none;
+    height: 26px;
+    padding: 0 8px;
+    //background: none;
+    .border-radius(26px);
+
+    i {
+      height: 16px;
+      width: 16px;
+      &.audio {
+        .sprite(1,14);
+      }
+      &.video {
+        .sprite(1,15);
+      }
+      &.images {
+        .sprite(1,16);
+      }
+      &.documents {
+        .sprite(1,18);
+      }
+    }
+
+    &.active {
+      color: @white;
+      background-color: @blue;
+      i {
+        height: 16px;
+        width: 16px;
+        &.enabled {
+          .sprite(3,26);
+          margin: 2px 0 0 0;
+          float: right;
+        }
+        &.audio {
+          .sprite(3,14);
+        }
+        &.video {
+          .sprite(3,15);
+        }
+        &.images {
+          .sprite(3,16);
+        }
+        &.documents {
+          .sprite(3,18);
+        }
+      }  
+    }
+
+    &.filter-btn-all {
+      &.active i.enabled {
+        .sprite(3,12);
+      }
+    }
+  }
+}
+
 // Search results
 .search-object {
   .thumb {
