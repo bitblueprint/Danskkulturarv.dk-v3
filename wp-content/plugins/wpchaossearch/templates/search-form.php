@@ -15,13 +15,20 @@
 	<div id="advanced-search-container" class="container row">
 	  
 	    <div class="span3 filter-container filter-media-type" data-toggle="buttons-checkbox">
-	      <button type="button" class="btn filter-btn filter-all" value="dr" name="dr-name">Alle Typer<i class="enabled"></button>
+	      <button type="button" class="btn filter-btn filter-btn-all" value="dr" name="dr-name">Alle Typer<i class="enabled"></i></button>
 	      <hr>
-	      <button type="button" class="btn filter-btn" value="dr" name="dr-name"><i class="audio"></i>Lyd<i class="enabled"></button>
-	      <button type="button" class="btn filter-btn"><i class="video"></i>Video<i class="enabled"></i></button>
-	      <button type="button" class="btn filter-btn"><i class="documents"></i>Dokumenter<i class="enabled"></button>
-	      <button type="button" class="btn filter-btn"><i class="images"></i>Billeder<i class="enabled"></button>
+	      <button type="button" class="btn filter-btn filter-btn-single" value="dr" name="dr-name"><i class="audio"></i>Lyd<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single"><i class="video"></i>Video<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single"><i class="documents"></i>Dokumenter<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single"><i class="images"></i>Billeder<i class="enabled"></i></button>
 	    </div>
-	  
-	     
+
+	    <div class="span6 filter-container filter-media-type" data-toggle="buttons-checkbox">
+	      <button type="button" class="btn filter-btn filter-btn-all" value="dr" name="dr-name">Alle Organisationer<i class="enabled"></i></button>
+	      <hr>
+	      <button type="button" class="btn filter-btn filter-btn-single" value="dr" name="dr-name">Lyd<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single">Video<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single">Dokumenter<i class="enabled"></i></button>
+	      <button type="button" class="btn filter-btn filter-btn-single">Billeder<i class="enabled"></i></button>
+	    </div>
 </form>

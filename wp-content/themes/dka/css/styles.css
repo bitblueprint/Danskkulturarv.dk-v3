@@ -8080,7 +8080,7 @@ h2 {
   margin-right: 5px;
   vertical-align: text-top;
 }
-#advanced-search-container .btn.filter-btn.filter-all.active i.enabled {
+#advanced-search-container .btn.filter-btn.filter-btn-all.active i.enabled {
   background: url(../img/sprite-100.png) no-repeat;
   background-position: -57px -261px;
   display: inline-block;
