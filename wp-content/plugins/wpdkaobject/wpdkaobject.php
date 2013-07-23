@@ -39,6 +39,9 @@ class WPDKAObject {
 		//add_action('admin_init',array(&$this,'check_chaosclient'));
 
 		if($this->check_chaosclient()) {
+
+			$this->load_dependencies();
+
 			// Define the free-text search filter.
 			$this->define_attribute_filters();
 
@@ -47,6 +50,9 @@ class WPDKAObject {
 			
 			// Define a filter for object creation.
 			$this->define_object_construction_filters();
+
+			add_filter('widgets_init',array(&$this,'register_widgets'));
+
 		}
 
 	}
@@ -262,6 +268,22 @@ class WPDKAObject {
 		$string = str_replace($match, $replace, $string);
 	
 		return $string;
+	}
+
+	/**
+	 * Register widgets in WordPress
+	 * @return  void
+	 */
+	public function register_widgets() {
+		register_widget( 'WPDKAObjectPlayerWidget' );
+	}
+
+	/**
+	 * Load files and libraries
+	 * @return void 
+	 */
+	private function load_dependencies() {
+		require_once('/widgets/player.php');
 	}
 
 }
