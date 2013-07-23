@@ -9,6 +9,9 @@ get_header(); ?>
 	<div class="row">
 		<div class="span9">
 			<div class="row">
+				<?php dynamic_sidebar( 'wpchaos-obj-featured' ); ?>
+			</div>
+			<div class="row">
 				<?php dynamic_sidebar( 'wpchaos-obj-main' ); ?>
 			</div>
 		</div>

@@ -19,12 +19,6 @@
 	<ul class="row thumbnails">
 
 <?php
-
-		/*	
-		 <img src="img/turell.jpg" alt="">        
-          <span class="series"></span><span class="views">19</span><span class="likes">3</span>
-		 */
-
 foreach($objects as $object) :
 	WPChaosClient::set_object($object);
 
@@ -33,7 +27,7 @@ foreach($objects as $object) :
 ?>
 		<li class="search-object span3">
 			<a class="thumbnail" href="<?php echo $link; ?>">
-				<div class="thumb" style="background-image: url('http://placekitten.com/202/145')">
+				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
 					<div class="duration">1:30:22</div>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
