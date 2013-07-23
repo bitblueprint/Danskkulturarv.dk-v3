@@ -53,6 +53,18 @@ h2 {
   line-height: 1.4em;
 }
 
+// clear bootstrap's gutter
+
+.row {
+  margin-left: 0;
+}
+
+[class*="span"] {
+  float: left;
+  min-height: 1px;
+  margin-left: 0 !important;
+  }
+
 // --------------------------------------------------
 // Sprites
 // --------------------------------------------------
@@ -335,13 +347,6 @@ h2 {
       .sprite(1,5);
     }
   }
-}
-
-span.organization {
-  background-color: #ffcc00;
-  width: 16px;
-  height: 16px;
-  .sprite(0,11);
 }
 
 // --------------------------------------------------
