@@ -242,7 +242,7 @@ class WPChaosSearch {
 	 * Add rewrite tags to WordPress installation
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([\w%+]+)');
+		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([\w%+-]+)');
 		add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
 	}
 
@@ -255,12 +255,12 @@ class WPChaosSearch {
 			$searchPageName = get_page_uri($searchPageID);
 			
 			//$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
-			$regex = sprintf('%s/(%s)/?$', $searchPageName, '[\w%+]+');
+			$regex = sprintf('%s/(%s)/?$', $searchPageName, '[\w%+-]+');
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
 			add_rewrite_rule($regex, $redirect, 'top');
 			
 			//$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
-			$regex = sprintf('%s/(%s)/(\d+)/?$', $searchPageName, '[\w%+]+');
+			$regex = sprintf('%s/(%s)/(\d+)/?$', $searchPageName, '[\w%+-]+');
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
 			add_rewrite_rule($regex, $redirect, 'top');
 		}
