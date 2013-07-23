@@ -6,21 +6,16 @@
 
 /**
  * WordPress Widget that makes it possible to style
- * and display several data from a CHAOS object
+ * and display one data attribute from a CHAOs object
  */
-class WPChaosObjectMultiWidget extends WP_Widget {
+class WPDKAObjectPlayerWidget extends WP_Widget {
 
 	/**
 	 * Fields in widget. Defines keys for values
 	 * @var array
 	 */
 	private $fields = array(
-		array(
-			'title' => 'Markup',
-			'name' => 'markup',
-			'type' => 'textarea',
-			'val' => '',
-		)
+		
 	);
 
 	/**
@@ -29,9 +24,9 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	public function __construct() {
 		
 		parent::__construct(
-			'chaos-object-multi-widget',
-			'CHAOS Object Multi Attributes',
-			array( 'description' => 'Style and display several data from a CHAOS object' )
+			'dka-object-player-widget',
+			'DKA Object Player',
+			array( 'description' => 'Display a player according to the material format' )
 		);
 
 	}
@@ -47,14 +42,12 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		if(WPChaosClient::get_object()) {
 			echo $args['before_widget'];
 			
-			//Find all occurences of [foo] in the markup and replace them
-			//with a foo method on the current CHAOS object.
-			echo preg_replace_callback("/\[(\w+)\]/", 
-				function($matches) {
-
-					return WPChaosClient::get_object()->$matches[1];
-
-				}, $instance['markup']);
+			$type = WPDKAObject::determine_type(WPChaosClient::get_object());
+			
+			//Look in theme dir and include if found
+			if(locate_template('chaos-player-'.$type, true) == "") {
+				include(plugin_dir_path(__FILE__)."/templates/player-".$type.".php");
+			}
 
 			echo $args['after_widget'];
 		}
@@ -79,7 +72,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 			echo '<label for="'.$name.'">'.$title.'</label>';
 			switch($field['type']) {
 				case 'textarea':
-					echo '<textarea class="widefat" rows="16" cols="20" name="'.$name.'" >'.$value.'</textarea>';
+					echo '<textarea class="widefat" name="'.$name.'" >'.$value.'</textarea>';
 					break;
 				case 'select':
 					echo '<select class="widefat" name="'.$name.'">';
@@ -93,15 +86,8 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 					echo '<input class="widefat" id="'.$id.'" name="'.$name.'" type="text" value="'.esc_attr( $value ).'" />';
 			}
 			echo '</p>';
+
 		}
-		echo '<p>Allowed attributes:<br>';
-		//List the attribute methods defined by WPChaosClient and wrap them with [].
-		if(count(WPChaosClient::get_chaos_attributes()) > 0) {
-			echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
-		} else {
-			echo 'None';
-		}
-		
 	}
 
 	/**
