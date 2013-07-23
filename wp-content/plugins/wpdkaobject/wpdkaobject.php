@@ -59,6 +59,8 @@ class WPDKAObject {
 
 	const TYPE_VIDEO = 'series';
 	const TYPE_AUDIO = 'audio';
+	const TYPE_IMAGE = 'image';
+	const TYPE_IMAGE_AUDIO = 'image-audio';
 	const TYPE_UNKNOWN = 'unknown';
 
 	/**
@@ -68,11 +70,30 @@ class WPDKAObject {
 	 * @return string
 	 */
 	public static function determine_type($object) {
+
+		$format_types = array();
 		
 		foreach($object->Files as $file) {
-			if($file->FormatType == 'Video')
-				return self::TYPE_VIDEO;
+			$format_types[$file->FormatType] = 1;
 		}
+
+		//Video format
+		if(isset($format_types['Video']))
+			return self::TYPE_VIDEO;
+
+		if(isset($format_types['Audio'])) {
+			//Image audio format
+			if(isset($format_types['Image']))
+				return self::TYPE_IMAGE_AUDIO;
+			//Audio format
+			return self::TYPE_AUDIO;
+		}
+		
+		//Image format
+		if(isset($format_types['Image']))
+			return self::TYPE_IMAGE;
+
+		//Fallback
 		return self::TYPE_UNKNOWN;
 	}
 
