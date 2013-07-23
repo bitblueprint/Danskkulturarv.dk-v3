@@ -24,6 +24,21 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	);
 
 	/**
+	 * Regex pattern for attribute
+	 */
+	const PATTERN_ATTRIBUTE = "/\[(\w+)\]/";
+
+	/**
+	 * Regex pattern for template
+	 */
+	const PATTERN_TEMPLATE = "/\{(\w+)\}/";
+
+	/**
+	 * Prefix for templates to be used
+	 */
+	const TEMPLATE_PREFIX = 'multiattrwidget-';
+
+	/**
 	 * Constructor
 	 */
 	public function __construct() {
@@ -49,12 +64,28 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 			
 			//Find all occurences of [foo] in the markup and replace them
 			//with a foo method on the current CHAOS object.
-			echo preg_replace_callback("/\[(\w+)\]/", 
+			$result = preg_replace_callback(self::PATTERN_ATTRIBUTE, 
 				function($matches) {
 
 					return WPChaosClient::get_object()->$matches[1];
 
 				}, $instance['markup']);
+
+			//Find all occurences of {foo} in the markup and replace them
+			//with an inclusion of a chaos-object-foo.php template
+			$result = preg_replace_callback(self::PATTERN_TEMPLATE, 
+				function($matches) {
+
+					// Buffering the output as this method is returning markup - not printing it.
+					ob_start();
+					//Look in theme dir and include if found
+					locate_template('/templates/'.self::TEMPLATE_PREFIX.$matches[1].'.php', true);		
+					// Return the markup generated in the template and clean the output buffer.
+					return ob_get_clean();
+
+				}, $result);
+
+			echo $result;
 
 			echo $args['after_widget'];
 		}
@@ -67,6 +98,14 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	 * @return void           
 	 */
 	public function form( $instance ) {
+
+		$matches;
+		preg_match_all(self::PATTERN_TEMPLATE,$instance['markup'],$matches);
+		foreach($matches[1] as $template) {
+			if(locate_template('/templates/'.self::TEMPLATE_PREFIX.$template.'.php', false) == "") {
+				echo '<div class="error"><p>Template "chaos-object-'.$template.'.php" not found for CHAOS Object Multi Attributes Widget</p></div>';	
+			}
+		}
 
 		//Print each field based on its type
 		foreach($this->fields as $field) {
@@ -99,9 +138,28 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		if(count(WPChaosClient::get_chaos_attributes()) > 0) {
 			echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
 		} else {
-			echo 'None';
+			echo 'None</p>';
 		}
 		
+		echo '<p>Found template files:<br>';
+		//List the templates files found in current theme and wrap them with {}.
+		$templates = $this->get_template_names();
+		if(count($templates) > 0) {
+			echo '{'. implode('}, {', $templates) .'}</p>';
+		} else {
+			echo 'None</p>';
+		}
+		
+	}
+
+	private function get_template_names() {
+		$templates = array();
+		$matches;
+		foreach(glob(get_stylesheet_directory().'/templates/'.self::TEMPLATE_PREFIX.'*.php') as $file) {
+			preg_match('/'.self::TEMPLATE_PREFIX.'(\w*)\.php/',basename($file),$matches);
+			$templates[] = $matches[1];
+		}
+		return $templates;
 	}
 
 	/**
