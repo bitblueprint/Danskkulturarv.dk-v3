@@ -356,7 +356,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	private function load_dependencies() {
-		require_once('/widgets/search.php');
+		require_once('widgets/search.php');
 	}
 
 }
