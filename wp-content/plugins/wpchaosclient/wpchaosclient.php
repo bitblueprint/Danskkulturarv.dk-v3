@@ -61,7 +61,13 @@ class WPChaosClient {
 		add_action('admin_init', array(&$this,'settings_updated'));
 		add_action('template_redirect', array(&$this,'get_object_page'));
 		add_action('widgets_init', array(&$this,'add_widget_areas'),99);
-
+		
+		$thiz = $this;
+		$prev_handler = set_exception_handler(function($e) use ($thiz) {
+			if($e instanceof \CHAOSException) {
+				$thiz->handle_chaos_exception($e);
+			}
+		});
 	}
 
 	/**
@@ -239,10 +245,7 @@ class WPChaosClient {
 			}
 
 			//Look in theme dir and include if found
-			if(locate_template('chaos-object-page.php', true) != "") {
-			
-			//Include from plugin
-			} else {
+			if(locate_template('chaos-object-page.php', true) == "") {
 				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
 			}
 			self::reset_object();
@@ -326,7 +329,14 @@ class WPChaosClient {
 	 * @return void 
 	 */
 	public static function reset_object() {
-		self::set_object(null); 
+		self::set_object(null);
+	}
+	
+	public function handle_chaos_exception($exception) {
+		if(locate_template('chaos-exception.php', true) == "") {
+			include(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
+		}
+		exit;
 	}
 
 	/**
