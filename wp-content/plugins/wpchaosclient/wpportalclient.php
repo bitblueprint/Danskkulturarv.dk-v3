@@ -20,7 +20,6 @@ class WPPortalClient extends PortalClient {
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
 		}
 		$response = parent::CallService($path, $method, $parameters, $requiresSession);
-		
 		if(!$response->WasSuccess()) {
 			throw new \CHAOSException($response->Error()->Message());
 		} elseif($response->Portal() != null && !$response->Portal()->WasSuccess()) {
