@@ -8088,6 +8088,13 @@ h2 {
   margin-right: 5px;
   vertical-align: text-top;
 }
+#advanced-search-container .filter-organizations .btn.filter-btn-single {
+  width: 48%;
+  float: left;
+}
+#advanced-search-container .filter-organizations .btn.filter-btn-single:nth-child(odd) {
+  margin-right: 4%;
+}
 .search-object .thumb {
   width: 100%;
   height: 145px;
