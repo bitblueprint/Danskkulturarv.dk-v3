@@ -19,7 +19,7 @@
         'theme_location' => 'secondary',
         'depth'      => 1,
         'container'  => false,
-        'menu_class' => '',
+        'menu_class' => 'nav-footer',
         'fallback_cb' => false,
         )
     );
