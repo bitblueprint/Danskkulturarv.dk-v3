@@ -8138,23 +8138,23 @@ footer .bloginfo-footer span {
   font-style: italic;
   font-weight: normal;
 }
-footer #menu-footer-navigation {
+footer .nav-footer {
   margin-left: 0;
   padding-left: 0;
   display: inline;
   font-weight: bold;
 }
-footer #menu-footer-navigation > li + li {
+footer .nav-footer > li + li {
   border-left: 1px solid #646464;
   margin-left: 10px;
   padding-left: 10px;
 }
-footer #menu-footer-navigation > li {
+footer .nav-footer > li {
   display: inline-block;
   list-style: none;
   line-height: 16px;
 }
-footer #menu-footer-navigation > li a {
+footer .nav-footer > li a {
   color: #646464;
 }
 footer .copyright,
