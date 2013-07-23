@@ -302,7 +302,7 @@ class WPChaosSearch {
 			$regex = $searchPageName;
 			foreach(self::$search_query_variables as $variable) {
 				// An optional non-capturing group wrapped around the $regexp.
-				if(isset($variable['prefix-key'])) {
+				if($variable['prefix-key'] == true) {
 					$regex .= sprintf('(?:/%s(%s))?', $variable['key'].':', $variable['regexp']);
 				} else {
 					$regex .= sprintf('(?:/(%s))?', $variable['regexp']);
