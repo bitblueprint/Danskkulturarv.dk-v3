@@ -7912,6 +7912,14 @@ h2 {
   font-size: 1.2em;
   line-height: 1.4em;
 }
+.row {
+  margin-left: 0;
+}
+[class*="span"] {
+  float: left;
+  min-height: 1px;
+  margin-left: 0 !important;
+}
 /*
 @spriteGrid: 26px; // 16ps sprite + 10px padding on the spritesheet
 .sprite(@x, @y) {
@@ -8270,5 +8278,12 @@ footer .copyright a {
   }
 }
 @media (min-width: 1200px) {
-  
+  [class*="span"] {
+    float: left;
+    min-height: 1px;
+    margin-left: 0 !important;
+  }
+  .row {
+    margin-left: 0;
+  }
 }

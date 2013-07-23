@@ -79,7 +79,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 					// Buffering the output as this method is returning markup - not printing it.
 					ob_start();
 					//Look in theme dir and include if found
-					locate_template('/templates/'.self::TEMPLATE_PREFIX.$matches[1].'.php', true);		
+					locate_template('/templates/'.WPChaosObjectMultiWidget::TEMPLATE_PREFIX.$matches[1].'.php', true);		
 					// Return the markup generated in the template and clean the output buffer.
 					return ob_get_clean();
 
@@ -99,10 +99,13 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 
+		//Check if used template exist in list
+		$templates = $this->get_template_names();
 		$matches;
-		preg_match_all(self::PATTERN_TEMPLATE,$instance['markup'],$matches);
+		$markup = isset( $instance[ 'markup' ]) ? $instance[ 'markup' ] : $this->fields[0]['val'];
+		preg_match_all(self::PATTERN_TEMPLATE,$markup,$matches);
 		foreach($matches[1] as $template) {
-			if(locate_template('/templates/'.self::TEMPLATE_PREFIX.$template.'.php', false) == "") {
+			if(!in_array($template,$templates)) {
 				echo '<div class="error"><p>Template "chaos-object-'.$template.'.php" not found for CHAOS Object Multi Attributes Widget</p></div>';	
 			}
 		}
@@ -143,7 +146,6 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		
 		echo '<p>Found template files:<br>';
 		//List the templates files found in current theme and wrap them with {}.
-		$templates = $this->get_template_names();
 		if(count($templates) > 0) {
 			echo '{'. implode('}, {', $templates) .'}</p>';
 		} else {
