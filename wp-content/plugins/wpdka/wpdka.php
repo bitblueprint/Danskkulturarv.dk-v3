@@ -67,9 +67,9 @@ class WPDKA {
 	 * @return void 
 	 */
 	private function load_dependencies() {
-		require_once('wpdkaobject.php');
-		require_once('wpdkasearch.php');
-		require_once('widgets/player.php');
+		require('wpdkaobject.php');
+		require('wpdkasearch.php');
+		require('widgets/player.php');
 	}
 
 }
