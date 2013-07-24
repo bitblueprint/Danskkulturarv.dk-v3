@@ -324,35 +324,111 @@ class WPChaosSearch {
 	}
 	
 	public function custom_mod_rewrite_rules($rules) {
-		// Calculating $home_root - just as in wp-includes/rewrite.php:1640
-		$home_root = parse_url(home_url());
-		if ( isset( $home_root['path'] ) )
-			$home_root = trailingslashit($home_root['path']);
-		else
-			$home_root = '/';
-		
-		$custom_rules = array();
-		$custom_rules[] = "# Custom redirections for search.";
-		$custom_rules[] = "<IfModule mod_rewrite.c>";
-		$custom_rules[] = "RewriteEngine On";
-		$custom_rules[] = "RewriteBase $home_root";
-		
-		$custom_rules[] = ''; // Space is nice ..
-		// Redirecting the ?text={?} to search/{?}
-		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)text=([^&]*)&?(.*)';
-		$custom_rules[] = 'RewriteRule ^search/? search/%2/?%1%3 [L,NE,R=302]';
-
-		$custom_rules[] = ''; // Space is nice ..
-		// Redirecting the ?pageIndex={?} to search/.../{?}
-		$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)pageIndex=([^&]*)&?(.*)';
-		$custom_rules[] = 'RewriteRule ^search/([^/]*)/? search/$1/%2/?%1%3 [L,NE,R=302]';
-		
-		// TODO: Check if ([^/]*) is okay when searching on something with "/" in the freetext.
-		
-		$custom_rules[] = "</IfModule>";
-		
-		$rules = implode("\n", $custom_rules) . "\n\n" . $rules;
-		return $rules;
+		if(get_option('wpchaos-searchpage')) {
+			$searchPageID = intval(get_option('wpchaos-searchpage'));
+			$searchPageName = get_page_uri($searchPageID);
+			
+			// Calculating $home_root - just as in wp-includes/rewrite.php:1640
+			$home_root = parse_url(home_url());
+			if ( isset( $home_root['path'] ) )
+				$home_root = trailingslashit($home_root['path']);
+			else
+				$home_root = '/';
+			
+			$custom_rules = array();
+			$custom_rules[] = "# Custom redirections for search.";
+			$custom_rules[] = "<IfModule mod_rewrite.c>";
+			$custom_rules[] = "RewriteEngine On";
+			$custom_rules[] = "RewriteBase $home_root";
+			
+			// We would like to rewrite any search query variable, such that when a form is
+			// submitted, it is redirected to a pretty URL.
+			foreach(self::$search_query_variables as $variable) {
+				// Space is nice ...
+				$custom_rules[] = '';
+				
+				// First we do a condition on the query string:
+				// We would like look at the part of the query string which applies for this particular variable. 
+				$condition = 'RewriteCond %{QUERY_STRING} ';
+				// TODO: Consider adding the ^ char.
+				// Something uninteresting (for now) could be on the query string before our variable.
+				// This will be matched as %1
+				$condition .= '(.*)';
+				// Our variable.
+				$key = $variable['key'];
+				if(isset($variable['multivalue-seperator'])) {
+					// This is expected to be a multivalue field.
+					// Postfix the key with the [] (escaped).
+					$key .= "\[\]";
+				}
+				// This will be matched as %2
+				$condition .= $key. '=(' .$variable['regexp']. ')';
+				// This is possibly followed by some other uninteresting query variables.
+				// This will be matched as %3
+				$condition .= '&?(.*)';
+				// TODO: Consider adding the $ char.
+				// Add this condition
+				$custom_rules[] = $condition;
+				
+				// Define the rule to apply when the condition holds.
+				$rule = 'RewriteRule ';
+				// Matching the search page.
+				$rule .= '^'.$searchPageName . '/';
+				// Something uninteresting for now, that comes before this variables regexp.
+				// This will be matched as $1
+				$rule .= '(.*)';
+				// This variables regexp, which we might be overwriting (it is wrapped in a silent group so it's optional).
+				if($variable['prefix-key'] == true) {
+					// In a prefix-key senario, the key and seperator is also matched.
+					$rule .= '(?:'. $variable['key'] . self::QUERY_PREFIX_CHAR . $variable['regexp'] .')?';
+				} else {
+					$rule .= '(?:'. $variable['regexp'] .')?';
+				}
+				// Something uninteresting for now, that comes after this variables regexp.
+				// This will be matched as $2
+				$rule .= '(.*)';
+				// Adding a space
+				$rule .= ' ';
+				// Defining the target
+				$rule .= $searchPageName . '/';
+				// Insert the uninteresting before.
+				$rule .= '$1';
+				// Insert the variable with its values from the query string.
+				if($variable['prefix-key'] == true) {
+					// In a prefix-key senario, the key and seperator is also inserted.
+					$rule .= $variable['key'] . self::QUERY_PREFIX_CHAR . '%2/';
+				} else {
+					$rule .= '%2/';
+				}
+				// Insert the uninteresting after.
+				$rule .= '$2';
+				// Add the uninteresting parts of the query string.
+				$rule .= '?%1%3';
+				// Adding a space
+				$rule .= ' ';
+				// The options (see https://httpd.apache.org/docs/current/mod/mod_rewrite.html#rewriteoptions)
+				$rule .= '[L,NE,R=302]';
+				// Add this condition
+				$custom_rules[] = $rule;
+			}
+			
+			//$custom_rules[] = ''; // Space is nice ..
+			// Redirecting the ?text={?} to search/{?}
+			//$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)text=([^&]*)&?(.*)';
+			//$custom_rules[] = 'RewriteRule ^search/? search/%2/?%1%3 [L,NE,R=302]';
+	
+			//$custom_rules[] = ''; // Space is nice ..
+			// Redirecting the ?pageIndex={?} to search/.../{?}
+			//$custom_rules[] = 'RewriteCond %{QUERY_STRING} (.*)pageIndex=([^&]*)&?(.*)';
+			//$custom_rules[] = 'RewriteRule ^search/([^/]*)/? search/$1/%2/?%1%3 [L,NE,R=302]';
+			
+			// TODO: Check if ([^/]*) is okay when searching on something with "/" in the freetext.
+			
+			$custom_rules[] = "</IfModule>";
+			
+			$rules = implode("\n", $custom_rules) . "\n\n" . $rules;
+			return $rules;
+		}
 	}
 	
 	/**
