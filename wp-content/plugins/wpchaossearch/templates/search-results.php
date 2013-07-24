@@ -9,11 +9,16 @@
 		<div class="span6">
 			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
 		</div>
-		<div class="span1 pull-right">
-			<a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Næste ></a>
-		</div>
-		<div class="span1 pull-right">
-			<a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">< Forrige</a>
+		<div class="pagination pagination-right span6">
+		  <ul>
+		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">Prev</a></li>
+		    <li><a href="#">1</a></li>
+		    <li><a href="#">2</a></li>
+		    <li><a href="#">3</a></li>
+		    <li><a href="#">4</a></li>
+		    <li><a href="#">5</a></li>
+		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Next</a></li>
+		  </ul>
 		</div>
 	</div>
 	<ul class="row thumbnails">

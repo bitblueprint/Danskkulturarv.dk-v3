@@ -8126,6 +8126,12 @@ h2 {
 .search-object .media-type-container {
   height: 20px;
 }
+.search-results {
+  padding: 20px;
+  margin-left: -21px;
+  border-left: 1px solid #eeeded;
+  border-right: 1px solid #eeeded;
+}
 .blue {
   color: #2f94fd;
 }
