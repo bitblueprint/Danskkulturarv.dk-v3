@@ -397,7 +397,7 @@ class WPChaosSearch {
 			if(!empty($dep)) {
 				//deactivate_plugins(array($plugin));
 				add_action( 'admin_notices', function() use (&$dep) { 
-					echo '<div class="error"><p><strong>WordPress DKA Object</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
+					echo '<div class="error"><p><strong>WordPress CHAOS Search</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
 				},10);
 				return false;
 			}
