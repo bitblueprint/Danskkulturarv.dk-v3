@@ -20,6 +20,7 @@ class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGEINDEX = 'pageIndex';
+	const QUERY_KEY_TYPE = 'type';
 
 	/**
 	 * Plugins depending on
@@ -47,6 +48,11 @@ class WPChaosSearch {
 			add_shortcode('chaosresults', array(&$this, 'shortcode_searchresults'));
 			
 			// Rewrite tags and rules should always be added.
+			if(count(self::$search_query_variables) == 0) {
+				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[\w%+-]+');
+				self::register_search_query_variable(self::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
+				self::register_search_query_variable(self::QUERY_KEY_PAGEINDEX, '\d+');
+			}
 			add_action('init', array(&$this, 'add_rewrite_tags'));
 			add_action('init', array(&$this, 'add_rewrite_rules'));
 			
@@ -59,6 +65,7 @@ class WPChaosSearch {
 			if(WP_DEBUG) {
 				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
 			}
+			
 		}
 
 	}
@@ -117,6 +124,15 @@ class WPChaosSearch {
 		foreach($variables as $k => &$v) {
 			if(gettype($v) == 'string') {
 				$v = urldecode($v);
+				foreach(self::$search_query_variables as $variable) {
+					if($variable['key'] == $k && isset($variable['multivalue-seperator'])) {
+						if($v == '') {
+							$v = array();
+						} else {
+							$v = explode($variable['multivalue-seperator'], $v);
+						}
+					}
+				}
 			}
 		}
 		return array_merge(array(), $_GET, $variables);
@@ -228,7 +244,14 @@ class WPChaosSearch {
 			$page = "";
 		}
 		
+		
+		// echo "<pre>";
+		// print_r(WPChaosSearch::get_search_vars());
+		// echo "</pre>";
+		
+		
 		$freetext = WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr');
+		$types = WPChaosSearch::get_search_var(self::QUERY_KEY_TYPE);
 
 		//Look in theme dir and include if found
 		if(locate_template('chaos-search-form.php', true) != "") {		
@@ -237,13 +260,30 @@ class WPChaosSearch {
 			include(plugin_dir_path(__FILE__)."/templates/search-form.php");
 		}
 	}
+	
+	public static $search_query_variables = array();
+	
+	public static function register_search_query_variable($key, $regexp, $prefix_key = false, $multivalue_seperator = null) {
+		self::$search_query_variables[] = array(
+			'key' => $key,
+			'regexp' => $regexp,
+			'prefix-key' => $prefix_key,
+			'multivalue-seperator' => $multivalue_seperator
+		);
+	}
 
 	/**
 	 * Add rewrite tags to WordPress installation
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag('%'.self::QUERY_KEY_FREETEXT.'%', '([\w%+-]+)');
-		add_rewrite_tag('%'.self::QUERY_KEY_PAGEINDEX.'%', '(\d+)');
+		foreach(self::$search_query_variables as $variable) {
+			// If prefix-key is set - the 
+			if(isset($variable['prefix-key'])) {
+				add_rewrite_tag('%'.$variable['key'].'%', $variable['key'].':('.$variable['regexp'].')');
+			} else {
+				add_rewrite_tag('%'.$variable['key'].'%', '('.$variable['regexp'].')');
+			}
+		}
 	}
 
 	/**
@@ -254,14 +294,29 @@ class WPChaosSearch {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
 			
-			//$regex = sprintf('%s/([^/]+)/?$', $searchPageName);
-			$regex = sprintf('%s/(%s)/?$', $searchPageName, '[\w%+-]+');
+			/*
+			$regex = sprintf('%s(?:/(%s))/?$', $searchPageName, '[\w%+-]+');
 			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
 			add_rewrite_rule($regex, $redirect, 'top');
+			*/
 			
-			//$regex = sprintf('%s/([^/]+)/(\d+)/?$', $searchPageName);
-			$regex = sprintf('%s/(%s)/(\d+)/?$', $searchPageName, '[\w%+-]+');
-			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]&%s=$matches[2]', $searchPageName, self::QUERY_KEY_FREETEXT, self::QUERY_KEY_PAGEINDEX);
+			$regex = $searchPageName;
+			foreach(self::$search_query_variables as $variable) {
+				// An optional non-capturing group wrapped around the $regexp.
+				if($variable['prefix-key'] == true) {
+					$regex .= sprintf('(?:/%s(%s))?', $variable['key'].':', $variable['regexp']);
+				} else {
+					$regex .= sprintf('(?:/(%s))?', $variable['regexp']);
+				}
+			}
+			$regex .= '/?$';
+			
+			$redirect = "index.php?pagename=$searchPageName";
+			for($v = 0; $v < count(self::$search_query_variables); $v++) {
+				// An optional non-capturing group wrapped around the $regexp.
+				$redirect .= sprintf('&%s=$matches[%u]', self::$search_query_variables[$v]['key'], $v+1);
+			}
+			
 			add_rewrite_rule($regex, $redirect, 'top');
 		}
 	}

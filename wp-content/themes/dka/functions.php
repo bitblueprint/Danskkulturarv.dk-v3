@@ -19,6 +19,8 @@ function dka_setup() {
 
 	//add_theme_support( 'post-thumbnails' );
 	//set_post_thumbnail_size( 624, 9999 ); // Unlimited height, soft crop
+	add_filter('wp_mail_from', function($old) { return get_bloginfo('admin_email'); });
+	add_filter('wp_mail_from_name', function($old) { return get_bloginfo('name'); });
 }
 add_action( 'after_setup_theme', 'dka_setup' );
 

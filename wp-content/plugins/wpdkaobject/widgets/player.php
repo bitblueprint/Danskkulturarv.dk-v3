@@ -41,15 +41,14 @@ class WPDKAObjectPlayerWidget extends WP_Widget {
 	public function widget( $args, $instance ) {
 		if(WPChaosClient::get_object()) {
 			echo $args['before_widget'];
-			var_dump(WPChaosClient::get_object());
-			//$type = WPDKAObject::determine_type(WPChaosClient::get_object());
-			$type = WPChaosClient::get_object()->type;
 
+			//var_dump(WPChaosClient::get_object()->Files);
 			
+			$type = WPChaosClient::get_object()->type;
 			
 			//Look in theme dir and include if found
 			if(locate_template('chaos-player-'.$type, true) == "") {
-				include(plugin_dir_path(__FILE__)."/templates/player-".$type.".php");
+				include(dirname(__FILE__)."/../templates/player-".$type.".php");
 			}
 
 			echo $args['after_widget'];

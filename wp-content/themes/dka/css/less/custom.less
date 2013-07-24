@@ -26,13 +26,23 @@
 
 @baseBorderRadius:      3px;
 
+//fonts
+
+@baseFontFamily:        Helvetica, Arial, sans-serif;
+@baseFontSize:          13px;
+
+
 
 // --------------------------------------------------
 // GENERAL
 // --------------------------------------------------
+
+// removal of the admin bar will cause a 28px top margin on small devices when log into WP
+
 #wpadminbar {
   display: none;
 }
+
 html, body { 
   height: 100%;
   //margin-bottom: 0;
@@ -52,6 +62,18 @@ h2 {
   font-size: 1.2em;
   line-height: 1.4em;
 }
+
+// clear bootstrap's gutter
+
+.container.single-material > .row {
+  margin: 20px 0;
+}
+
+.container.single-material .span3 {
+  width: 200px;
+}
+
+
 
 // --------------------------------------------------
 // Sprites
