@@ -3,22 +3,23 @@
 <?php
 $format_types = array(
 	array(
-		'type' => 'sound',
+		'type' => WPDKAObject::TYPE_AUDIO,
 		'class' => 'icon-volume-up',
 		'title' => 'Lyd',
 	),
 	array(
-		'type' => 'video',
+		'type' => WPDKAObject::TYPE_VIDEO,
 		'class' => 'icon-film',
 		'title' => 'Video',
 	),
+	// This is not yet supported by the metadata.
+	//array(
+	//	'type' => WPDKAObject::TYPE_UNKNOWN,
+	//	'class' => 'icon-file-text',
+	//	'title' => 'Dokumenter',
+	//),
 	array(
-		'type' => 'document',
-		'class' => 'icon-file-text',
-		'title' => 'Dokumenter',
-	),
-	array(
-		'type' => 'image',
+		'type' => WPDKAObject::TYPE_IMAGE,
 		'class' => 'icon-picture',
 		'title' => 'Billeder',
 	),
