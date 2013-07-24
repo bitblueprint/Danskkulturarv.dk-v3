@@ -103,12 +103,7 @@ class WPDKAObject {
 		//object->organization
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
 
-			$organizations = array(
-				'The Royal Library: The National Library of Denmark and Copenhagen University Library' => array(
-					'slug' => 'KB',
-					'title' => 'Det Kongelige Bibliotek'
-				)
-			);
+			$organizations = WPDKASearch::get_organizations();
 
 			$organization = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),

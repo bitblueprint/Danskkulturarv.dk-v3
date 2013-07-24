@@ -245,9 +245,12 @@ class WPChaosClient {
 			}
 
 			//Look in theme dir and include if found
-			if(locate_template('chaos-object-page.php', true) == "") {
-				include(plugin_dir_path(__FILE__)."/templates/object-page.php");
+			$include = locate_template('templates/chaos-object-page.php', false);
+			if($include == "") {
+				//Include from plugin template	
+				$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
 			}
+			require($include);
 			self::reset_object();
 			exit();
 		}
@@ -334,7 +337,7 @@ class WPChaosClient {
 	
 	public function handle_chaos_exception($exception) {
 		if(locate_template('chaos-exception.php', true) == "") {
-			include(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
+			require(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
 		}
 		exit;
 	}
@@ -361,14 +364,14 @@ class WPChaosClient {
 
 		//For CHAOS lib
 		set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ ."/lib/chaos-client/src/");
-		require_once("CaseSensitiveAutoload.php");
+		require("CaseSensitiveAutoload.php");
 		spl_autoload_extensions(".php");
 		spl_autoload_register("CaseSensitiveAutoload");
 
-		require_once("wpportalclient.php");
-		require_once("wpchaosobject.php");
-		require_once("widgets/attribute.php");
-		require_once("widgets/multiattribute.php");
+		require("wpportalclient.php");
+		require("wpchaosobject.php");
+		require("widgets/attribute.php");
+		require("widgets/multiattribute.php");
 	}
 
 }
