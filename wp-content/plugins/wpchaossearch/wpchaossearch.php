@@ -67,8 +67,6 @@ class WPChaosSearch {
 			if(WP_DEBUG) {
 				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
 			}
-
-			add_action('wpchaos-search-fields',array(&$this,'render_search_fields'),10);
 			
 		}
 

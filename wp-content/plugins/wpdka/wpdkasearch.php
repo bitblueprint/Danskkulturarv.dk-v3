@@ -12,13 +12,19 @@
 class WPDKASearch {
 
 	/**
+	 * List of organizations from the WordPress site
+	 * @var array
+	 */
+	public static $organizations = array();
+
+	/**
 	 * Construct
 	 */
 	public function __construct() {
 
 		// Define the free-text search filter.
 		$this->define_search_filters();
-
+		add_action('init',array('WPDKASearch','get_organizations'));
 	}
 
 	/**
@@ -47,6 +53,28 @@ class WPDKASearch {
 				
 			return implode("+AND+", $query);
 		}, 10, 2);
+	}
+
+	/**
+	 * Fetch organization title and slug from pages using the "chaos_organization" custom field
+	 * That custom field value should correspond to the title given in CHAOS
+	 * @return array
+	 */
+	public static function get_organizations() {
+		if(empty(self::$organizations)) {
+			$posts = new WP_Query(array(
+				'meta_key' => 'chaos_organization',
+				'post_type' => 'page',
+				'post_status' => 'publish,private,future'
+			));
+			foreach($posts->posts as $post) {
+				self::$organizations[$post->chaos_organization] = array(
+					'title' => $post->post_title,
+					'slug' => $post->post_name
+				);
+			} 
+		}	
+		return self::$organizations;
 	}
 
 }
