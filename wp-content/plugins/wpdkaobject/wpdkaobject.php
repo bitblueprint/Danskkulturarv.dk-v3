@@ -122,10 +122,23 @@ class WPDKAObject {
 
 		//object->organization
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
-			return $value . $object->metadata(
+
+			$organizations = array(
+				'The Royal Library: The National Library of Denmark and Copenhagen University Library' => array(
+					'slug' => 'KB',
+					'title' => 'Det Kongelige Bibliotek'
+				)
+			);
+
+			$organization = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:Organization/text()', '/DKA/Organization/text()')
 			);
+
+			if(isset($organizations[$organization]))
+				$organization = $organizations[$organization]['title'];
+
+			return $value . $organization;
 		}, 10, 2);
 
 		//object->description
@@ -138,15 +151,18 @@ class WPDKAObject {
 
 		//object->published
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, $object) {
-			return $value . $object->metadata(
+			$time = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:FirstPublishedDate/text()', '/DKA/FirstPublishedDate/text()')
 			);
+			//Format date according to WordPress
+			$time = date_i18n(get_option('date_format'),strtotime($time));
+			return $value . $time;
 		}, 10, 2);
 
 		//object->type
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
-			return $value = WPDKAObject::determine_type($object);
+			return $value . WPDKAObject::determine_type($object);
 		}, 10, 2);
 
 		//object->thumbnail
@@ -155,12 +171,12 @@ class WPDKAObject {
 			foreach($object->Files as $file) {
 				//FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
-					return $value = $file->URL;
+					return $value . $file->URL;
 				}
 			}
 
 			//Fallback
-			return $value = 'http://placekitten.com/202/145';
+			return $value . 'http://placekitten.com/202/145';
 
 		}, 10, 2);
 	}
