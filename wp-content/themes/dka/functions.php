@@ -54,6 +54,7 @@ function dka_scripts_styles() {
 		wp_enqueue_script('bootstrap-'. $bootscript, get_template_directory_uri() . '/js/bootstrap-'.$bootscript.'.js', array(), '2.3.2', true );
 	}
 
+	wp_enqueue_script( 'custom-functions', get_template_directory_uri() . '/js/custom-functions.js', array('jquery'), '1', true );
 
 }
 add_action( 'wp_enqueue_scripts', 'dka_scripts_styles' );

@@ -67,6 +67,8 @@ class WPChaosSearch {
 			if(WP_DEBUG) {
 				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
 			}
+
+			add_action('wpchaos-search-form',array(&$this,'render_search_form'));
 			
 		}
 
@@ -239,22 +241,25 @@ class WPChaosSearch {
 	 * @param  string $placeholder 
 	 * @return void              
 	 */
-	public static function create_search_form($placeholder = "") {
+	public static function create_search_form($freetext_placeholder = "") {
 		if(get_option('wpchaos-searchpage')) {
 			$page = get_permalink(get_option('wpchaos-searchpage'));
 		} else {
 			$page = "";
-		}
-		
+		}	
 		
 		// echo "<pre>";
 		// print_r(WPChaosSearch::get_search_vars());
-		// echo "</pre>";
-		
-		
-		$freetext = WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr');
-		$types = WPChaosSearch::get_search_var(self::QUERY_KEY_TYPE);
+		// echo "</pre>";	
 
+		echo '<form method="GET" action="'.$page.'" class="span12">';
+		do_action('wpchaos-search-form',$freetext_placeholder);
+		echo '</form>';
+
+		
+	}
+
+	public function render_search_form($freetext_placeholder) {
 		//Look in theme dir and include if found
 		if(locate_template('chaos-search-form.php', true) != "") {		
 			//Include from plugin
