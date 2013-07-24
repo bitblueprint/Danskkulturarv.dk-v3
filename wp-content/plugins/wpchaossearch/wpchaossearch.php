@@ -21,6 +21,8 @@ class WPChaosSearch {
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGEINDEX = 'pageIndex';
 	const QUERY_KEY_TYPE = 'type';
+	
+	const QUERY_PREFIX_CHAR = '/';
 
 	/**
 	 * Plugins depending on
@@ -279,7 +281,7 @@ class WPChaosSearch {
 		foreach(self::$search_query_variables as $variable) {
 			// If prefix-key is set - the 
 			if(isset($variable['prefix-key'])) {
-				add_rewrite_tag('%'.$variable['key'].'%', $variable['key'].':('.$variable['regexp'].')');
+				add_rewrite_tag('%'.$variable['key'].'%', $variable['key'].self::QUERY_PREFIX_CHAR.'('.$variable['regexp'].')');
 			} else {
 				add_rewrite_tag('%'.$variable['key'].'%', '('.$variable['regexp'].')');
 			}
@@ -304,7 +306,7 @@ class WPChaosSearch {
 			foreach(self::$search_query_variables as $variable) {
 				// An optional non-capturing group wrapped around the $regexp.
 				if($variable['prefix-key'] == true) {
-					$regex .= sprintf('(?:/%s(%s))?', $variable['key'].':', $variable['regexp']);
+					$regex .= sprintf('(?:/%s(%s))?', $variable['key'].self::QUERY_PREFIX_CHAR, $variable['regexp']);
 				} else {
 					$regex .= sprintf('(?:/(%s))?', $variable['regexp']);
 				}
