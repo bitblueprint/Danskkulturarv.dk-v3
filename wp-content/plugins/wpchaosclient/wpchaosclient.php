@@ -218,7 +218,7 @@ class WPChaosClient {
 			//do some chaos here
 			//
 			$serviceResult = self::instance()->Object()->Get(
-			WPDKAObject::escapeSolrValue($_GET['guid']),	// Search query
+			self::escapeSolrValue($_GET['guid']),	// Search query
 			null,	// Sort
 			null,	// AccessPoint given by settings.
 			0,		// pageIndex
@@ -337,6 +337,20 @@ class WPChaosClient {
 			include(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
 		}
 		exit;
+	}
+
+	/**
+	 * Escape characters to be used in SOLR
+	 * @param  string $string 
+	 * @return string         
+	 */
+	public static function escapeSolrValue($string)
+	{
+		$match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');
+		$replace = array('\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
+		$string = str_replace($match, $replace, $string);
+	
+		return $string;
 	}
 
 	/**

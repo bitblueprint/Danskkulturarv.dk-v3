@@ -1,16 +1,8 @@
 <?php
 /**
- * @package WP DKA Object
+ * @package WP DKA
  * @version 1.0
  */
-/*
-Plugin Name: WordPress DKA Object
-Plugin URI: 
-Description: Module applying functionality to manipulate CHAOS material specific for DKA. Depends on WordPress Chaos Client.
-Author: Joachim Jensen <joachim@opensourceshift.com>
-Version: 1.0
-Author URI: 
-*/
 
 /**
  * Class that manages CHAOS data specific to
@@ -18,11 +10,6 @@ Author URI:
  * for WPChaosObject
  */
 class WPDKAObject {
-
-	//List of plugins depending on
-	private $plugin_dependencies = array(
-		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
-	);
 
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
@@ -38,22 +25,15 @@ class WPDKAObject {
 
 		//add_action('admin_init',array(&$this,'check_chaosclient'));
 
-		if($this->check_chaosclient()) {
-
-			$this->load_dependencies();
-
+		
 			// Define the free-text search filter.
 			$this->define_attribute_filters();
-
-			// Define the free-text search filter.
-			$this->define_search_filters();
 			
 			// Define a filter for object creation.
 			$this->define_object_construction_filters();
 
 			add_filter('widgets_init',array(&$this,'register_widgets'));
 
-		}
 
 	}
 
@@ -180,34 +160,6 @@ class WPDKAObject {
 
 		}, 10, 2);
 	}
-
-	/**
-	 * Convert search parameters to SOLR query
-	 * @return string 
-	 */
-	public function define_search_filters() {
-		// Free text search.
-		add_filter('wpchaos-solr-query', function($query, $query_vars) {
-			if($query) {
-				$query = array($query);
-			} else {
-				$query = array();
-			}
-				
-			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $query_vars)) {
-				// For each known metadata schema, loop and add freetext search on this.
-				$freetext = $query_vars[WPChaosSearch::QUERY_KEY_FREETEXT];
-				$freetext = WPDKAObject::escapeSolrValue($freetext);
-				$searches = array();
-				foreach(WPDKAObject::$ALL_SCHEMA_GUIDS as $schemaGUID) {
-					$searches[] = sprintf("(m%s_%s_all:(%s))", $schemaGUID, WPDKAObject::FREETEXT_LANGUAGE, $freetext);
-				}
-				$query[] = '(' . implode("+OR+", $searches) . ')';
-			}
-				
-			return implode("+AND+", $query);
-		}, 10, 2);
-	}
 	
 	public function define_object_construction_filters() {
 		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
@@ -292,58 +244,11 @@ class WPDKAObject {
 	}
 
 	/**
-	 * Check if dependent plugins are active
-	 * 
-	 * @return void 
-	 */
-	public function check_chaosclient() {
-		//$plugin = plugin_basename( __FILE__ );
-		$dep = array();
-		//if(is_plugin_active($plugin)) {
-			foreach($this->plugin_dependencies as $class => $name) {
-				if(!in_array($class,get_option('active_plugins'))) {
-					$dep[] = $name;
-				}
-			}
-			if(!empty($dep)) {
-				//deactivate_plugins(array($plugin));
-				add_action( 'admin_notices', function() use (&$dep) { 
-					echo '<div class="error"><p><strong>WordPress DKA Object</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
-				},10);
-				return false;
-			}
-		//}
-		return true;
-	}
-
-	/**
-	 * Escape characters to be used in SOLR
-	 * @param  string $string 
-	 * @return string         
-	 */
-	public static function escapeSolrValue($string)
-	{
-		$match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');
-		$replace = array('\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
-		$string = str_replace($match, $replace, $string);
-	
-		return $string;
-	}
-
-	/**
 	 * Register widgets in WordPress
 	 * @return  void
 	 */
 	public function register_widgets() {
 		register_widget( 'WPDKAObjectPlayerWidget' );
-	}
-
-	/**
-	 * Load files and libraries
-	 * @return void 
-	 */
-	private function load_dependencies() {
-		require_once('widgets/player.php');
 	}
 
 }

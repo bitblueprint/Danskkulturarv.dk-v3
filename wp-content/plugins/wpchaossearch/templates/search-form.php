@@ -30,25 +30,25 @@ $format_types = array(
 	),
 );
 
-$advanced_search_expanded = (!empty($types));
+$types = WPChaosSearch::get_search_var(self::QUERY_KEY_TYPE);
+$advanced_search_expanded = (!empty($types) ? " in" : "");
 
 ?>
 
-<form method="GET" action="<?php echo $page; ?>" class="span12">
 	<div class="input-append">
-		<input class="span7" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo $freetext; ?>" placeholder="<?php echo $placeholder; ?>" /><button type="submit" class="btn btn-large btn-search">Søg</button>
+		<input class="span7" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr'); ?>" placeholder="<?php echo $freetext_placeholder; ?>" /><button type="submit" class="btn btn-large btn-search">Søg</button>
 	</div>
 	<div class="btn-group span4 pull-right btn-advanced-search-container">
 		<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning<i class="icon-cog"></i></button>
 	</div>
-	<div id="advanced-search-container" class="container row collapse<?php echo ($advanced_search_expanded?" in":"") ?>">
+	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">
 	  
 	    <div class="span3 filter-container filter-media-type">
-	      <label type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="icon-ok"></i></label>
+	      <label type="button" class="btn filter-btn filter-btn-all" value="dr" name="dr-name">Alle Typer<i class="icon-ok"></i></label>
 	      <hr>
 	      <!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 	    <?php foreach($format_types as $format) : ?>
-	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i></label> 
+	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],(array)$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i></label> 
 	  	<?php endforeach; ?>
 
 	    </div>
@@ -66,4 +66,3 @@ $advanced_search_expanded = (!empty($types));
 	      <button type="button" class="btn filter-btn filter-btn-single">Kulturstyrelsen<i class="enabled"></i></button>
 	    </div>
 	</div>
-</form>
