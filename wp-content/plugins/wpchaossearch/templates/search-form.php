@@ -30,6 +30,8 @@ $format_types = array(
 	),
 );
 
+$advanced_search_expanded = (!empty($types));
+
 ?>
 
 <form method="GET" action="<?php echo $page; ?>" class="span12">
@@ -39,7 +41,7 @@ $format_types = array(
 	<div class="btn-group span4 pull-right btn-advanced-search-container">
 		<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning<i class="icon-cog"></i></button>
 	</div>
-	<div id="advanced-search-container" class="container row collapse">
+	<div id="advanced-search-container" class="container row <?php echo ($advanced_search_expanded?"":"collapse") ?>">
 	  
 	    <div class="span3 filter-container filter-media-type">
 	      <label type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="icon-ok"></i></label>
