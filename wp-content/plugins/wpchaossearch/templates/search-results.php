@@ -5,11 +5,12 @@
  */
 ?>
 <article class="container search-results">
-	<div class="row">
+	<div class="row search-results-top">
 		<div class="span6">
 			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
 		</div>
-		<div class="pagination pagination-right span6">
+		<div class="span6">
+		<div class="pagination pagination-right">
 		  <ul>
 		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">Prev</a></li>
 		    <li><a href="#">1</a></li>
@@ -20,6 +21,7 @@
 		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Next</a></li>
 		  </ul>
 		</div>
+	</div>
 	</div>
 	<ul class="row thumbnails">
 

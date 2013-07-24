@@ -9021,6 +9021,9 @@ h2 {
   background: none;
   background-color: #ffffff;
 }
+#advanced-search-container {
+  margin-top: 20px;
+}
 #advanced-search-container .btn.filter-btn {
   height: 20px;
   margin: 5px 0;
@@ -9101,6 +9104,14 @@ h2 {
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
 }
+.search-results-top {
+  border-bottom: 1px solid #eeeded;
+  margin-right: -20px;
+  margin-bottom: 20px;
+}
+.pagination {
+  margin: 0;
+}
 .blue {
   color: #2f94fd;
 }
@@ -9110,79 +9121,24 @@ h2 {
 .orange {
   color: #ff7e21;
 }
-.thumbnails p.date:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: 0px -242px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-.thumbnails span.series:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -38px -318px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-.thumbnails span.views:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -109px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-.thumbnails span.likes:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: 0px -204px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
 .single-material .info {
   border: 1px solid #eeeded;
   padding: 10px;
 }
-.single-material .info .views:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -109px;
+.nav.info a {
   display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
 }
-.single-material .info .share:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -90px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
+.nav.info hr {
+  margin: 8px 0;
 }
-.single-material .info .short-url:before {
-  width: 16px;
-  height: 16px;
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -128px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
+.nav.info li.social {
+  height: 20px;
+}
+.nav.info li.social a {
+  margin-right: 8px;
+}
+.nav.info li.social a:hover {
+  background: none;
 }
 /* Wrapper for page content to push down footer */
 #wrap {

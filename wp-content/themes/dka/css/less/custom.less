@@ -191,6 +191,8 @@ h2 {
 }
 
 #advanced-search-container {
+  margin-top: 20px;
+
   .btn.filter-btn {
     height: 20px;
     margin: 5px 0;
@@ -288,6 +290,16 @@ h2 {
   border-right: 1px solid @grayBorder;
 }
 
+.search-results-top {
+  border-bottom: 1px solid @grayBorder;
+  margin-right: -20px;
+  margin-bottom: 20px;
+}
+
+.pagination {
+  margin: 0;
+}
+
 // --------------------------------------------------
 // CONTENT
 // --------------------------------------------------
@@ -308,30 +320,6 @@ h2 {
   color: @orange;
 }
 
-.thumbnails p.date:before {
-  width: 16px;
-  height: 16px;
-  .sprite(0,11);
-}
-
-.thumbnails span.series:before {
-  width: 16px;
-  height: 16px;
-  .sprite(2,15);
-}
-
-.thumbnails span.views:before {
-  width: 16px;
-  height: 16px;
-  .sprite(1,4);
-}
-
-.thumbnails span.likes:before {
-  width: 16px;
-  height: 16px;
-  .sprite(0,9);
-}
-
 // Display Material
 .single-material {
   .info {
@@ -339,28 +327,24 @@ h2 {
     border: 1px solid @grayBorder;
     padding: 10px;
 
-    .views {
+  }
+}
 
-      &:before {
-        width: 16px;
-        height: 16px;
-        .sprite(1,4);
-      }
-    }
+.nav.info a {
+  display: inline-block;
+}
 
-    .share {
-      &:before {
-        width: 16px;
-        height: 16px;
-        .sprite(1,3);
-      }
-    }
+.nav.info hr {
+  margin: 8px 0;
+}
 
-    .short-url:before {
-      width: 16px;
-      height: 16px;
-      .sprite(1,5);
-    }
+.nav.info li.social {
+  height: 20px;
+  a {
+    margin-right: 8px;
+  }
+  a:hover {
+    background: none;
   }
 }
 
