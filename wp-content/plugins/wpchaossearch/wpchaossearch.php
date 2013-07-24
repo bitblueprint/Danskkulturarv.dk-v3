@@ -244,13 +244,14 @@ class WPChaosSearch {
 			$page = "";
 		}
 		
-		/*
-		echo "<pre>";
-		print_r(WPChaosSearch::get_search_vars());
-		echo "</pre>";
-		*/
+		
+		// echo "<pre>";
+		// print_r(WPChaosSearch::get_search_vars());
+		// echo "</pre>";
+		
 		
 		$freetext = WPChaosSearch::get_search_var(self::QUERY_KEY_FREETEXT, 'esc_attr');
+		$types = WPChaosSearch::get_search_var(self::QUERY_KEY_TYPE);
 
 		//Look in theme dir and include if found
 		if(locate_template('chaos-search-form.php', true) != "") {		
