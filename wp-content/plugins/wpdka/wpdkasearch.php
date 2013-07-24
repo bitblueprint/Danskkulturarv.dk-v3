@@ -24,7 +24,7 @@ class WPDKASearch {
 
 		// Define the free-text search filter.
 		$this->define_search_filters();
-		add_action('init',array('WPDKASearch','get_organizations'));
+		
 	}
 
 	/**
