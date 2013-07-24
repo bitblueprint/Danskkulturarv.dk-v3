@@ -66,3 +66,11 @@
 	$(document).ready(function(){ api.init(); });
 
 })(jQuery);
+
+//JW Player
+    jwplayer("myElement").setup({
+        file: "http://techslides.com/demos/sample-videos/small.mp4",
+        skin: "wp-content/themes/dka/js/jwplayer/skins/dka/dka.xml",
+        width: "100%"
+    });
+
