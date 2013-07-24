@@ -8921,6 +8921,17 @@ a.badge:focus {
     overflow: visible !important;
   }
 }
+[class^="icon-"],
+[class*=" icon-"] {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  line-height: inherit;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+}
 #wpadminbar {
   display: none;
 }
@@ -9011,111 +9022,46 @@ h2 {
   background-color: #ffffff;
 }
 #advanced-search-container .btn.filter-btn {
+  height: 20px;
   margin: 5px 0;
   text-align: left;
   background-image: none;
   width: 100%;
   color: #000000;
   border: none;
-  height: 26px;
   padding: 0 8px;
+  font-size: 12px;
   -webkit-border-radius: 26px;
   -moz-border-radius: 26px;
   border-radius: 26px;
 }
 #advanced-search-container .btn.filter-btn i {
-  height: 16px;
   width: 16px;
-}
-#advanced-search-container .btn.filter-btn i.audio {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -299px;
-  display: inline-block;
-  content: "";
+  font-size: 14px;
+  text-align: center;
   margin-right: 5px;
-  vertical-align: text-top;
+  text-shadow: none;
 }
-#advanced-search-container .btn.filter-btn i.video {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -318px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn i.images {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -337px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn i.documents {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -19px -375px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
+#advanced-search-container .btn.filter-btn i.icon-remove-sign {
+  visibility: hidden;
+  margin-right: -4px;
+  float: right;
 }
 #advanced-search-container .btn.filter-btn.active {
   color: #ffffff;
   background-color: #2f94fd;
+  text-shadow: none;
 }
-#advanced-search-container .btn.filter-btn.active i {
-  height: 16px;
-  width: 16px;
+#advanced-search-container .btn.filter-btn.active i.icon-remove-sign {
+  visibility: visible;
 }
-#advanced-search-container .btn.filter-btn.active i.enabled {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -527px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-  margin: 2px 0 0 0;
+#advanced-search-container .btn.filter-btn.filter-btn-all i.icon-ok {
+  visibility: hidden;
+  margin-right: -4px;
   float: right;
 }
-#advanced-search-container .btn.filter-btn.active i.audio {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -299px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn.active i.video {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -318px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn.active i.images {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -337px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn.active i.documents {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -375px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
-}
-#advanced-search-container .btn.filter-btn.filter-btn-all.active i.enabled {
-  background: url(../img/sprite-100.png) no-repeat;
-  background-position: -57px -261px;
-  display: inline-block;
-  content: "";
-  margin-right: 5px;
-  vertical-align: text-top;
+#advanced-search-container .btn.filter-btn.filter-btn-all.active i.icon-ok {
+  visibility: visible;
 }
 #advanced-search-container .filter-organizations .btn.filter-btn-single {
   width: 48%;

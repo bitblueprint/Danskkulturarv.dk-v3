@@ -37,6 +37,19 @@
 // GENERAL
 // --------------------------------------------------
 
+// Font Awsome icons
+[class^="icon-"], [class*=" icon-"] {
+  display: inline-block;
+  width: auto;
+  height: auto;
+  line-height: inherit;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+}
+
+
 // removal of the admin bar will cause a 28px top margin on small devices when log into WP
 
 #wpadminbar {
@@ -179,63 +192,49 @@ h2 {
 
 #advanced-search-container {
   .btn.filter-btn {
+    height: 20px;
     margin: 5px 0;
     text-align: left;
     background-image:none;
     width: 100%;
     color: @black;
     border: none;
-    height: 26px;
     padding: 0 8px;
-    //background: none;
+    font-size: 12px;
     .border-radius(26px);
 
     i {
-      height: 16px;
       width: 16px;
-      &.audio {
-        .sprite(1,14);
-      }
-      &.video {
-        .sprite(1,15);
-      }
-      &.images {
-        .sprite(1,16);
-      }
-      &.documents {
-        .sprite(1,18);
+      font-size: 14px;
+      text-align: center;
+      margin-right: 5px;
+      text-shadow:none;
+      &.icon-remove-sign {
+        visibility: hidden;
+        margin-right: -4px;
+        float: right;
       }
     }
 
     &.active {
       color: @white;
       background-color: @blue;
+      text-shadow:none;
       i {
-        height: 16px;
-        width: 16px;
-        &.enabled {
-          .sprite(3,26);
-          margin: 2px 0 0 0;
-          float: right;
-        }
-        &.audio {
-          .sprite(3,14);
-        }
-        &.video {
-          .sprite(3,15);
-        }
-        &.images {
-          .sprite(3,16);
-        }
-        &.documents {
-          .sprite(3,18);
+        &.icon-remove-sign {
+          visibility: visible;
         }
       }  
     }
 
     &.filter-btn-all {
-      &.active i.enabled {
-        .sprite(3,12);
+      i.icon-ok {
+        visibility: hidden;
+        margin-right: -4px;
+        float: right;
+      }
+      &.active i.icon-ok {
+        visibility: visible;
       }
     }
   }

@@ -10,22 +10,22 @@
 $format_types = array(
 	array(
 		'type' => 'sound',
-		'class' => 'audio',
+		'class' => 'icon-volume-up',
 		'title' => 'Lyd',
 	),
 	array(
 		'type' => 'video',
-		'class' => 'video',
+		'class' => 'icon-film',
 		'title' => 'Video',
 	),
 	array(
 		'type' => 'document',
-		'class' => 'documents',
+		'class' => 'icon-file-text',
 		'title' => 'Dokumenter',
 	),
 	array(
 		'type' => 'image',
-		'class' => 'images',
+		'class' => 'icon-picture',
 		'title' => 'Billeder',
 	),
 );
@@ -42,11 +42,11 @@ $format_types = array(
 	<div id="advanced-search-container" class="container row collapse">
 	  
 	    <div class="span3 filter-container filter-media-type">
-	      <button type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="enabled"></i></button>
+	      <label type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="icon-ok"></i></label>
 	      <hr>
 	      <!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 	    <?php foreach($format_types as $format) : ?>
-	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="opacity:0.5;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="enabled"></i></label> 
+	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i></label> 
 	  	<?php endforeach; ?>
 
 	    </div>
