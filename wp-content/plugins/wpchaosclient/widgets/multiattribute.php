@@ -79,7 +79,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 					// Buffering the output as this method is returning markup - not printing it.
 					ob_start();
 					//Look in theme dir and include if found
-					locate_template('/templates/'.self::TEMPLATE_PREFIX.$matches[1].'.php', true);		
+					locate_template('/templates/'.WPChaosObjectMultiWidget::TEMPLATE_PREFIX.$matches[1].'.php', true);		
 					// Return the markup generated in the template and clean the output buffer.
 					return ob_get_clean();
 
