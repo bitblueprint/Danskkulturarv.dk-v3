@@ -10,22 +10,22 @@
 $format_types = array(
 	array(
 		'type' => 'sound',
-		'class' => 'audio',
+		'class' => 'icon-volume-up',
 		'title' => 'Lyd',
 	),
 	array(
 		'type' => 'video',
-		'class' => 'video',
+		'class' => 'icon-film',
 		'title' => 'Video',
 	),
 	array(
 		'type' => 'document',
-		'class' => 'documents',
+		'class' => 'icon-file-text',
 		'title' => 'Dokumenter',
 	),
 	array(
 		'type' => 'image',
-		'class' => 'images',
+		'class' => 'icon-picture',
 		'title' => 'Billeder',
 	),
 );
@@ -37,16 +37,16 @@ $format_types = array(
 		<input class="span7" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo $freetext; ?>" placeholder="<?php echo $placeholder; ?>" /><button type="submit" class="btn btn-large btn-search">Søg</button>
 	</div>
 	<div class="btn-group span4 pull-right btn-advanced-search-container">
-		<button class="btn btn-white btn-large btn-block btn-advanced-search" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning</button>
+		<button class="btn btn-white btn-large btn-block btn-advanced-search collapsed" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning<i class="icon-cog"></i></button>
 	</div>
 	<div id="advanced-search-container" class="container row collapse">
 	  
 	    <div class="span3 filter-container filter-media-type">
-	      <button type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="enabled"></i></button>
+	      <label type="button" class="btn filter-btn filter-btn-all active" value="dr" name="dr-name">Alle Typer<i class="icon-ok"></i></label>
 	      <hr>
 	      <!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 	    <?php foreach($format_types as $format) : ?>
-	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="opacity:0.5;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="enabled"></i></label> 
+	      <label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single"><input type="checkbox" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],$types)); ?>><i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i></label> 
 	  	<?php endforeach; ?>
 
 	    </div>
