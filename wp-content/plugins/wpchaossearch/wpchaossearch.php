@@ -68,7 +68,7 @@ class WPChaosSearch {
 				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
 			}
 
-			add_action('wpchaos-search-form',array(&$this,'render_search_form'));
+			add_action('wpchaos-search-fields',array(&$this,'render_search_fields'),10);
 			
 		}
 
@@ -173,12 +173,12 @@ class WPChaosSearch {
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
 			//Look in theme dir and include if found
-			if(locate_template('chaos-full-width.php', true) != "") {
-			
-			//Include from plugin
-			} else {
-				include(plugin_dir_path(__FILE__)."/templates/full-width.php");
+			$include = locate_template('templates/chaos-full-width.php', false);
+			if($include == "") {
+				//Include from plugin template	
+				$include = plugin_dir_path(__FILE__)."/templates/full-width.php";
 			}
+			require($include);
 			exit();
 		}
 	}
@@ -227,11 +227,12 @@ class WPChaosSearch {
 		// Buffering the output as this method is returning markup - not printing it.
 		ob_start();
 		//Look in theme dir and include if found
-		if(locate_template('chaos-search-results.php', true) != "") {		
-			//Include from plugin
-		} else {
-			include(plugin_dir_path(__FILE__)."/templates/search-results.php");
+		$include = locate_template('templates/chaos-search-results.php', false);
+		if($include == "") {
+			//Include from plugin template	
+			$include = plugin_dir_path(__FILE__)."/templates/search-results.php";
 		}
+		require($include);
 		// Return the markup generated in the template and clean the output buffer.
 		return ob_get_clean();
 	}
@@ -251,21 +252,15 @@ class WPChaosSearch {
 		// echo "<pre>";
 		// print_r(WPChaosSearch::get_search_vars());
 		// echo "</pre>";	
-
-		echo '<form method="GET" action="'.$page.'" class="span12">';
-		do_action('wpchaos-search-form',$freetext_placeholder);
-		echo '</form>';
+		
+		$include = locate_template('templates/chaos-search-form.php', false);
+		if($include == "") {
+			//Include from plugin template		
+			$include = plugin_dir_path(__FILE__)."/templates/search-form.php";
+		}
+		require($include);
 
 		
-	}
-
-	public function render_search_form($freetext_placeholder) {
-		//Look in theme dir and include if found
-		if(locate_template('chaos-search-form.php', true) != "") {		
-			//Include from plugin
-		} else {
-			include(plugin_dir_path(__FILE__)."/templates/search-form.php");
-		}
 	}
 	
 	public static $search_query_variables = array();
@@ -418,7 +413,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	private function load_dependencies() {
-		require_once('widgets/search.php');
+		require('widgets/search.php');
 	}
 
 }
