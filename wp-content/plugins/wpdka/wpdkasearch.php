@@ -79,6 +79,11 @@ class WPDKASearch {
 		return self::$organizations;
 	}
 
+	/**
+	 * Pagination for search results
+	 * @param  array  $args Arguments can be passed for specific behaviour
+	 * @return string       
+	 */
 	public static function paginate($args = array()) {
 		// Grab args or defaults
 		$args = wp_parse_args($args, array(
@@ -101,24 +106,33 @@ class WPDKASearch {
 		
 		$result = $before;
 
-		$start = max(1,$page-(ceil($count/2))+1);
+		//Start should be in the center
+		$start = $page-(ceil($count/2))+1;
+		//When reaching the end, push start to the left
+		$start = min($start,($max_page+1)-$count);
+		//Start can minimum be 1
+		$start = max(1,$start);
+		//Set end according to start
 		$end = $start+$count;
 
+		//Is prevous wanted
 		if($previous) {
 			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous);
 		}
 
-
+		//Set enumeration
 		for($i = $start; $i < $end; $i++) {
 			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page);
 		}
 
+		//Is next wanted
 		if($next) {
 			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next);
 		}
 
 		$result .= $after;
 
+		//Is echo wanted automatically
 		if($echo) {
 			echo $result;
 		}
@@ -126,6 +140,19 @@ class WPDKASearch {
 		return $result;
 	}
 
+	/**
+	 * Helper function for pagination.
+	 * Sets the class, link and text for each element
+	 * 
+	 * @param  string $before_link 
+	 * @param  string $after_link  
+	 * @param  int $page        
+	 * @param  int $min         
+	 * @param  int $max         
+	 * @param  int $current     
+	 * @param  string $title       
+	 * @return string              
+	 */
 	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "") {
 		if($page > $max || $page < $min) {
 			$result = str_replace('>',' class="disabled">',$before_link).'<span>'.($title?:$page).'</span>'.$after_link;
