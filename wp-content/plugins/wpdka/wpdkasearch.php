@@ -87,29 +87,35 @@ class WPDKASearch {
 			'before_link' => '<li>',
 			'after_link' => '</li>',
 			'count' => 5,
-			'next' => 'Next',
-			'previous' => 'Previous',
+			'next' => '&raquo;',
+			'previous' => '&laquo;',
 			'echo' => true
 		));
 		extract($args, EXTR_SKIP);
 
-		$pageindex = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE);
-
+		//Get current page number
+		$page = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE)?:1;
+		$objects = 20;
+		//Get max page number
+		$max_page = ceil(WPChaosSearch::get_search_results()->MCM()->TotalCount()/$objects);
+		
 		$result = $before;
 
-		$start = $pageindex-(ceil($count/2))+1;
+		$start = max(1,$page-(ceil($count/2))+1);
 		$end = $start+$count;
 
-		if($previous)
-			$result .= $before_link.'<a href="#'.($start-1).'">'.$previous.'</a>'.$after_link;
+		if($previous) {
+			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous);
+		}
 
 
 		for($i = $start; $i < $end; $i++) {
-			$result .= $before_link.'<a href="#">'.$i.'</a>'.$after_link;
+			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page);
 		}
 
-		if($next)
-			$result .= $before_link.'<a href="#'.($end).'">'.$next.'</a>'.$after_link;
+		if($next) {
+			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next);
+		}
 
 		$result .= $after;
 
@@ -117,6 +123,17 @@ class WPDKASearch {
 			echo $result;
 		}
 		
+		return $result;
+	}
+
+	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "") {
+		if($page > $max || $page < $min) {
+			$result = str_replace('>',' class="disabled">',$before_link).'<span>'.($title?:$page).'</span>'.$after_link;
+		} else if(!$title && $page == $current) {
+			$result = str_replace('>',' class="active">',$before_link).'<span>'.$page.'</span>'.$after_link;
+		} else {
+			$result = $before_link.'<a href="'.add_query_arg(WPChaosSearch::QUERY_KEY_PAGE,$page).'">'.($title?:$page).'</a>'.$after_link;
+		}
 		return $result;
 	}
 

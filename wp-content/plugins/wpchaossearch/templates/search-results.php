@@ -7,7 +7,7 @@
 <article class="container search-results">
 	<div class="row search-results-top">
 		<div class="span6">
-			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo $serviceResult->MCM()->TotalCount(); ?> resultater</p>
+			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">

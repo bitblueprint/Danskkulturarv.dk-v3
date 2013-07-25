@@ -25,6 +25,8 @@ class WPChaosSearch {
 	
 	const QUERY_PREFIX_CHAR = '/';
 
+	public static $search_results;
+
 	/**
 	 * Plugins depending on
 	 * @var array
@@ -171,6 +173,7 @@ class WPChaosSearch {
 	public function get_search_page() {
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+
 			//Look in theme dir and include if found
 			$include = locate_template('templates/chaos-full-width.php', false);
 			if($include == "") {
@@ -204,25 +207,26 @@ class WPChaosSearch {
 	 * @param  array $args 
 	 * @return string The markup generated.
 	 */
-	public function generate_searchresults($args) {
-		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGE, 'intval');
-		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
-		
-		$query = apply_filters('wpchaos-solr-query', $args['query'], WPChaosSearch::get_search_vars());
-		
-		$serviceResult = WPChaosClient::instance()->Object()->Get(
-			$query,	// Search query
-			$args['sort'],	// Sort
-			$args['accesspoint'],	// AccessPoint given by settings.
-			$args['pageindex'],		// pageIndex
-			$args['pagesize'],		// pageSize
-			true,	// includeMetadata
-			true,	// includeFiles
-			true	// includeObjectRelations
-		);
-		
-		$objects = $serviceResult->MCM()->Results();
-		
+	public function generate_searchresults($args) {	
+
+			$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGE, 'intval')-1;
+			$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
+			
+			$query = apply_filters('wpchaos-solr-query', $args['query'], WPChaosSearch::get_search_vars());
+			
+			self::set_search_results(WPChaosClient::instance()->Object()->Get(
+				$query,	// Search query
+				$args['sort'],	// Sort
+				$args['accesspoint'],	// AccessPoint given by settings.
+				$args['pageindex'],		// pageIndex
+				$args['pagesize'],		// pageSize
+				true,	// includeMetadata
+				true,	// includeFiles
+				true	// includeObjectRelations
+			));
+			
+			$objects = self::get_search_results()->MCM()->Results();
+
 		// Buffering the output as this method is returning markup - not printing it.
 		ob_start();
 		//Look in theme dir and include if found
@@ -526,9 +530,30 @@ class WPChaosSearch {
 				add_option( __CLASS__ . '_flush', $args );
 		}
 	}
-	
+
+	/**
+	 * Flush rewrite rules hard
+	 * @return void 
+	 */
 	public function flush_rewrite_rules() {
 		flush_rewrite_rules(true);
+	}
+
+	/**
+	 * Get object holding search results
+	 * @return [type] 
+	 */
+	public static function get_search_results() {
+		return self::$search_results;
+	}
+
+	/**
+	 * Set object for search results
+	 * @param [type] $search_results
+	 * @return void
+	 */
+	public static function set_search_results($search_results) {
+		self::$search_results = $search_results;
 	}
 
 	/**
