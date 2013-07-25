@@ -65,7 +65,9 @@ class WPDKASearch {
 			$posts = new WP_Query(array(
 				'meta_key' => 'chaos_organization',
 				'post_type' => 'page',
-				'post_status' => 'publish,private,future'
+				'post_status' => 'publish,private,future',
+				'orderby' => 'title',
+				'order' => 'ASC'
 			));
 			foreach($posts->posts as $post) {
 				self::$organizations[$post->chaos_organization] = array(
@@ -75,6 +77,91 @@ class WPDKASearch {
 			} 
 		}	
 		return self::$organizations;
+	}
+
+	/**
+	 * Pagination for search results
+	 * @param  array  $args Arguments can be passed for specific behaviour
+	 * @return string       
+	 */
+	public static function paginate($args = array()) {
+		// Grab args or defaults
+		$args = wp_parse_args($args, array(
+			'before' => '<ul>',
+			'after' => '</ul>',
+			'before_link' => '<li>',
+			'after_link' => '</li>',
+			'count' => 5,
+			'next' => '&raquo;',
+			'previous' => '&laquo;',
+			'echo' => true
+		));
+		extract($args, EXTR_SKIP);
+
+		//Get current page number
+		$page = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE)?:1;
+		$objects = 20;
+		//Get max page number
+		$max_page = ceil(WPChaosSearch::get_search_results()->MCM()->TotalCount()/$objects);
+		
+		$result = $before;
+
+		//Start should be in the center
+		$start = $page-(ceil($count/2))+1;
+		//When reaching the end, push start to the left
+		$start = min($start,($max_page+1)-$count);
+		//Start can minimum be 1
+		$start = max(1,$start);
+		//Set end according to start
+		$end = $start+$count;
+
+		//Is prevous wanted
+		if($previous) {
+			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous);
+		}
+
+		//Set enumeration
+		for($i = $start; $i < $end; $i++) {
+			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page);
+		}
+
+		//Is next wanted
+		if($next) {
+			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next);
+		}
+
+		$result .= $after;
+
+		//Is echo wanted automatically
+		if($echo) {
+			echo $result;
+		}
+		
+		return $result;
+	}
+
+	/**
+	 * Helper function for pagination.
+	 * Sets the class, link and text for each element
+	 * 
+	 * @param  string $before_link 
+	 * @param  string $after_link  
+	 * @param  int $page        
+	 * @param  int $min         
+	 * @param  int $max         
+	 * @param  int $current     
+	 * @param  string $title       
+	 * @return string              
+	 */
+	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "") {
+		if($page > $max || $page < $min) {
+			$result = str_replace('>',' class="disabled">',$before_link).'<span>'.($title?:$page).'</span>'.$after_link;
+		} else if(!$title && $page == $current) {
+			$result = str_replace('>',' class="active">',$before_link).'<span>'.$page.'</span>'.$after_link;
+		} else {
+			$result = $before_link.'<a href="'.add_query_arg(WPChaosSearch::QUERY_KEY_PAGE,$page).'">'.($title?:$page).'</a>'.$after_link;
+		}
+		return $result;
 	}
 
 }
