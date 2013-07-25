@@ -19,7 +19,7 @@ Author URI:
 class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
-	const QUERY_KEY_PAGEINDEX = 'pageIndex';
+	const QUERY_KEY_PAGE = 'pageIndex';
 	const QUERY_KEY_TYPE = 'type';
 	const QUERY_KEY_ORGANIZATION = 'org';
 	
@@ -54,7 +54,7 @@ class WPChaosSearch {
 			if(count(self::$search_query_variables) == 0) {
 				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[\w%+-]+');
 				self::register_search_query_variable(self::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
-				self::register_search_query_variable(self::QUERY_KEY_PAGEINDEX, '\d+');
+				self::register_search_query_variable(self::QUERY_KEY_PAGE, '\d+');
 			}
 			add_action('init', array(&$this, 'add_rewrite_tags'));
 			add_action('init', array(&$this, 'add_rewrite_rules'));
@@ -205,7 +205,7 @@ class WPChaosSearch {
 	 * @return string The markup generated.
 	 */
 	public function generate_searchresults($args) {
-		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGEINDEX, 'intval');
+		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGE, 'intval');
 		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
 		
 		$query = apply_filters('wpchaos-solr-query', $args['query'], WPChaosSearch::get_search_vars());

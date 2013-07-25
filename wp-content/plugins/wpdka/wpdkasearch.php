@@ -65,7 +65,9 @@ class WPDKASearch {
 			$posts = new WP_Query(array(
 				'meta_key' => 'chaos_organization',
 				'post_type' => 'page',
-				'post_status' => 'publish,private,future'
+				'post_status' => 'publish,private,future',
+				'orderby' => 'title',
+				'order' => 'ASC'
 			));
 			foreach($posts->posts as $post) {
 				self::$organizations[$post->chaos_organization] = array(
@@ -75,6 +77,47 @@ class WPDKASearch {
 			} 
 		}	
 		return self::$organizations;
+	}
+
+	public static function paginate($args = array()) {
+		// Grab args or defaults
+		$args = wp_parse_args($args, array(
+			'before' => '<ul>',
+			'after' => '</ul>',
+			'before_link' => '<li>',
+			'after_link' => '</li>',
+			'count' => 5,
+			'next' => 'Next',
+			'previous' => 'Previous',
+			'echo' => true
+		));
+		extract($args, EXTR_SKIP);
+
+		$pageindex = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE);
+
+		$result = $before;
+
+		$start = $pageindex-(ceil($count/2))+1;
+		$end = $start+$count;
+
+		if($previous)
+			$result .= $before_link.'<a href="#'.($start-1).'">'.$previous.'</a>'.$after_link;
+
+
+		for($i = $start; $i < $end; $i++) {
+			$result .= $before_link.'<a href="#">'.$i.'</a>'.$after_link;
+		}
+
+		if($next)
+			$result .= $before_link.'<a href="#'.($end).'">'.$next.'</a>'.$after_link;
+
+		$result .= $after;
+
+		if($echo) {
+			echo $result;
+		}
+		
+		return $result;
 	}
 
 }

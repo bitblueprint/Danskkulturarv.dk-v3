@@ -11,15 +11,7 @@
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">
-		  <ul>
-		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']-1); ?>">Prev</a></li>
-		    <li><a href="#">1</a></li>
-		    <li><a href="#">2</a></li>
-		    <li><a href="#">3</a></li>
-		    <li><a href="#">4</a></li>
-		    <li><a href="#">5</a></li>
-		    <li><a href="<?php echo add_query_arg(WPChaosSearch::QUERY_KEY_PAGEINDEX, $args['pageindex']+1); ?>">Next</a></li>
-		  </ul>
+		  <?php WPDKASearch::paginate(); ?>
 		</div>
 	</div>
 	</div>
