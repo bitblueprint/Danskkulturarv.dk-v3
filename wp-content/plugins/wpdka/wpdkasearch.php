@@ -159,7 +159,7 @@ class WPDKASearch {
 		} else if(!$title && $page == $current) {
 			$result = str_replace('>',' class="active">',$before_link).'<span>'.$page.'</span>'.$after_link;
 		} else {
-			$result = $before_link.'<a href="'.add_query_arg(WPChaosSearch::QUERY_KEY_PAGE,$page).'">'.($title?:$page).'</a>'.$after_link;
+			$result = $before_link.'<a href="'. WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_PAGE => $page)) .'">'.($title?:$page).'</a>'.$after_link;
 		}
 		return $result;
 	}

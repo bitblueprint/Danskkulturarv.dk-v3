@@ -54,9 +54,7 @@ class WPChaosSearch {
 			
 			// Rewrite tags and rules should always be added.
 			if(count(self::$search_query_variables) == 0) {
-				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[\w+-]+');
-				//self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^/&]*');
-				//self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^&]*');
+				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^/&]*');
 				self::register_search_query_variable(self::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
 				self::register_search_query_variable(self::QUERY_KEY_PAGE, '\d+');
 			}
