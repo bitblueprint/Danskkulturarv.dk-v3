@@ -9136,7 +9136,8 @@ hr {
   border-left: 1px dotted #eeeded;
   padding: 8px 16px;
 }
-.search-results-top .pagination ul li.active span {
+.search-results-top .pagination ul li.active span,
+.search-results-top .pagination ul li.disabled span {
   border: none;
   background-color: none;
   padding: 8px 16px;
