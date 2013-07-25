@@ -118,7 +118,6 @@ class WPChaosSearch {
 	 */
 	public static function get_search_vars($urldecode = true) {
 		global $wp_query;
-		// Clone the query vars
 		$variables = array();
 		foreach(self::$search_query_variables as $variable) {
 			if(array_key_exists($variable['key'], $wp_query->query_vars)) {
@@ -127,6 +126,9 @@ class WPChaosSearch {
 					if($urldecode) {
 						$value = urldecode($value);
 					}
+					// Wordpress is replacing this for us .. Thanks - but no thanks.
+					$value = str_replace("\\\"", "\"", $value); // Replace \" with "
+					$value = str_replace("\\'", "\'", $value); // Replace \' with '
 					if(isset($variable['multivalue-seperator'])) {
 						if($value == '') {
 							$value = array();
