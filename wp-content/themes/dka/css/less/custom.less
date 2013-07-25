@@ -74,6 +74,7 @@ h1 {
 h2 {
   font-size: 1.2em;
   line-height: 1.4em;
+  color: @gray;
 }
 
 hr {
@@ -273,6 +274,19 @@ hr {
       right: 3px;
       padding: 0 3px;
     }
+
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+  .date {
+    color: @gray;
+  }
+
+  hr {
+    margin: 0 0 6px 0;
   }
 
   .title, .organization {
@@ -280,10 +294,17 @@ hr {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-bottom: 0;
   }
 
   .media-type-container {
     height: 20px;
+    color: @gray;
+
+    .icon-eye-open {
+      margin-left: 8px;
+    }
+
   }
 }
 
@@ -310,7 +331,7 @@ hr {
 }
 
 .search-results-top p {
-  margin-top: 16px;
+  margin-top: 22px;
 }
 
 .search-results-top .pagination ul {
@@ -326,13 +347,17 @@ hr {
 .search-results-top .pagination ul a {
   border: none;
   border-left: 1px dotted @grayBorder;
-  padding: 8px 16px;
+  padding: 12px 16px;
 }
 
 .search-results-top .pagination ul li.active span, .search-results-top .pagination ul li.disabled span  {
   border: none;
   background-color: none;
-  padding: 8px 16px;
+  padding: 12px 16px;
+}
+
+.search-results-top .pagination ul li.disabled span  {
+  border-left: 1px dotted @grayBorder;
 }
 
 // --------------------------------------------------

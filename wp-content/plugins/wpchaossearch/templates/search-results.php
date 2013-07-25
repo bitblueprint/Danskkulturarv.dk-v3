@@ -15,7 +15,7 @@
 		</div>
 	</div>
 	</div>
-	<ul class="row thumbnails">
+	<ul class="row thumbnails mobile-two-up">
 
 <?php
 foreach($objects as $object) :
@@ -30,11 +30,11 @@ foreach($objects as $object) :
 					<div class="duration">1:30:22</div>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
-				<div class="organization"><strong class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></strong></div>
-				<p class="date"><?php echo WPChaosClient::get_object()->published; ?></p>
+				<strong class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></strong>
+				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?></p>
 				<hr>
 				<div class="media-type-container">
-					<span class="<?php echo WPChaosClient::get_object()->type; ?>"></span>
+					<span class="<?php echo WPChaosClient::get_object()->type; ?>"><i class="icon-film"></i><i class="icon-eye-open"> 132</i></span>
 				</div>
 			</a>
 		</li>

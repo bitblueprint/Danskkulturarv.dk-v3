@@ -4,6 +4,8 @@
 
 @media (max-width: 767px) {
 
+.search-results-top .span6 { display: inline; width: 48.61878453038674%; float: left; }
+
 .container.single-material .span3 {
   width: 100%;
   margin-top: 20px;
@@ -12,6 +14,43 @@
 footer {
 	margin-left: -20px;
 	margin-right: -20px;
+}
+
+.thumbnails.mobile-two-up > li {
+  width: 48%;
+  float: left;
+  margin-left: 4%;
+  margin-bottom: 4%;
+}
+
+.thumbnails.mobile-two-up > li:nth-child(2n+1) {
+  clear: both !important;
+  margin-left: 0;
+}
+
+ .search-results-top .pagination ul a {
+  padding: 6px 12px;
+}
+
+.search-results-top .pagination ul li.active span, .search-results-top .pagination ul li.disabled span  {
+  padding: 6px 12px;
+}
+
+.search-results-top p {
+  margin-top: 16px;
+}
+
+.container.search-results {
+	margin: 0;
+}
+
+ .row.search-results-top {
+  margin-left:-20px;
+  padding-left: 20px;
+}
+
+.row.search-results-top .span6:nth-of-type(0) {
+	margin-left: 20px;
 }
 
 }
