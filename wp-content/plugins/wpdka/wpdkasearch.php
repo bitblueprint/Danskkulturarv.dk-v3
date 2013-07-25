@@ -10,6 +10,9 @@
  * for WPChaosObject
  */
 class WPDKASearch {
+	
+	const QUERY_KEY_TYPE = 'type';
+	const QUERY_KEY_ORGANIZATION = 'organisation';
 
 	/**
 	 * List of organizations from the WordPress site
@@ -97,7 +100,7 @@ class WPDKASearch {
 			'echo' => true
 		));
 		extract($args, EXTR_SKIP);
-
+		
 		//Get current page number
 		$page = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE)?:1;
 		$objects = 20;
@@ -165,6 +168,10 @@ class WPDKASearch {
 	}
 
 }
+
+WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
+WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w+]+', true, ' ');
+
 //Instantiate
 new WPDKASearch();
 

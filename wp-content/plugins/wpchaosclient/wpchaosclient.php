@@ -335,11 +335,25 @@ class WPChaosClient {
 		self::set_object(null);
 	}
 	
-	public function handle_chaos_exception($exception) {
+	public function handle_chaos_exception(\CHAOSException $exception) {
+		$trace = $exception->getTrace();
+		
+		// Generate a filename for the trace dump file.
+		$traceDumpFile = tempnam(sys_get_temp_dir(), 'chaos-tracedump-');
+		
+		// Log this exception.
+		if($traceDumpFile != false) {
+			file_put_contents($traceDumpFile, json_encode($trace));
+			error_log('CHAOS Error: "' . $exception->getMessage() . '" (tracedump stored in '. $traceDumpFile .')', 0);
+		} else {
+			error_log('CHAOS Error: "' . $exception->getMessage() . '" (unable to store tracedump)', 0);
+		}
+		
+		
 		if(locate_template('chaos-exception.php', true) == "") {
 			require(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
 		}
-		exit;
+		locate_template('footer.php', true);
 	}
 
 	/**
@@ -349,8 +363,8 @@ class WPChaosClient {
 	 */
 	public static function escapeSolrValue($string)
 	{
-		$match = array('\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' ');
-		$replace = array('\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
+		$match = array('#', '&', '\\', '+', '-', '&', '|', '!', '(', ')', '{', '}', '[', ']', '^', '~', '*', '?', ':', '"', ';', ' '); // The # and & is apparently CHAOS specific.
+		$replace = array('', '', '\\\\', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\"', '\\;', '\\ ');
 		$string = str_replace($match, $replace, $string);
 	
 		return $string;

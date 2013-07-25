@@ -20,11 +20,11 @@ $format_types = array(
 		'type' => WPDKAObject::TYPE_IMAGE,
 		'class' => 'icon-picture',
 		'title' => 'Billeder',
-		),
-	);
-
-$types = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_TYPE);
-$advanced_search_expanded = (!empty($types) ? " in" : "");
+	),
+);
+$types = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE);
+$organizations = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION);
+$advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
 ?>
 <form method="GET" action="<?php echo $page; ?>" class="span12">
 	<div class="input-append">
@@ -40,8 +40,8 @@ $advanced_search_expanded = (!empty($types) ? " in" : "");
 			<hr>
 			<!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 <?php foreach($format_types as $format) : ?>
-			<label for="type-<?php echo $format['type']; ?>" class="btn filter-btn filter-btn-single">
-				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="type-<?php echo $format['type']; ?>" <?php checked(in_array($format['type'],(array)$types)); ?>>
+			<label for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format['type']; ?>" class="btn filter-btn filter-btn-single">
+				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format['type']; ?>" <?php checked(in_array($format['type'],(array)$types)); ?>>
 				<i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i>
 			</label> 
 <?php endforeach; ?>
@@ -50,8 +50,8 @@ $advanced_search_expanded = (!empty($types) ? " in" : "");
 			<label class="btn filter-btn filter-btn-all">Alle Organisationer<i class="icon-ok"></i></label>
 			<hr>
 <?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>
-			<label for="organization-<?php echo $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
-				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPChaosSearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="organization-<?php echo $organization['slug']; ?>">
+			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
+				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" <?php checked(in_array($organization['slug'],(array)$organizations)); ?>>
 				<?php echo $organization['title']; ?><i class="icon-remove-sign"></i>
 			</label> 
 <?php endforeach; ?>
