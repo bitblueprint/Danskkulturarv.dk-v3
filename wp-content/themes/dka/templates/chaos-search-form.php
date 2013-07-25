@@ -24,7 +24,7 @@ $format_types = array(
 );
 $types = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE);
 $organizations = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION);
-$advanced_search_expanded = (!empty($types) ? " in" : "");
+$advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
 ?>
 <form method="GET" action="<?php echo $page; ?>" class="span12">
 	<div class="input-append">
