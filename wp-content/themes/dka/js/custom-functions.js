@@ -27,7 +27,7 @@
 		 * @return {void} 
 		 */
 		addCheckboxListener: function() { 
-			$("input[type=checkbox]").change(function() {
+			$("input.chaos-filter").change(function() {
 				var checkbox = $(this);
 				var label = checkbox.parent();
 

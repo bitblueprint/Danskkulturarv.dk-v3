@@ -21,6 +21,7 @@ class WPChaosSearch {
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGEINDEX = 'pageIndex';
 	const QUERY_KEY_TYPE = 'type';
+	const QUERY_KEY_ORGANIZATION = 'org';
 	
 	const QUERY_PREFIX_CHAR = '/';
 
