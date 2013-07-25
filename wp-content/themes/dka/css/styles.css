@@ -8946,6 +8946,9 @@ h2 {
   font-size: 1.2em;
   line-height: 1.4em;
 }
+hr {
+  border-top-color: #eeeded;
+}
 .container.single-material > .row {
   margin: 20px 0;
 }
@@ -8995,7 +8998,7 @@ h2 {
   background-color: #555555;
 }
 .container.search {
-  padding: 80px 20px 20px 20px;
+  padding: 80px 20px 0 20px;
   border: 1px solid #eeeded;
 }
 .container.search form {
@@ -9099,7 +9102,7 @@ h2 {
   height: 20px;
 }
 .search-results {
-  padding: 20px;
+  padding: 0 20px 20px 20px;
   margin-left: -21px;
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
@@ -9111,6 +9114,32 @@ h2 {
 }
 .pagination {
   margin: 0;
+  line-height: 0;
+}
+.search-results-top .span6 {
+  line-height: 0;
+}
+.search-results-top p {
+  margin-top: 16px;
+}
+.search-results-top .pagination ul {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  height: 100%;
+}
+.search-results-top .pagination ul a {
+  border: none;
+  border-left: 1px dotted #eeeded;
+  padding: 8px 16px;
+}
+.search-results-top .pagination ul li.active span {
+  border: none;
+  background-color: none;
+  padding: 8px 16px;
 }
 .blue {
   color: #2f94fd;
@@ -9232,5 +9261,13 @@ footer .copyright a {
   }
   .container.single-material .span3 {
     width: 240px;
+  }
+  .search-results-top {
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: 20px;
+  }
+  .search-results-top div.span6:first-child {
+    margin-left: 20px;
   }
 }
