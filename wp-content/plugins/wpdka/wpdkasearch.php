@@ -97,7 +97,7 @@ class WPDKASearch {
 			'echo' => true
 		));
 		extract($args, EXTR_SKIP);
-
+		
 		//Get current page number
 		$page = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE)?:1;
 		$objects = 20;

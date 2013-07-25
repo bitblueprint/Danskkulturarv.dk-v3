@@ -19,7 +19,7 @@ Author URI:
 class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
-	const QUERY_KEY_PAGE = 'pageIndex';
+	const QUERY_KEY_PAGE = 'searchPage';
 	const QUERY_KEY_TYPE = 'type';
 	const QUERY_KEY_ORGANIZATION = 'org';
 	
@@ -54,7 +54,7 @@ class WPChaosSearch {
 			
 			// Rewrite tags and rules should always be added.
 			if(count(self::$search_query_variables) == 0) {
-				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^/&]*');
+				self::register_search_query_variable(self::QUERY_KEY_FREETEXT, '[^/&]*');
 				self::register_search_query_variable(self::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
 				self::register_search_query_variable(self::QUERY_KEY_PAGE, '\d+');
 			}
@@ -302,12 +302,6 @@ class WPChaosSearch {
 		if(get_option('wpchaos-searchpage')) {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
-			
-			/*
-			$regex = sprintf('%s(?:/(%s))/?$', $searchPageName, '[\w%+-]+');
-			$redirect = sprintf('index.php?pagename=%s&%s=$matches[1]', $searchPageName, self::QUERY_KEY_FREETEXT);
-			add_rewrite_rule($regex, $redirect, 'top');
-			*/
 			
 			$regex = $searchPageName;
 			foreach(self::$search_query_variables as $variable) {
