@@ -52,7 +52,9 @@ class WPChaosSearch {
 			
 			// Rewrite tags and rules should always be added.
 			if(count(self::$search_query_variables) == 0) {
-				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[\w%+-]+');
+				self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[\w+-]+');
+				//self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^/&]*');
+				//self::register_search_query_variable(self::QUERY_KEY_FREETEXT,	'[^&]*');
 				self::register_search_query_variable(self::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
 				self::register_search_query_variable(self::QUERY_KEY_PAGEINDEX, '\d+');
 			}
@@ -60,7 +62,8 @@ class WPChaosSearch {
 			add_action('init', array(&$this, 'add_rewrite_rules'));
 			
 			// Add some custom rewrite rules.
-			add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
+			// This is implemented as a PHP redirect instead.
+			// add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
 			
 			// Add rewrite rules when activating and when settings update.
 			register_activation_hook(__FILE__, array(&$this, 'flush_rewrite_rules'));
@@ -123,22 +126,24 @@ class WPChaosSearch {
 	public static function get_search_vars() {
 		global $wp_query;
 		// Clone the query vars
-		$variables = array_merge(array(), $wp_query->query_vars);
-		foreach($variables as $k => &$v) {
-			if(gettype($v) == 'string') {
-				$v = urldecode($v);
-				foreach(self::$search_query_variables as $variable) {
-					if($variable['key'] == $k && isset($variable['multivalue-seperator'])) {
-						if($v == '') {
-							$v = array();
+		$variables = array();
+		foreach(self::$search_query_variables as $variable) {
+			if(array_key_exists($variable['key'], $wp_query->query_vars)) {
+				$value = $wp_query->query_vars[$variable['key']];
+				if(gettype($value) == 'string') {
+					$value = urldecode($value);
+					if(isset($variable['multivalue-seperator'])) {
+						if($value == '') {
+							$value = array();
 						} else {
-							$v = explode($variable['multivalue-seperator'], $v);
+							$value = explode($variable['multivalue-seperator'], $value);
 						}
 					}
 				}
+				$variables[$variable['key']] = $value;
 			}
 		}
-		return array_merge(array(), $_GET, $variables);
+		return $variables;
 	}
 	
 	/**
@@ -169,6 +174,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function get_search_page() {
+		$this->search_query_prettify();
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
 			//Look in theme dir and include if found
@@ -322,6 +328,40 @@ class WPChaosSearch {
 		}
 	}
 	
+	public static function search_query_prettify() {
+		foreach(self::$search_query_variables as $variable) {
+			if(array_key_exists($variable['key'], $_GET)) {
+				$redirection = self::generate_pretty_search_url();
+				wp_redirect($redirection);
+				exit();
+			}
+		}
+	}
+	
+	public static function generate_pretty_search_url($variables = array()) {
+		$variables = array_merge(self::get_search_vars(), $variables);
+		// Start with the search page uri.
+		$result = '/' . get_page_uri(get_option('wpchaos-searchpage')) . '/';
+		foreach(self::$search_query_variables as $variable) {
+			$value = $variables[$variable['key']];
+			if(!empty($value)) {
+				if(is_array($value)) {
+					$value = implode($variable['multivalue-seperator'], $value);
+				}
+				$value = urlencode($value);
+				if($variable['prefix-key']) {
+					$result .= $variable['key'] . self::QUERY_PREFIX_CHAR . $value . '/';
+				} else {
+					$result .= $value . '/';
+				}
+			}
+		}
+		//$result .= $variables[self::QUERY_KEY_FREETEXT];
+		//$result .= '/';
+		return $result;
+	}
+	
+	/*
 	public static function get_multivalue_implode_rule($searchPageName, $variable, $include_buildup) {
 		// First we do a condition on the query string:
 		// We would like look at the part of the query string which applies for this particular variable.
@@ -400,7 +440,8 @@ class WPChaosSearch {
 		$condition .= $key. '=(' .$variable['regexp']. ')';
 		// This is possibly followed by some other uninteresting query variables.
 		// This will be matched as %3
-		$condition .= '&?(.*)';
+		//$condition .= '&?(.*)';
+		$condition .= '(&.*)';
 		// TODO: Consider adding the $ char.
 		
 		// Define the rule to apply when the condition holds.
@@ -503,6 +544,7 @@ class WPChaosSearch {
 			return $rules;
 		}
 	}
+	*/
 	
 	/**
 	 * A method that flushes the rewrite rules when this file is changed or
