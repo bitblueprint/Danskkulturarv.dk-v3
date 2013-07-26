@@ -9283,8 +9283,14 @@ footer .copyright a {
   div.container.search {
     margin-top: -82px;
   }
-  .navbar-inner {
-    z-index: 9999;
+  a.btn.btn-navbar {
+    margin-top: 10px;
+  }
+  .navbar {
+    position: relative;
+  }
+  a.brand {
+    padding: 12px 20px 8px 20px !important;
   }
   .container.single-material .span3 {
     width: 100%;
