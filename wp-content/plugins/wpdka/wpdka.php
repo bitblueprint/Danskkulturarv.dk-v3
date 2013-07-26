@@ -22,6 +22,7 @@ class WPDKA {
 	//List of plugins depending on
 	private $plugin_dependencies = array(
 		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
+		'wpdka/wpdka.php' => 'WordPress DKA Specifics'
 	);
 
 	/**
