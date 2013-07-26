@@ -4,6 +4,7 @@
  * @version 1.0
  */
 ?>
+<?php get_header(); ?>
 <article class="container search-results">
 	<div class="row search-results-top">
 		<div class="span6">
@@ -11,14 +12,14 @@
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">
-		  <?php WPDKASearch::paginate(); ?>
+		  <?php WPChaosSearch::paginate(); ?>
 		</div>
 	</div>
 	</div>
 	<ul class="row thumbnails mobile-two-up">
 
 <?php
-foreach($objects as $object) :
+foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 	WPChaosClient::set_object($object);
 
 	$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
@@ -41,3 +42,4 @@ foreach($objects as $object) :
  <?php endforeach; WPChaosClient::reset_object(); ?>
 	</ul>
 </article>
+<?php get_footer(); ?>

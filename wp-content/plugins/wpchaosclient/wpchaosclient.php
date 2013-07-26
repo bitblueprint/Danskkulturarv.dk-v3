@@ -262,22 +262,24 @@ class WPChaosClient {
 	 * @return void
 	 */
 	public function create_setting_field($args) {
+		$class = isset($args['class'])?$args['class']:'regular-text';
+		$current_value = get_option($args['name'])?:$args['val'];
 		switch($args['type']) {
 			case 'textarea':
-				echo '<textarea name="'.$args['name'].'" >'.get_option($args['name']).'</textarea>';
+				echo '<textarea class="'.$class.'" name="'.$args['name'].'" >'.$current_value.'</textarea>';
 				break;
 			case 'select':
 				if(!is_array($args['list']))
 					$args['list'] = array();
-				echo '<select name="'.$args['name'].'">';
+				echo '<select class="'.$class.'" name="'.$args['name'].'">';
 				foreach($args['list'] as $key => $value) {
-					echo '<option value="'.$key.'" '.selected( get_option($args['name']), $key, false).'>'.$value.'</option>';
+					echo '<option value="'.$key.'" '.selected( $current_value, $key, false).'>'.$value.'</option>';
 				}
 				echo '</select>';
 				break;
 			case 'text':
 			default:
-				echo '<input name="'.$args['name'].'" type="text" value="'.get_option($args['name']).'" />';
+				echo '<input class="'.$class.'" name="'.$args['name'].'" type="text" value="'.$current_value.'" />';
 		}
 	}
 	
