@@ -11,9 +11,10 @@
  */
 class WPDKAObject {
 
+	const OBJECT_TYPE_ID = 36;
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
-	const DKA_CROWD_SCHEMA_GUID = '';
+	const DKA_CROWD_SCHEMA_GUID = 'a37167e0-e13b-4d29-8a41-b0ffbaa1fe5f';
 	const DKA_CROWD_LANGUAGE = 'da';
 	const FREETEXT_LANGUAGE = 'da';
 	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
@@ -168,7 +169,7 @@ class WPDKAObject {
 				$metadataXML->addChild('Likes', '0');
 				$metadataXML->addChild('Ratings', '0');
 				$metadataXML->addChild('AccumulatedRate', '0');
-				$metadataXML->addChild('Slug', WPDKAObject::generateSlug($object));
+				//$metadataXML->addChild('Slug', WPDKAObject::generateSlug($object));
 				$metadataXML->addChild('Tags');
 				
 				// TODO: Set this metadata schema, when it's created in the service.

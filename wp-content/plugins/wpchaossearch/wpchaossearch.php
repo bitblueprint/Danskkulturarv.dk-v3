@@ -180,6 +180,7 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function get_search_page() {
+		// TODO: Consider what this is doing here?
 		$this->search_query_prettify();
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {

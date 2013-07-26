@@ -13,6 +13,8 @@ class WPDKASearch {
 	
 	const QUERY_KEY_TYPE = 'type';
 	const QUERY_KEY_ORGANIZATION = 'organisation';
+	
+	static $OBJECT_TYPE_IDS = array(WPDKAObject::OBJECT_TYPE_ID);
 
 	/**
 	 * List of organizations from the WordPress site
@@ -38,6 +40,21 @@ class WPDKASearch {
 	 * @return string 
 	 */
 	public function define_search_filters() {
+		// Restrict to interesting Object types.
+		add_filter('wpchaos-solr-query', function($query, $query_vars) {
+			if($query) {
+				$query = array($query);
+			} else {
+				$query = array();
+			}
+			
+			foreach(WPDKASearch::$OBJECT_TYPE_IDS as $objectTypeID) {
+				$query[] = "(ObjectTypeID:$objectTypeID)";
+			}
+				
+			return implode("+AND+", $query);
+		}, 9, 2);
+		
 		// Free text search.
 		add_filter('wpchaos-solr-query', function($query, $query_vars) {
 			if($query) {

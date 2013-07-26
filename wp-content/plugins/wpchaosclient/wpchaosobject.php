@@ -30,7 +30,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 */
 	public function __construct(\stdClass $chaos_object) {
 		parent::__construct($chaos_object);
-		// do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
+		do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
 	}
 
 	/**
