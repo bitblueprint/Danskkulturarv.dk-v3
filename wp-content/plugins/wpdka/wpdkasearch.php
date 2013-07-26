@@ -27,7 +27,19 @@ class WPDKASearch {
 
 		// Define the free-text search filter.
 		$this->define_search_filters();
+
+		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
+		WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w+]+', true, ' ');
+		register_activation_hook(__FILE__, array(&$this, 'flush_rewrite_rules'));
 		
+	}
+
+	/**
+	 * Flush rewrite rules hard
+	 * @return void 
+	 */
+	public function flush_rewrite_rules() {
+		flush_rewrite_rules(true);
 	}
 
 	/**
@@ -168,9 +180,6 @@ class WPDKASearch {
 	}
 
 }
-
-WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
-WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w+]+', true, ' ');
 
 //Instantiate
 new WPDKASearch();

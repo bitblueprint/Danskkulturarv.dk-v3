@@ -49,7 +49,9 @@ class WPChaosSearch {
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
 			add_shortcode('chaosresults', array(&$this, 'shortcode_searchresults'));
-			
+
+			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
+			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
 			// Rewrite tags and rules should always be added.
 			add_action('init', array(&$this, 'add_rewrite_tags'));
 			add_action('init', array(&$this, 'add_rewrite_rules'));
@@ -443,9 +445,6 @@ class WPChaosSearch {
 	}
 
 }
-
-WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
-WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
 
 //Instantiate
 new WPChaosSearch();
