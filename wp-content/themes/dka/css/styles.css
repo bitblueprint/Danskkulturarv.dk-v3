@@ -8999,7 +8999,7 @@ hr {
   background-color: #555555;
 }
 .container.search {
-  padding: 80px 20px 0 20px;
+  padding: 80px 20px 20px 20px;
   border: 1px solid #eeeded;
 }
 .container.search form {
@@ -9008,6 +9008,11 @@ hr {
 }
 .container.search form .input-append {
   margin-bottom: 0;
+  margin-left: 0;
+}
+.container.search form #appendedInputButton {
+  display: inline;
+  width: 100%;
 }
 .container.search input {
   height: 34px;
@@ -9250,18 +9255,36 @@ footer .copyright a {
     width: 100%;
   }
   .search-results-top .pagination ul a {
-    padding: 4px 8px;
+    padding: 4px 7px !important;
   }
   .search-results-top .pagination ul li.active span,
   .search-results-top .pagination ul li.disabled span {
-    padding: 4px 8px;
+    padding: 4px 7px !important;
   }
 }
 @media (max-width: 767px) {
   .search-results-top .span6 {
-    display: inline;
+    display: inline-block;
     width: 48.61878453038674%;
     float: left;
+  }
+  .btn-group.span4 {
+    width: 29.61878453038674%;
+  }
+  .input-append.span7 {
+    background-color: #ff7e21;
+    width: 48.61878453038674% !important;
+    box-sizing: none;
+    float: left;
+  }
+  div.input-append.span7 input {
+    width: 100% !important;
+  }
+  div.container.search {
+    margin-top: -82px;
+  }
+  .navbar-inner {
+    z-index: 9999;
   }
   .container.single-material .span3 {
     width: 100%;
@@ -9282,11 +9305,11 @@ footer .copyright a {
     margin-left: 0;
   }
   .search-results-top .pagination ul a {
-    padding: 6px 12px;
+    padding: 6px 10px;
   }
   .search-results-top .pagination ul li.active span,
   .search-results-top .pagination ul li.disabled span {
-    padding: 6px 12px;
+    padding: 6px 10px;
   }
   .search-results-top p {
     margin-top: 16px;

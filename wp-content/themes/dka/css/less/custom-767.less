@@ -4,7 +4,37 @@
 
 @media (max-width: 767px) {
 
-.search-results-top .span6 { display: inline; width: 48.61878453038674%; float: left; }
+.search-results-top .span6 {
+  display: inline-block;
+  width: 48.61878453038674%;
+  float: left;
+}
+
+//resize advanced search toggle button
+.btn-group.span4 {
+  width: 29.61878453038674%;
+}
+
+//resize search input
+.input-append.span7 {
+  background-color: @orange;
+  width: 48.61878453038674% !important;
+  box-sizing: none;
+  float: left;
+}
+
+div.input-append.span7 input {
+  width: 100% !important;
+}
+
+//adding negative margin to search container to compensate for the navigation position being static in the mobile version (instead of fixed)
+div.container.search {
+  margin-top: -82px;
+}
+
+.navbar-inner {
+  z-index: 9999;
+}
 
 .container.single-material .span3 {
   width: 100%;
@@ -29,11 +59,11 @@ footer {
 }
 
  .search-results-top .pagination ul a {
-  padding: 6px 12px;
+  padding: 6px 10px;
 }
 
 .search-results-top .pagination ul li.active span, .search-results-top .pagination ul li.disabled span  {
-  padding: 6px 12px;
+  padding: 6px 10px;
 }
 
 .search-results-top p {
