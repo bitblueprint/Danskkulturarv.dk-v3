@@ -22,6 +22,8 @@ class WPChaosSearch {
 	const QUERY_KEY_PAGE = 'searchPage';
 	
 	const QUERY_PREFIX_CHAR = '/';
+	
+	const FLUSH_REWRITE_RULES_OPTION_KEY = 'wpchaos-flush-rewrite-rules';
 
 	public static $search_results;
 
@@ -52,23 +54,27 @@ class WPChaosSearch {
 
 			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
 			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
+			
 			// Rewrite tags and rules should always be added.
-			add_action('init', array(&$this, 'add_rewrite_tags'));
-			add_action('init', array(&$this, 'add_rewrite_rules'));
+			add_action('init', array('WPChaosSearch', 'handle_rewrite_rules'));
 			
 			// Add some custom rewrite rules.
 			// This is implemented as a PHP redirect instead.
 			// add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
 			
 			// Add rewrite rules when activating and when settings update.
-			register_activation_hook(__FILE__, array(&$this, 'flush_rewrite_rules'));
-			add_action('chaos-settings-updated', array(&$this, 'flush_rewrite_rules'));
-			if(WP_DEBUG) {
-				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
-			}
+			add_action('chaos-settings-updated', array('WPChaosSearch', 'flush_rewrite_rules_soon'));
 			
 		}
 
+	}
+	
+	public static function install() {
+		WPChaosSearch::flush_rewrite_rules_soon();
+	}
+	
+	public static function uninstall() {
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -286,7 +292,7 @@ class WPChaosSearch {
 	/**
 	 * Add rewrite tags to WordPress installation
 	 */
-	public function add_rewrite_tags() {
+	public static function add_rewrite_tags() {
 		foreach(self::$search_query_variables as $variable) {
 			// If prefix-key is set - the 
 			if(isset($variable['prefix-key'])) {
@@ -300,7 +306,7 @@ class WPChaosSearch {
 	/**
 	 * Add rewrite rules to WordPress installation
 	 */
-	public function add_rewrite_rules() {
+	public static function add_rewrite_rules() {
 		if(get_option('wpchaos-searchpage')) {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
@@ -367,30 +373,41 @@ class WPChaosSearch {
 	 * if 48hrs has passed. Set WP_DEBUG true to make this work.
 	 * @see http://codex.wordpress.org/Function_Reference/flush_rewrite_rules
 	 */
-	public function maybe_flush_rewrite_rules() {
+	/*
+	public static function maybe_flush_rewrite_rules() {
 		$ver = filemtime( __FILE__ ); // Get the file time for this file as the version number
 		$defaults = array( 'version' => 0, 'time' => time() );
 		$r = wp_parse_args( get_option( __CLASS__ . '_flush', array() ), $defaults );
 		
 		if ( $r['version'] != $ver || $r['time'] + 172800 < time() ) { // Flush if ver changes or if 48hrs has passed.
-			$this->flush_rewrite_rules();
-			if(WP_DEBUG) {
-				add_action( 'admin_notices', function() { 
-					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
-				}, 10);
-			}
+			//self::flush_rewrite_rules();
 			$args = array( 'version' => $ver, 'time' => time() );
 			if ( ! update_option( __CLASS__ . '_flush', $args ) )
 				add_option( __CLASS__ . '_flush', $args );
 		}
+	}
+	*/
+	
+	public static function flush_rewrite_rules_soon() {
+		update_option(self::FLUSH_REWRITE_RULES_OPTION_KEY, true);
 	}
 
 	/**
 	 * Flush rewrite rules hard
 	 * @return void 
 	 */
-	public function flush_rewrite_rules() {
-		flush_rewrite_rules(true);
+	public static function handle_rewrite_rules() {
+		self::add_rewrite_tags();
+		self::add_rewrite_rules();
+		if(get_option(self::FLUSH_REWRITE_RULES_OPTION_KEY)) {
+			delete_option(self::FLUSH_REWRITE_RULES_OPTION_KEY);
+			if(WP_DEBUG) {
+				add_action( 'admin_notices', function() {
+					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
+				}, 10);
+			}
+			flush_rewrite_rules();
+		}
 	}
 
 	/**
@@ -445,6 +462,9 @@ class WPChaosSearch {
 	}
 
 }
+
+register_activation_hook(__FILE__, array('WPChaosSearch', 'install'));
+register_deactivation_hook(__FILE__, array('WPChaosSearch', 'uninstall'));
 
 //Instantiate
 new WPChaosSearch();
