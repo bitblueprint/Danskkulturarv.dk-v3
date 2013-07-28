@@ -20,7 +20,7 @@ Author URI:
 class WPDKA {
 
 	//List of plugins depending on
-	private $plugin_dependencies = array(
+	private static $plugin_dependencies = array(
 		'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
 		'wpchaossearch/wpchaossearch.php' => 'WordPress Chaos Search'
 	);
@@ -29,25 +29,38 @@ class WPDKA {
 	 * Construct
 	 */
 	public function __construct() {
-		if($this->check_chaosclient()) {
+		
+		if(self::check_chaosclient()) {
 
 			$this->load_dependencies();
 
 		}
 
 	}
-
+	
+	public static function install() {
+		if(self::check_chaosclient()) {
+			WPChaosSearch::flush_rewrite_rules_soon();
+		}
+	}
+	
+	public static function uninstall() {
+		if(self::check_chaosclient()) {
+			WPChaosSearch::flush_rewrite_rules_soon();
+		}
+	}
+	
 	/**
 	 * Check if dependent plugins are active
 	 * 
 	 * @return void 
 	 */
-	public function check_chaosclient() {
+	public static function check_chaosclient() {
 		//$plugin = plugin_basename( __FILE__ );
 		$dep = array();
 		//if(is_plugin_active($plugin)) {
-			foreach($this->plugin_dependencies as $class => $name) {
-				if(!in_array($class,get_option('active_plugins'))) {
+			foreach(self::$plugin_dependencies as $class => $name) {
+				if(!in_array($class, get_option('active_plugins'))) {
 					$dep[] = $name;
 				}
 			}
@@ -73,6 +86,10 @@ class WPDKA {
 	}
 
 }
+
+register_activation_hook(__FILE__, array('WPDKA', 'install'));
+register_deactivation_hook(__FILE__, array('WPDKA', 'uninstall'));
+
 //Instantiate
 new WPDKA();
 

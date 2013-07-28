@@ -22,6 +22,8 @@ class WPChaosSearch {
 	const QUERY_KEY_PAGE = 'searchPage';
 	
 	const QUERY_PREFIX_CHAR = '/';
+	
+	const FLUSH_REWRITE_RULES_OPTION_KEY = 'wpchaos-flush-rewrite-rules';
 
 	public static $search_results;
 
@@ -48,27 +50,29 @@ class WPChaosSearch {
 
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
-			add_shortcode('chaosresults', array(&$this, 'shortcode_searchresults'));
-
 			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
 			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
+			
 			// Rewrite tags and rules should always be added.
-			add_action('init', array(&$this, 'add_rewrite_tags'));
-			add_action('init', array(&$this, 'add_rewrite_rules'));
+			add_action('init', array('WPChaosSearch', 'handle_rewrite_rules'));
 			
 			// Add some custom rewrite rules.
 			// This is implemented as a PHP redirect instead.
 			// add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
 			
 			// Add rewrite rules when activating and when settings update.
-			register_activation_hook(__FILE__, array(&$this, 'flush_rewrite_rules'));
-			add_action('chaos-settings-updated', array(&$this, 'flush_rewrite_rules'));
-			if(WP_DEBUG) {
-				add_action('admin_init', array(&$this, 'maybe_flush_rewrite_rules'));
-			}
+			add_action('chaos-settings-updated', array('WPChaosSearch', 'flush_rewrite_rules_soon'));
 			
 		}
 
+	}
+	
+	public static function install() {
+		WPChaosSearch::flush_rewrite_rules_soon();
+	}
+	
+	public static function uninstall() {
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -99,6 +103,13 @@ class WPChaosSearch {
 						'cond' => (get_option('permalink_structure') != ''),
 						'message' => 'Permalinks must be enabled for CHAOS search to work properly'
 					))
+				),
+				array(
+					'name' => 'wpchaos-searchsize',
+					'title' => 'Results per page',
+					'type' => 'text',
+					'val' => 20,
+					'class' => 'small-text'
 				)
 			)
 		));
@@ -174,36 +185,21 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function get_search_page() {
+		// TODO: Consider what this is doing here?
 		$this->search_query_prettify();
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+			$this->generate_searchresults();
 
 			//Look in theme dir and include if found
-			$include = locate_template('templates/chaos-full-width.php', false);
+			$include = locate_template('templates/chaos-search-results.php', false);
 			if($include == "") {
 				//Include from plugin template	
-				$include = plugin_dir_path(__FILE__)."/templates/full-width.php";
+				$include = plugin_dir_path(__FILE__)."/templates/search-results.php";
 			}
 			require($include);
 			exit();
 		}
-	}
-	
-	/**
-	 * Wrap shortcode around search results
-	 * @param  string $args 
-	 * @return void       
-	 */
-	public function shortcode_searchresults( $args ) {
-		$args = shortcode_atts( array(
-			'query' => "",
-			'pageindex' => 0,
-			'pagesize' => 20,
-			'sort' => null,
-			'accesspoint' => null
-		), $args );
-
-		return $this->generate_searchresults($args);
 	}
 
 	/**
@@ -211,37 +207,32 @@ class WPChaosSearch {
 	 * @param  array $args 
 	 * @return string The markup generated.
 	 */
-	public function generate_searchresults($args) {	
+	public function generate_searchresults($args = array()) {
+		// Grab args or defaults
+		$args = wp_parse_args($args, array(
+			'query' => "",
+			'pageindex' => self::get_search_var(self::QUERY_KEY_PAGE, 'intval')-1,
+			'pagesize' => get_option("wpchaos-searchsize"),
+			'sort' => null,
+			'accesspoint' => null
+		));
+		extract($args, EXTR_SKIP);	
 
-		$args['pageindex'] = WPChaosSearch::get_search_var(self::QUERY_KEY_PAGE, 'intval')-1;
-		$args['pageindex'] = ($args['pageindex'] >= 0?$args['pageindex']:0);
+		$pagesize = ($pagesize?:20);
+		$pageindex = ($pageindex >= 0?$pageindex:0);
 		
-		$query = apply_filters('wpchaos-solr-query', $args['query'], WPChaosSearch::get_search_vars());
+		$query = apply_filters('wpchaos-solr-query', $query, self::get_search_vars());
 		
 		self::set_search_results(WPChaosClient::instance()->Object()->Get(
 			$query,	// Search query
-			$args['sort'],	// Sort
-			$args['accesspoint'],	// AccessPoint given by settings.
-			$args['pageindex'],		// pageIndex
-			$args['pagesize'],		// pageSize
+			$sort,	// Sort
+			$accesspoint,	// AccessPoint given by settings.
+			$pageindex,		// pageIndex
+			$pagesize,		// pageSize
 			true,	// includeMetadata
 			true,	// includeFiles
 			true	// includeObjectRelations
 		));
-		
-		$objects = self::get_search_results()->MCM()->Results();
-
-		// Buffering the output as this method is returning markup - not printing it.
-		ob_start();
-		//Look in theme dir and include if found
-		$include = locate_template('templates/chaos-search-results.php', false);
-		if($include == "") {
-			//Include from plugin template	
-			$include = plugin_dir_path(__FILE__)."/templates/search-results.php";
-		}
-		require($include);
-		// Return the markup generated in the template and clean the output buffer.
-		return ob_get_clean();
 	}
 
 	/**
@@ -286,7 +277,7 @@ class WPChaosSearch {
 	/**
 	 * Add rewrite tags to WordPress installation
 	 */
-	public function add_rewrite_tags() {
+	public static function add_rewrite_tags() {
 		foreach(self::$search_query_variables as $variable) {
 			// If prefix-key is set - the 
 			if(isset($variable['prefix-key'])) {
@@ -300,7 +291,7 @@ class WPChaosSearch {
 	/**
 	 * Add rewrite rules to WordPress installation
 	 */
-	public function add_rewrite_rules() {
+	public static function add_rewrite_rules() {
 		if(get_option('wpchaos-searchpage')) {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
@@ -367,30 +358,41 @@ class WPChaosSearch {
 	 * if 48hrs has passed. Set WP_DEBUG true to make this work.
 	 * @see http://codex.wordpress.org/Function_Reference/flush_rewrite_rules
 	 */
-	public function maybe_flush_rewrite_rules() {
+	/*
+	public static function maybe_flush_rewrite_rules() {
 		$ver = filemtime( __FILE__ ); // Get the file time for this file as the version number
 		$defaults = array( 'version' => 0, 'time' => time() );
 		$r = wp_parse_args( get_option( __CLASS__ . '_flush', array() ), $defaults );
 		
 		if ( $r['version'] != $ver || $r['time'] + 172800 < time() ) { // Flush if ver changes or if 48hrs has passed.
-			$this->flush_rewrite_rules();
-			if(WP_DEBUG) {
-				add_action( 'admin_notices', function() { 
-					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
-				}, 10);
-			}
+			//self::flush_rewrite_rules();
 			$args = array( 'version' => $ver, 'time' => time() );
 			if ( ! update_option( __CLASS__ . '_flush', $args ) )
 				add_option( __CLASS__ . '_flush', $args );
 		}
+	}
+	*/
+	
+	public static function flush_rewrite_rules_soon() {
+		update_option(self::FLUSH_REWRITE_RULES_OPTION_KEY, true);
 	}
 
 	/**
 	 * Flush rewrite rules hard
 	 * @return void 
 	 */
-	public function flush_rewrite_rules() {
-		flush_rewrite_rules(true);
+	public static function handle_rewrite_rules() {
+		self::add_rewrite_tags();
+		self::add_rewrite_rules();
+		if(get_option(self::FLUSH_REWRITE_RULES_OPTION_KEY)) {
+			delete_option(self::FLUSH_REWRITE_RULES_OPTION_KEY);
+			if(WP_DEBUG) {
+				add_action( 'admin_notices', function() {
+					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
+				}, 10);
+			}
+			flush_rewrite_rules();
+		}
 	}
 
 	/**
@@ -435,6 +437,91 @@ class WPChaosSearch {
 		return true;
 	}
 
+		/**
+	 * Pagination for search results
+	 * @param  array  $args Arguments can be passed for specific behaviour
+	 * @return string       
+	 */
+	public static function paginate($args = array()) {
+		// Grab args or defaults
+		$args = wp_parse_args($args, array(
+			'before' => '<ul>',
+			'after' => '</ul>',
+			'before_link' => '<li>',
+			'after_link' => '</li>',
+			'count' => 5,
+			'next' => '&raquo;',
+			'previous' => '&laquo;',
+			'echo' => true
+		));
+		extract($args, EXTR_SKIP);
+		
+		//Get current page number
+		$page = self::get_search_var(self::QUERY_KEY_PAGE)?:1;
+		$objects = 20;
+		//Get max page number
+		$max_page = ceil(self::get_search_results()->MCM()->TotalCount()/$objects);
+		
+		$result = $before;
+
+		//Current page should optimally be in the center
+		$start = $page-(ceil($count/2))+1;
+		//When reaching the end, push start to the left such that current page is pushed to the right
+		$start = min($start,($max_page+1)-$count);
+		//Start can minimum be 1
+		$start = max(1,$start);
+		//Set end according to start
+		$end = $start+$count;
+
+		//Is prevous wanted
+		if($previous) {
+			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous);
+		}
+
+		//Set enumeration
+		for($i = $start; $i < $end; $i++) {
+			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page);
+		}
+
+		//Is next wanted
+		if($next) {
+			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next);
+		}
+
+		$result .= $after;
+
+		//Is echo wanted automatically
+		if($echo) {
+			echo $result;
+		}
+		
+		return $result;
+	}
+
+	/**
+	 * Helper function for pagination.
+	 * Sets the class, link and text for each element
+	 * 
+	 * @param  string $before_link 
+	 * @param  string $after_link  
+	 * @param  int $page        
+	 * @param  int $min         
+	 * @param  int $max         
+	 * @param  int $current     
+	 * @param  string $title       
+	 * @return string              
+	 */
+	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "") {
+		if($page > $max || $page < $min) {
+			$result = str_replace('>',' class="disabled">',$before_link).'<span>'.($title?:$page).'</span>'.$after_link;
+		} else if(!$title && $page == $current) {
+			$result = str_replace('>',' class="active">',$before_link).'<span>'.$page.'</span>'.$after_link;
+		} else {
+			$result = $before_link.'<a href="'. WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_PAGE => $page)) .'">'.($title?:$page).'</a>'.$after_link;
+		}
+		return $result;
+	}
+
 	/**
 	 * Load dependent files and libraries
 	 * 
@@ -445,6 +532,9 @@ class WPChaosSearch {
 	}
 
 }
+
+register_activation_hook(__FILE__, array('WPChaosSearch', 'install'));
+register_deactivation_hook(__FILE__, array('WPChaosSearch', 'uninstall'));
 
 //Instantiate
 new WPChaosSearch();

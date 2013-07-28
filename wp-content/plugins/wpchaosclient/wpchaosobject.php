@@ -17,6 +17,8 @@
  * @property-read int 	 $likes 		Get number of likes
  * @property-read string $created_date  Get date of creation (XMLDateTime)
  * @property-read array  $tags 			Get list of tags
+ * @property-read string $slug			Get the slug (generated from title).
+ * @property-read string $url			Get the url on which this object is viewable.
  * @property-read mixed  $var
  */
 class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
@@ -30,7 +32,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 */
 	public function __construct(\stdClass $chaos_object) {
 		parent::__construct($chaos_object);
-		// do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
+		do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
 	}
 
 	/**
