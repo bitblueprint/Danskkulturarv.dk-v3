@@ -290,7 +290,7 @@ class WPChaosClient {
 	 */
 	public function create_setting_field($args) {
 		$class = isset($args['class'])?$args['class']:'regular-text';
-		$current_value = get_option($args['name'])?:$args['val'];
+		$current_value = get_option($args['name'])?get_option($args['name']):'';
 		switch($args['type']) {
 			case 'textarea':
 				echo '<textarea class="'.$class.'" name="'.$args['name'].'" >'.$current_value.'</textarea>';
@@ -305,7 +305,7 @@ class WPChaosClient {
 				echo '</select>';
 				break;
 			case 'password':
-				echo '<input name="'.$args['name'].'" type="password" value="'.get_option($args['name']).'" />';
+				echo '<input name="'.$args['name'].'" type="password" value="'.$current_value.'" />';
 				break;
 			case 'text':
 			default:
