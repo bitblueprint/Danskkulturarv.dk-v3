@@ -149,17 +149,15 @@ class WPDKAObject {
 
 		//object->thumbnail
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, $object) {
-
 			foreach($object->Files as $file) {
-				//FormatID = 10 is thumbnail format. This is what we want here
+				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
 					return $value . $file->URL;
 				}
 			}
-
-			//Fallback
+			// Fallback
+			// TODO: Consider making this fallback type-specific.
 			return $value . 'http://placekitten.com/202/145';
-
 		}, 10, 2);
 
 		//object->slug
