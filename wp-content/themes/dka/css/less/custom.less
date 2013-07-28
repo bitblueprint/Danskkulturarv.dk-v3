@@ -203,7 +203,7 @@ hr {
 }
 
 #advanced-search-container {
-  margin-top: 20px;
+  padding-top: 20px;
 
   .btn.filter-btn {
     height: 20px;
@@ -331,6 +331,13 @@ hr {
 .pagination {
   margin: 0;
   line-height: 0;
+}
+
+//bottom pagination
+
+.pagination:nth-child(2) {
+  border-top: 1px dotted @grayBorder;
+  background-color: @orange;
 }
 
 .search-results-top .span6 {
