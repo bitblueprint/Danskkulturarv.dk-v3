@@ -48,6 +48,12 @@ class WPChaosClient {
 	 * Prefix for filters to be used on WPChaosObject
 	 */
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
+	
+	const GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION = 'wpchaos-before-get-object-page-template';
+	
+	const GENERATE_SINGLE_OBJECT_SOLR_QUERY = 'wpchaos-generate-single-object-solr-query';
+	
+	public static $debug_calls = array();
 
 	/**
 	 * Constructor
@@ -60,7 +66,11 @@ class WPChaosClient {
 		add_action('admin_init', array(&$this,'register_settings'));
 		add_action('admin_init', array(&$this,'settings_updated'));
 		add_action('template_redirect', array(&$this,'get_object_page'));
-		add_action('widgets_init', array(&$this,'add_widget_areas'),99);
+		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
+		
+		add_action('chaos-settings-updated', function() {
+			WPChaosClient::instance()->resetSession();
+		});
 		
 		$thiz = $this;
 		$prev_handler = set_exception_handler(function($e) use ($thiz) {
@@ -68,6 +78,26 @@ class WPChaosClient {
 				$thiz->handle_chaos_exception($e);
 			}
 		});
+		
+		if(WP_DEBUG && array_key_exists('debug-chaos', $_GET)) {
+			add_action('wpportalclient-service-call-returned', function($call) {
+				WPChaosClient::$debug_calls[] = $call;
+			});
+			
+			add_action('wp_footer', function() {
+				echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0px;left:0px;right:0px;opacity:0.9;z-index:1050;padding:1em;'>";
+				$c = 1;
+				foreach(WPChaosClient::$debug_calls as $call) {
+					echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
+					echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service.</h1>";
+					echo "<pre style='margin:1em;color:#000000;'>";
+					echo htmlentities(print_r($call, true));
+					echo "</pre></div>";
+					$c++;
+				}
+				echo "</div>";
+			});
+		}
 	}
 
 	/**
@@ -145,8 +175,9 @@ class WPChaosClient {
 		echo '<div class="wrap"><h2>'.get_admin_page_title().'</h2>'."\n";
 
 		try {
-			WPChaosClient::instance()->SessionGUID();
-			echo '<div class="updated"><p>Connection established to CHAOS.</p></div>';
+			$sessionGUID = WPChaosClient::instance()->SessionGUID();
+			$lastSessionUpdate = get_option(WPPortalClient::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY);
+			printf('<div class="updated"><p><strong>&#x2713; Connection to CHAOS is established</strong> (session is %s last updated %s)</p></div>', $sessionGUID, date('r', $lastSessionUpdate));
 		} catch(Exception $e) {
 			echo '<div class="error"><p>Could not connect to CHAOS. Please check the details below.</p></div>';
 		} 
@@ -211,48 +242,44 @@ class WPChaosClient {
 	 * @return void 
 	 */
 	public function get_object_page() {
-	//index.php?&org=1&slug=2 => /org/slug/
-	//org&guid
-		if(isset($_GET['guid'])) {
-
-			//do some chaos here
-			//
+		//index.php?&org=1&slug=2 => /org/slug/
+		//org&guid
+		$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
+		
+		if($searchQuery) {
 			$serviceResult = self::instance()->Object()->Get(
-			self::escapeSolrValue($_GET['guid']),	// Search query
-			null,	// Sort
-			null,	// AccessPoint given by settings.
-			0,		// pageIndex
-			1,		// pageSize
-			true,	// includeMetadata
-			true,	// includeFiles
-			true	// includeObjectRelations
-		);
+				$searchQuery,	// Search query
+				null,	// Sort
+				null,	// AccessPoint given by settings.
+				0,		// pageIndex
+				1,		// pageSize
+				true,	// includeMetadata
+				true,	// includeFiles
+				true	// includeObjectRelations
+			);
 			
-			//Set 404 if no content is found
-			if($serviceResult->MCM()->TotalCount() < 1) {
-				  global $wp_query;
-				  $wp_query->set_404();
-				  status_header( 404 );
-				  get_template_part( 404 );
-				  exit();
-
-			//Set up object and include template
-			} else {
+			// No need for a 404 page - as the template is just not applied if the 
+			if($serviceResult->MCM()->TotalCount() >= 1) {
+				// TODO: Test if this works.
+				if($serviceResult->MCM()->TotalCount() > 1) {
+					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (query was '. $searchQuery .').');
+				}
 				$objects = $serviceResult->MCM()->Results();
 				$object = new WPChaosObject($objects[0]);
 				self::set_object($object);
-				$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
+			
+				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
+	
+				//Look in theme dir and include if found
+				$include = locate_template('templates/chaos-object-page.php', false);
+				if($include == "") {
+					//Include from plugin template	
+					$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
+				}
+				require($include);
+				self::reset_object();
+				exit();
 			}
-
-			//Look in theme dir and include if found
-			$include = locate_template('templates/chaos-object-page.php', false);
-			if($include == "") {
-				//Include from plugin template	
-				$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
-			}
-			require($include);
-			self::reset_object();
-			exit();
 		}
 	}
 
@@ -274,6 +301,9 @@ class WPChaosClient {
 					echo '<option value="'.$key.'" '.selected( get_option($args['name']), $key, false).'>'.$value.'</option>';
 				}
 				echo '</select>';
+				break;
+			case 'password':
+				echo '<input name="'.$args['name'].'" type="password" value="'.get_option($args['name']).'" />';
 				break;
 			case 'text':
 			default:
@@ -303,7 +333,7 @@ class WPChaosClient {
 	public static function instance() {
 		if(self::$instance == null) {
 			//Instantiate CHAOS Portal
-			self::$instance = new WPPortalClient(get_option('wpchaos-servicepath'),get_option('wpchaos-clientguid'));
+			self::$instance = new WPPortalClient(get_option('wpchaos-servicepath'), get_option('wpchaos-clientguid'));
 		}
 		return self::$instance;
 	}
@@ -349,6 +379,10 @@ class WPChaosClient {
 			error_log('CHAOS Error: "' . $exception->getMessage() . '" (unable to store tracedump)', 0);
 		}
 		
+		if(in_array_r(get_option('wpchaos-email'), $exception->getTrace(), true) || in_array_r(get_option('wpchaos-password'), $exception->getTrace(), true)) {
+			$trace = null;
+			$exception = null;
+		}
 		
 		if(locate_template('chaos-exception.php', true) == "") {
 			require(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
@@ -391,5 +425,22 @@ class WPChaosClient {
 }
 //Instantiate
 new WPChaosClient();
+
+/**
+ * http://stackoverflow.com/questions/4128323/in-array-and-multidimensional-array
+ * @param unknown $needle
+ * @param unknown $haystack
+ * @param string $strict
+ * @return boolean
+ */
+function in_array_r($needle, $haystack, $strict = false) {
+	foreach ($haystack as $item) {
+		if (($strict ? $item === $needle : $item == $needle) || (is_array($item) && in_array_r($needle, $item, $strict))) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 //eol

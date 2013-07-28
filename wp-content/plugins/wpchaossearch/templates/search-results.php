@@ -21,11 +21,11 @@
 foreach($objects as $object) :
 	WPChaosClient::set_object($object);
 
-	$link = add_query_arg( 'guid', $object->GUID, get_site_url()."/");
+	$link = WPChaosClient::get_object()->url;
 
 ?>
 		<li class="search-object span3">
-			<a class="thumbnail" href="<?php echo $link; ?>">
+			<a class="thumbnail" href="<?php echo $link; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
 				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
 					<div class="duration">1:30:22</div>
 				</div>

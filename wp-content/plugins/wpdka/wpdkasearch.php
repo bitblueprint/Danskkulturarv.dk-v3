@@ -48,10 +48,13 @@ class WPDKASearch {
 				$query = array();
 			}
 			
+			$objectTypeQueries = array();
 			foreach(WPDKASearch::$OBJECT_TYPE_IDS as $objectTypeID) {
-				$query[] = "(ObjectTypeID:$objectTypeID)";
+				$objectTypeQueries[] = "ObjectTypeID:$objectTypeID";
 			}
-				
+			$objectTypeQueries = '(' . implode('+OR+', $objectTypeQueries) . ')';
+			
+			$query[] = $objectTypeQueries;
 			return implode("+AND+", $query);
 		}, 9, 2);
 		
@@ -76,6 +79,57 @@ class WPDKASearch {
 				
 			return implode("+AND+", $query);
 		}, 10, 2);
+		
+		// File format types
+		add_filter('wpchaos-solr-query', function($query, $query_vars) {
+			if($query) {
+				$query = array($query);
+			} else {
+				$query = array();
+			}
+				
+			if(array_key_exists(WPDKASearch::QUERY_KEY_TYPE, $query_vars)) {
+				// For each known metadata schema, loop and add freetext search on this.
+				$types = $query_vars[WPDKASearch::QUERY_KEY_TYPE];
+				$searches = array();
+				foreach($types as $type) {
+					$searches[] = "(FormatTypeName:$type)";
+				}
+				if(count($searches) > 0) {
+					$query[] = '(' . implode("+OR+", $searches) . ')';
+				}
+			}
+				
+			return implode("+AND+", $query);
+		}, 11, 2);
+		
+		// Organizations
+		add_filter('wpchaos-solr-query', function($query, $query_vars) {
+			if($query) {
+				$query = array($query);
+			} else {
+				$query = array();
+			}
+				
+			if(array_key_exists(WPDKASearch::QUERY_KEY_ORGANIZATION, $query_vars)) {
+				// For each known metadata schema, loop and add freetext search on this.
+				$organizationSlugs = $query_vars[WPDKASearch::QUERY_KEY_ORGANIZATION];
+				$organizations = WPDKASearch::get_organizations();
+				$searches = array();
+				foreach($organizationSlugs as $organizationSlug) {
+					foreach($organizations as $title => $organization) {
+						if($organization['slug'] == $organizationSlug) {
+							$searches[] = "(DKA-Organization:\"$title\")";
+						}
+					}
+				}
+				if(count($searches) > 0) {
+					$query[] = '(' . implode("+OR+", $searches) . ')';
+				}
+			}
+				
+			return implode("+AND+", $query);
+		}, 11, 2);
 	}
 
 	/**
