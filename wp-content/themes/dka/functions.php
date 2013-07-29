@@ -26,10 +26,13 @@ add_action( 'after_setup_theme', 'dka_setup' );
 
 function dka_scripts_styles() {
 
+	wp_enqueue_style( 'videojs-style', get_template_directory_uri() . 'http://vjs.zencdn.net/4.1/video-js.css' );
 	wp_enqueue_style( 'dka-style', get_template_directory_uri() . '/css/styles.css' );
 
 	wp_dequeue_script('jquery');
 	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/js/jquery-1.10.1.min.js', array(), '1.10.1', true );
+
+	wp_enqueue_script( 'videojs-functions', get_template_directory_uri() . 'http://vjs.zencdn.net/4.1/video.js', array(), '1', true );
 
 	wp_enqueue_script( 'custom-functions', get_template_directory_uri() . '/js/custom-functions.js', array('jquery'), '1', true );
 

@@ -159,6 +159,19 @@ hr {
 }
 
 // --------------------------------------------------
+// PAGES / POSTS
+// --------------------------------------------------
+
+.post {
+
+  padding: 0 20px 20px 20px;
+  margin-left: -21px;
+  border-left: 1px solid @grayBorder;
+  border-right: 1px solid @grayBorder;
+}
+
+
+// --------------------------------------------------
 // SEARCH
 // --------------------------------------------------
 
@@ -315,6 +328,7 @@ hr {
   }
 }
 
+//gray border
 .search-results {
   padding: 0 20px 20px 20px;
   margin-left: -21px;
@@ -334,10 +348,12 @@ hr {
 }
 
 //bottom pagination
-
-.pagination:nth-child(2) {
-  border-top: 1px dotted @grayBorder;
-  background-color: @orange;
+.search-results-bottom {
+  border-top: 1px solid @grayBorder;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 .search-results-top .span6 {
@@ -345,7 +361,8 @@ hr {
 }
 
 .search-results-top p {
-  margin-top: 22px;
+  margin-top: 14px;
+  line-height: 20px;
 }
 
 .search-results-top .pagination ul {
@@ -378,6 +395,8 @@ hr {
 // CONTENT
 // --------------------------------------------------
 
+.video-js { width: 100%!important; }
+
 // results
 
 .blue {
@@ -396,8 +415,13 @@ hr {
 
 // Display Material
 .single-material {
-  .info {
 
+  padding: 0 20px 20px 20px;
+  margin-left: -21px;
+  border-left: 1px solid @grayBorder;
+  border-right: 1px solid @grayBorder;
+
+  .info {
     border: 1px solid @grayBorder;
     padding: 10px;
 
