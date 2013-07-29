@@ -34,6 +34,7 @@
 				label.toggleClass("active",checkbox.is(":checked"));
 
 				api.updateToggleAllState(label.parent());
+				api.forceSubmitForm();
 			}).change(); //Fire on load to get current states
 		},
 		
@@ -58,6 +59,9 @@
 				// Change the state and fire the change event.
 				$("input[type=checkbox]", $(this).parent()).attr("checked", false).change();
 			});
+		},
+		forceSubmitForm: function() {
+			$("#searchsubmit").click();
 		}
 
 	}
