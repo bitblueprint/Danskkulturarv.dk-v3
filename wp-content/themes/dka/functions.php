@@ -177,7 +177,7 @@ function dka_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', 'dka_wp_title', 10, 2 );
 
-function dka_sanitize_title($title, $raw_title, $context) {
+/*function dka_sanitize_title($title, $raw_title, $context) {
 
 	$replacements = array(
 		'æ' => 'cab9d5d0-f843-11e2-b778-0800200c9a66',
@@ -186,7 +186,6 @@ function dka_sanitize_title($title, $raw_title, $context) {
 		'ø' => 'cab9d5d3-f843-11e2-b778-0800200c9a66',
 		'Å' => 'cab9d5d4-f843-11e2-b778-0800200c9a66',
 		'å' => 'cab9d5d5-f843-11e2-b778-0800200c9a66'
-
 	);
 
     if ( 'save' == $context ) {
@@ -198,5 +197,20 @@ function dka_sanitize_title($title, $raw_title, $context) {
     return $title;
 }
 add_filter('sanitize_title', 'dka_sanitize_title', 10, 3);
+
+function dka_redirect($location, $status) {
+	$replacements = array(
+		'æ' => '%C3%86',
+		'Æ' => '%C3%A6',
+		'Ø' => '%C3%98',
+		'ø' => '%C3%B8',
+		'Å' => '%C3%85',
+		'å' => '%C3%A5'
+	);
+	$location = str_replace(array_keys($replacements), $replacements, $location);
+	return $location;
+}
+
+add_filter('wp_redirect','dka_redirect',10,2);*/
 
 //eol
