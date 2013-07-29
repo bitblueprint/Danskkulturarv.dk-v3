@@ -4312,31 +4312,33 @@ hr {
   margin-left: 8px;
 }
 .search-results {
-  padding: 0 20px 20px 20px;
-  margin-left: -21px;
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
 }
 .search-results-top {
   border-bottom: 1px solid #eeeded;
-  margin-right: -20px;
+  margin-bottom: 20px;
+  margin-left: 0;
+  margin-right: 0;
+}
+.thumbnails {
+  margin: 0;
+  padding: 0;
+}
+.thumbnails div {
   margin-bottom: 20px;
 }
 .pagination {
   margin: 0;
-  line-height: 0;
 }
 .pagination:nth-child(2) {
   border-top: 1px dotted #eeeded;
   background-color: #ff7e21;
 }
-.search-results-top .span6 {
-  line-height: 0;
-}
 .search-results-top p {
   margin-top: 22px;
 }
-.search-results-top .pagination ul {
+.pagination {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
   border-radius: 0;

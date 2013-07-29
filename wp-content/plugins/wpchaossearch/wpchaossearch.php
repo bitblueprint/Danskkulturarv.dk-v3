@@ -445,8 +445,8 @@ class WPChaosSearch {
 	public static function paginate($args = array()) {
 		// Grab args or defaults
 		$args = wp_parse_args($args, array(
-			'before' => '<ul>',
-			'after' => '</ul>',
+		/*	'before' => '<ul>',
+			'after' => '</ul>', */
 			'before_link' => '<li>',
 			'after_link' => '</li>',
 			'count' => 5,
