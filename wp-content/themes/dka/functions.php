@@ -26,13 +26,14 @@ add_action( 'after_setup_theme', 'dka_setup' );
 
 function dka_scripts_styles() {
 
-	wp_enqueue_style( 'videojs-style', get_template_directory_uri() . 'http://vjs.zencdn.net/4.1/video-js.css' );
 	wp_enqueue_style( 'dka-style', get_template_directory_uri() . '/css/styles.css' );
+
+	wp_enqueue_style( 'mediaelementplayer', get_template_directory_uri() . '/css/mediaelementplayer.css' );
 
 	wp_dequeue_script('jquery');
 	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/js/jquery-1.10.1.min.js', array(), '1.10.1', true );
 
-	wp_enqueue_script( 'videojs-functions', get_template_directory_uri() . 'http://vjs.zencdn.net/4.1/video.js', array(), '1', true );
+	wp_enqueue_script( 'mediaelementplayer', get_template_directory_uri() . '/js/mediaelement-and-player.min.js', array(), '4.1', true );
 
 	wp_enqueue_script( 'custom-functions', get_template_directory_uri() . '/js/custom-functions.js', array('jquery'), '1', true );
 
@@ -58,6 +59,13 @@ function dka_scripts_styles() {
 
 }
 add_action( 'wp_enqueue_scripts', 'dka_scripts_styles' );
+
+function dka_footer_scripts() {
+	echo '<script type="text/javascript">
+    jQuery("video, audio").mediaelementplayer();
+</script>';
+}
+add_action('wp_footer','dka_footer_scripts',99);
 
 function dka_widgets_init() {
 
@@ -179,5 +187,41 @@ function dka_wp_title( $title, $sep ) {
 	return $title;
 }
 add_filter( 'wp_title', 'dka_wp_title', 10, 2 );
+
+/*function dka_sanitize_title($title, $raw_title, $context) {
+
+	$replacements = array(
+		'æ' => 'cab9d5d0-f843-11e2-b778-0800200c9a66',
+		'Æ' => 'cab9d5d1-f843-11e2-b778-0800200c9a66',
+		'Ø' => 'cab9d5d2-f843-11e2-b778-0800200c9a66',
+		'ø' => 'cab9d5d3-f843-11e2-b778-0800200c9a66',
+		'Å' => 'cab9d5d4-f843-11e2-b778-0800200c9a66',
+		'å' => 'cab9d5d5-f843-11e2-b778-0800200c9a66'
+	);
+
+    if ( 'save' == $context ) {
+    	$title = $raw_title;
+    	$title = str_replace(array_keys($replacements), $replacements, $title);
+    	$title = remove_accents($title);
+    	$title = str_replace($replacements, array_keys($replacements), $title);
+    }
+    return $title;
+}
+add_filter('sanitize_title', 'dka_sanitize_title', 10, 3);
+
+function dka_redirect($location, $status) {
+	$replacements = array(
+		'æ' => '%C3%86',
+		'Æ' => '%C3%A6',
+		'Ø' => '%C3%98',
+		'ø' => '%C3%B8',
+		'Å' => '%C3%85',
+		'å' => '%C3%A5'
+	);
+	$location = str_replace(array_keys($replacements), $replacements, $location);
+	return $location;
+}
+
+add_filter('wp_redirect','dka_redirect',10,2);*/
 
 //eol
