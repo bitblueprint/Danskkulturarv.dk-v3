@@ -38,7 +38,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		</li>
  <?php endforeach; WPChaosClient::reset_object(); ?>
 	</ul>
-
+	<div class="search-results-bottom">
 		<div class="row search-results-top">
 		<div class="span6">
 			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
@@ -47,6 +47,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		<div class="pagination pagination-right">
 		  <?php echo $pagination; ?>
 		</div>
+	</div>
 	</div>
 	</div>
 </article>
