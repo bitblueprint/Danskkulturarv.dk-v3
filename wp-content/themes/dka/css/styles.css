@@ -8998,6 +8998,12 @@ hr {
 .navbar .nav > li.current-menu-item > a {
   background-color: #555555;
 }
+.post {
+  padding: 0 20px 20px 20px;
+  margin-left: -21px;
+  border-left: 1px solid #eeeded;
+  border-right: 1px solid #eeeded;
+}
 .container.search {
   padding: 80px 20px 20px 20px;
   border: 1px solid #eeeded;
@@ -9136,15 +9142,19 @@ hr {
   margin: 0;
   line-height: 0;
 }
-.pagination:nth-child(2) {
-  border-top: 1px dotted #eeeded;
-  background-color: #ff7e21;
+.search-results-bottom {
+  border-top: 1px solid #eeeded;
+  margin-left: -20px;
+  margin-right: -20px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .search-results-top .span6 {
   line-height: 0;
 }
 .search-results-top p {
-  margin-top: 22px;
+  margin-top: 14px;
+  line-height: 20px;
 }
 .search-results-top .pagination ul {
   -webkit-border-radius: 0;
@@ -9169,6 +9179,9 @@ hr {
 .search-results-top .pagination ul li.disabled span {
   border-left: 1px dotted #eeeded;
 }
+.video-js {
+  width: 100%!important;
+}
 .blue {
   color: #2f94fd;
 }
@@ -9177,6 +9190,12 @@ hr {
 }
 .orange {
   color: #ff7e21;
+}
+.single-material {
+  padding: 0 20px 20px 20px;
+  margin-left: -21px;
+  border-left: 1px solid #eeeded;
+  border-right: 1px solid #eeeded;
 }
 .single-material .info {
   border: 1px solid #eeeded;
@@ -9273,7 +9292,7 @@ footer .copyright a {
     float: left;
   }
   .btn-group.span4 {
-    width: 29.61878453038674%;
+    width: 20%;
   }
   .input-append.span7 {
     background-color: #ff7e21;
