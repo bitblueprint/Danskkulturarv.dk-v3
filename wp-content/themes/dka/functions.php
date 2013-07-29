@@ -177,4 +177,26 @@ function dka_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', 'dka_wp_title', 10, 2 );
 
+function dka_sanitize_title($title, $raw_title, $context) {
+
+	$replacements = array(
+		'æ' => 'cab9d5d0-f843-11e2-b778-0800200c9a66',
+		'Æ' => 'cab9d5d1-f843-11e2-b778-0800200c9a66',
+		'Ø' => 'cab9d5d2-f843-11e2-b778-0800200c9a66',
+		'ø' => 'cab9d5d3-f843-11e2-b778-0800200c9a66',
+		'Å' => 'cab9d5d4-f843-11e2-b778-0800200c9a66',
+		'å' => 'cab9d5d5-f843-11e2-b778-0800200c9a66'
+
+	);
+
+    if ( 'save' == $context ) {
+    	$title = $raw_title;
+    	$title = str_replace(array_keys($replacements), $replacements, $title);
+    	$title = remove_accents($title);
+    	$title = str_replace($replacements, array_keys($replacements), $title);
+    }
+    return $title;
+}
+add_filter('sanitize_title', 'dka_sanitize_title', 10, 3);
+
 //eol
