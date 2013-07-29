@@ -22,6 +22,12 @@
  * @property-read mixed  $var
  */
 class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
+
+	/**
+	 * Variables created by WP filters are cached
+	 * @var array
+	 */
+	private $variable_cache = array();
 	
 	const CHAOS_OBJECT_CONSTRUCTION_ACTION = 'chaos-object-constrution';
 
@@ -50,10 +56,14 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		// 	return $this->$method();
 		// }
 
-		//If no filters exist for this variable, it should probably not be used
-		if(array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
+		//Check if variable exist in cache and return
+		if(isset($this->variable_cache[$name])) {
+			return $this->variable_cache[$name];
+		//Check if a WP filter exist for variable, populate cache and return
+		} else if(array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
 			// throw new RuntimeException("There are no filters for this variable: $".$name);
-			return apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this);
+			return $this->variable_cache[$name] = apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this);
+		//Fallback to parent getter
 		} else {
 			return parent::__get($name);
 		}

@@ -1,27 +1,5 @@
 <?php
-$format_types = array(
-	array(
-		'type' => WPDKAObject::TYPE_AUDIO,
-		'class' => 'icon-volume-up',
-		'title' => 'Lyd',
-		),
-	array(
-		'type' => WPDKAObject::TYPE_VIDEO,
-		'class' => 'icon-film',
-		'title' => 'Video',
-	),
-	// This is not yet supported by the metadata.
-	//array(
-	//	'type' => WPDKAObject::TYPE_UNKNOWN,
-	//	'class' => 'icon-file-text',
-	//	'title' => 'Dokumenter',
-	//),
-	array(
-		'type' => WPDKAObject::TYPE_IMAGE,
-		'class' => 'icon-picture',
-		'title' => 'Billeder',
-	),
-);
+
 $types = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE);
 $organizations = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION);
 $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
@@ -39,10 +17,10 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 			<label class="btn filter-btn filter-btn-all">Alle Typer<i class="icon-ok"></i></label>
 			<hr>
 			<!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
-<?php foreach($format_types as $format) : ?>
-			<label for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format['type']; ?>" class="btn filter-btn filter-btn-single">
-				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format['type']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format['type']; ?>" <?php checked(in_array($format['type'],(array)$types)); ?>>
-				<i class="<?php echo $format['class']; ?>"></i><?php echo $format['title']; ?><i class="icon-remove-sign"></i>
+<?php foreach(WPDKAObject::$format_types as $format_type => $args) : if($format_type == WPDKAObject::TYPE_IMAGE_AUDIO) continue; ?>
+			<label title="<?php echo $args['title']; ?>" for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" class="btn filter-btn filter-btn-single">
+				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format_type; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" <?php checked(in_array($format_type,(array)$types)); ?>>
+				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?><i class="icon-remove-sign"></i>
 			</label> 
 <?php endforeach; ?>
 		</div>

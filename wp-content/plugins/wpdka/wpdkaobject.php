@@ -46,6 +46,30 @@ class WPDKAObject {
 	const TYPE_IMAGE_AUDIO = 'image-audio';
 	const TYPE_UNKNOWN = 'unknown';
 
+	public static $format_types = array(
+		WPDKAObject::TYPE_AUDIO => array(
+			'class' => 'icon-volume-up',
+			'title' => 'Lyd',
+			),
+		WPDKAObject::TYPE_IMAGE_AUDIO => array(
+			'class' => 'icon-picture-sound',
+			'title' => 'Billeder og lyd',
+		),
+		WPDKAObject::TYPE_VIDEO => array(
+			'class' => 'icon-film',
+			'title' => 'Video',
+		),
+		// This is not yet supported by the metadata.
+		//WPDKAObject::TYPE_UNKNOWN => array(
+		//	'class' => 'icon-file-text',
+		//	'title' => 'Dokumenter',
+		//),
+		WPDKAObject::TYPE_IMAGE => array(
+			'class' => 'icon-picture',
+			'title' => 'Billeder',
+		),
+	);
+
 	/**
 	 * Determine type of a CHAOS object based
 	 * on the included file formats
@@ -146,6 +170,16 @@ class WPDKAObject {
 		//object->type
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
 			return $value . WPDKAObject::determine_type($object);
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_class', function($value, $object) {
+			$type = $object->type;
+			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['class'] : $type);
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, $object) {
+			$type = $object->type;
+			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['title'] : $type);
 		}, 10, 2);
 
 		//object->thumbnail

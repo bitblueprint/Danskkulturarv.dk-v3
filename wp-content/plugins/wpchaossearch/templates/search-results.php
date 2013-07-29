@@ -12,7 +12,7 @@
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">
-		  <?php WPChaosSearch::paginate(); ?>
+		  <?php echo $pagination = WPChaosSearch::paginate('echo=0'); ?>
 		</div>
 	</div>
 	</div>
@@ -21,12 +21,9 @@
 <?php
 foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 	WPChaosClient::set_object($object);
-
-	$link = WPChaosClient::get_object()->url;
-
 ?>
 		<li class="search-object span3">
-			<a class="thumbnail" href="<?php echo $link; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
+			<a class="thumbnail" href="<?php echo WPChaosClient::get_object()->url; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
 				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
 					<div class="duration">1:30:22</div>
 				</div>
@@ -35,7 +32,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?></p>
 				<hr>
 				<div class="media-type-container">
-					<span class="<?php echo WPChaosClient::get_object()->type; ?>"><i class="icon-film"></i><i class="icon-eye-open"> 132</i></span>
+					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> 132</i>
 				</div>
 			</a>
 		</li>
@@ -48,7 +45,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">
-		  <?php WPChaosSearch::paginate(); ?>
+		  <?php echo $pagination; ?>
 		</div>
 	</div>
 	</div>

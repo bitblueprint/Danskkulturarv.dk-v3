@@ -199,10 +199,10 @@ class WPChaosClient {
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-featured',
 			'name' => 'CHAOS Object - Featured',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h3 class="widget-title">',
-			'after_title' => '</h3>',
+			'before_widget' => '',
+			'after_widget' => '',
+			'before_title' => '<h2 class="widget-title">',
+			'after_title' => '</h2>',
 		) );
 
 		register_sidebar( array(
@@ -212,6 +212,15 @@ class WPChaosClient {
 			'after_widget' => '',
 			'before_title' => '<h3 class="widget-title">',
 			'after_title' => '</h3>',
+		) );
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-sidebar',
+			'name' => 'CHAOS Object - Sidebar',
+			'before_widget' => '<li id="%1$s" class="widget %2$s">',
+			'after_widget' => '</li>',
+			'before_title' => '<h4 class="widget-title">',
+			'after_title' => '</h4>',
 		) );
 
 		 register_widget( 'WPChaosObjectAttrWidget' );
