@@ -234,6 +234,23 @@ class WPChaosSearch {
 			true	// includeObjectRelations
 		));
 	}
+	
+	public static function generate_facet($facet_field, $exclude_query_var = null) {
+		$variables = self::get_search_vars();
+		if($exclude_query_var) {
+			unset($variables[$exclude_query_var]);
+		}
+		$query = apply_filters('wpchaos-solr-query', "", $variables);
+		$response = WPChaosClient::instance()->Index()->Search("field:" . $facet_field, $query);
+		$results = $response->Index()->Results();
+		$facets = $results[0]->FacetFieldsResult[0]->Facets;
+		// Process the result from CHAOS.
+		$result = array();
+		foreach($facets as $facet) {
+			$result[$facet->Value] = $facet->Count;
+		}
+		return $result;
+	}
 
 	/**
 	 * Render HTML for search form
@@ -257,8 +274,6 @@ class WPChaosSearch {
 			$include = plugin_dir_path(__FILE__)."/templates/search-form.php";
 		}
 		require($include);
-
-		
 	}
 	
 	public static $search_query_variables = array();

@@ -1,7 +1,21 @@
 <?php
-
 $types = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE);
 $organizations = WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION);
+
+global $facets;
+$facets = array(
+	WPDKASearch::QUERY_KEY_TYPE => WPChaosSearch::generate_facet("FormatTypeName", WPDKASearch::QUERY_KEY_TYPE),
+	WPDKASearch::QUERY_KEY_ORGANIZATION => WPChaosSearch::generate_facet("DKA-Organization", WPDKASearch::QUERY_KEY_ORGANIZATION),
+);
+function get_facet_count($field, $value) {
+	global $facets;
+	if(array_key_exists($field, $facets)) {
+		if(array_key_exists($value, $facets[$field])) {
+			return $facets[$field][$value];
+		}
+	}
+	return "0";
+}
 $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
 ?>
 <form method="GET" action="<?php echo $page; ?>" class="span12">
@@ -20,7 +34,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 <?php foreach(WPDKAObject::$format_types as $format_type => $args) : if($format_type == WPDKAObject::TYPE_IMAGE_AUDIO) continue; ?>
 			<label title="<?php echo $args['title']; ?>" for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format_type; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" <?php checked(in_array($format_type,(array)$types)); ?>>
-				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?><i class="icon-remove-sign"></i>
+				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?> (<?php echo get_facet_count(WPDKASearch::QUERY_KEY_TYPE, $format_type) ?>)<i class="icon-remove-sign"></i>
 			</label> 
 <?php endforeach; ?>
 		</div>
@@ -30,7 +44,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 <?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>
 			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" <?php checked(in_array($organization['slug'],(array)$organizations)); ?>>
-				<?php echo $organization['title']; ?><i class="icon-remove-sign"></i>
+				<?php echo $organization['title']; ?> (<?php echo get_facet_count(WPDKASearch::QUERY_KEY_ORGANIZATION, $title) ?>)<i class="icon-remove-sign"></i>
 			</label> 
 <?php endforeach; ?>
 		</div>
