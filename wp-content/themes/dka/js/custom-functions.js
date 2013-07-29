@@ -24,6 +24,7 @@
 		/**
 		 * Update labels according to their checkbox state
 		 * Tell ToggleAll button
+		 * Force form submit on every change
 		 * @return {void} 
 		 */
 		addCheckboxListener: function() { 
@@ -34,8 +35,11 @@
 				label.toggleClass("active",checkbox.is(":checked"));
 
 				api.updateToggleAllState(label.parent());
-				api.forceSubmitForm();
+				//api.forceSubmitForm();
 			}).change(); //Fire on load to get current states
+			$("input.chaos-filter").change(function() {
+				api.forceSubmitForm();
+			});
 		},
 		
 		/**
@@ -60,6 +64,11 @@
 				$("input[type=checkbox]", $(this).parent()).attr("checked", false).change();
 			});
 		},
+
+		/**
+		 * Force click on form submit
+		 * @return {void} 
+		 */
 		forceSubmitForm: function() {
 			$("#searchsubmit").click();
 		}
