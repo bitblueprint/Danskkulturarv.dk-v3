@@ -27,16 +27,17 @@ class WPDKAObject {
 	 */
 	public function __construct() {
 
-			// add_action('admin_init',array(&$this,'check_chaosclient'));
+		// add_action('admin_init',array(&$this,'check_chaosclient'));
+	
+		// Define the free-text search filter.
+		$this->define_attribute_filters();
 		
-			// Define the free-text search filter.
-			$this->define_attribute_filters();
-			
-			// Define a filter for object creation.
-			// $this->define_object_construction_filters();
-			$this->define_single_object_page();
+		// Define a filter for object creation.
+		$this->define_object_construction_filters();
+		
+		$this->define_single_object_page();
 
-			add_filter('widgets_init',array(&$this,'register_widgets'));
+		add_filter('widgets_init',array(&$this,'register_widgets'));
 	}
 
 	const TYPE_VIDEO = 'video';
@@ -44,6 +45,30 @@ class WPDKAObject {
 	const TYPE_IMAGE = 'image';
 	const TYPE_IMAGE_AUDIO = 'image-audio';
 	const TYPE_UNKNOWN = 'unknown';
+
+	public static $format_types = array(
+		WPDKAObject::TYPE_AUDIO => array(
+			'class' => 'icon-volume-up',
+			'title' => 'Lyd',
+			),
+		WPDKAObject::TYPE_IMAGE_AUDIO => array(
+			'class' => 'icon-picture-sound',
+			'title' => 'Billeder og lyd',
+		),
+		WPDKAObject::TYPE_VIDEO => array(
+			'class' => 'icon-film',
+			'title' => 'Video',
+		),
+		// This is not yet supported by the metadata.
+		//WPDKAObject::TYPE_UNKNOWN => array(
+		//	'class' => 'icon-file-text',
+		//	'title' => 'Dokumenter',
+		//),
+		WPDKAObject::TYPE_IMAGE => array(
+			'class' => 'icon-picture',
+			'title' => 'Billeder',
+		),
+	);
 
 	/**
 	 * Determine type of a CHAOS object based
@@ -147,6 +172,16 @@ class WPDKAObject {
 			return $value . WPDKAObject::determine_type($object);
 		}, 10, 2);
 
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_class', function($value, $object) {
+			$type = $object->type;
+			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['class'] : $type);
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, $object) {
+			$type = $object->type;
+			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['title'] : $type);
+		}, 10, 2);
+
 		//object->thumbnail
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, $object) {
 			foreach($object->Files as $file) {
@@ -186,7 +221,14 @@ class WPDKAObject {
 		// Ensure the DKA Crowd metadata schema is present, and redirect to the slug URL if needed.
 		/*
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
-			WPDKAObject::ensure_crowd_metadata($object);
+			if(WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET)) {
+				echo "<h1>Crowd metadata is resetting ...</h1>";
+				// TODO: Check that this isn't failing.
+				WPDKAObject::reset_crowd_metadata($object);
+				exit;
+			} else {
+				WPDKAObject::ensure_crowd_metadata($object);
+			}
 			if(isset($_GET['guid'])) {
 				$redirection = $object->url;
 				wp_redirect($redirection);
@@ -214,17 +256,16 @@ class WPDKAObject {
 		});
 	}
 	
-	/*
 	public function define_object_construction_filters() {
 		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
 			WPDKAObject::ensure_crowd_metadata($object);
 		}, 10, 1);
 	}
-	*/
 	
 	public static function ensure_crowd_metadata(\WPChaosObject $object) {
-		if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID) | true) {
-			self::reset_crowd_metadata($object);
+		if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
+			// TODO: Remove this when the CHAOS Service indexing works.
+			//self::reset_crowd_metadata($object);
 		}
 	}
 	
@@ -240,11 +281,12 @@ class WPDKAObject {
 		$metadataXML->addChild('Likes', '0');
 		$metadataXML->addChild('Ratings', '0');
 		$metadataXML->addChild('AccumulatedRate', '0');
-		$metadataXML->addChild('Slug', WPDKAObject::generateSlug($object));
+		$slug = WPDKAObject::generateSlug($object);
+		$metadataXML->addChild('Slug', $slug);
 		$metadataXML->addChild('Tags');
 		
 		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::DKA_CROWD_LANGUAGE, $revisionID);
-		if(!$successfulValidation) {
+		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
 		}
 	}
@@ -269,7 +311,7 @@ class WPDKAObject {
 				$slug = "$slug_base-$postfix";
 			}
 			$postfix++; // Try the next
-		} while(self::getObjectFromSlug($slug) != null); // Until no object is returned.
+		} while(self::getObjectFromSlug($slug) != null && self::getObjectFromSlug($slug)->GUID != $object->GUID); // Until no object is returned.
 		
 		return $slug;
 	}
@@ -295,7 +337,7 @@ class WPDKAObject {
 				return null;
 			} elseif ($count > 1) {
 				if(WP_DEBUG) {
-					throw new \CHAOSException("CHAOS returned more than one ($count) object for this slug: ". htmlentities($slug));
+					//throw new \CHAOSException("CHAOS returned more than one ($count) object for this slug: ". htmlentities($slug));
 				}
 			}
 			$result = $response->MCM()->Results();

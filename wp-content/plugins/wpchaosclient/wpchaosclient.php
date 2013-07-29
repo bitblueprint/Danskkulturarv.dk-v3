@@ -199,10 +199,10 @@ class WPChaosClient {
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-featured',
 			'name' => 'CHAOS Object - Featured',
-			'before_widget' => '<div id="%1$s" class="widget %2$s">',
-			'after_widget' => '</div>',
-			'before_title' => '<h3 class="widget-title">',
-			'after_title' => '</h3>',
+			'before_widget' => '',
+			'after_widget' => '',
+			'before_title' => '<h2 class="widget-title">',
+			'after_title' => '</h2>',
 		) );
 
 		register_sidebar( array(
@@ -212,6 +212,15 @@ class WPChaosClient {
 			'after_widget' => '',
 			'before_title' => '<h3 class="widget-title">',
 			'after_title' => '</h3>',
+		) );
+
+		register_sidebar( array(
+			'id' => 'wpchaos-obj-sidebar',
+			'name' => 'CHAOS Object - Sidebar',
+			'before_widget' => '<li id="%1$s" class="widget %2$s">',
+			'after_widget' => '</li>',
+			'before_title' => '<h4 class="widget-title">',
+			'after_title' => '</h4>',
 		) );
 
 		 register_widget( 'WPChaosObjectAttrWidget' );
@@ -247,38 +256,59 @@ class WPChaosClient {
 		$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
 		
 		if($searchQuery) {
-			$serviceResult = self::instance()->Object()->Get(
-				$searchQuery,	// Search query
-				null,	// Sort
-				null,	// AccessPoint given by settings.
-				0,		// pageIndex
-				1,		// pageSize
-				true,	// includeMetadata
-				true,	// includeFiles
-				true	// includeObjectRelations
-			);
+			try {
+				$serviceResult = self::instance()->Object()->Get(
+					$searchQuery,	// Search query
+					null,	// Sort
+					null,	// AccessPoint given by settings.
+					0,		// pageIndex
+					1,		// pageSize
+					true,	// includeMetadata
+					true,	// includeFiles
+					true	// includeObjectRelations
+				);
 			
-			// No need for a 404 page - as the template is just not applied if the 
-			if($serviceResult->MCM()->TotalCount() >= 1) {
-				// TODO: Test if this works.
-				if($serviceResult->MCM()->TotalCount() > 1) {
-					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (query was '. $searchQuery .').');
+				// No need for a 404 page - as the template is just not applied if the 
+				if($serviceResult->MCM()->TotalCount() >= 1) {
+					// TODO: Consider if this prevents caching.
+					status_header(200);
+					global $wp_query;
+					$wp_query->is_404 = false;
+					
+					if($serviceResult->MCM()->TotalCount() > 1) {
+						error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (query was '. $searchQuery .').');
+					}
+					$objects = $serviceResult->MCM()->Results();
+					$object = new WPChaosObject($objects[0]);
+					self::set_object($object);
+				
+					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
+					
+					add_filter('wp_title', function($title, $sep) use ($object) {
+						return $object->title .' '. $sep .' '. $title;
+					}, 10, 2);
+		
+					//Look in theme dir and include if found
+					$include = locate_template('templates/chaos-object-page.php', false);
+					if($include == "") {
+						//Include from plugin template	
+						$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
+					}
+					require($include);
+					self::reset_object();
+					exit();
 				}
-				$objects = $serviceResult->MCM()->Results();
-				$object = new WPChaosObject($objects[0]);
-				self::set_object($object);
+			} catch(\CHAOSException $e) {
+				// Do nothing but log it.
+				error_log('CHAOS Error when calling get_object_page: '.$e->getMessage());
+			}
 			
-				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
-	
-				//Look in theme dir and include if found
-				$include = locate_template('templates/chaos-object-page.php', false);
-				if($include == "") {
-					//Include from plugin template	
-					$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
-				}
-				require($include);
-				self::reset_object();
-				exit();
+			// If we get to this point, and guid was a query parameter - we didn't get what we were looking for.
+			if(array_key_exists('guid', $_GET)) {
+				// The user specifically asked for an object of a particular GUID.
+				status_header(400);
+				global $wp_query;
+				$wp_query->set_404();
 			}
 		}
 	}
