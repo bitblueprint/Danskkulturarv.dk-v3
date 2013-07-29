@@ -7,3 +7,98 @@ So you can start working with more styles, background images,
 and other resources.
 
 -------------------------------------------------- */
+
+.navbar {
+  
+  // Navbar background color
+  .navbar-inner {
+    background-image:none;
+    background-color: @gray;
+  }
+
+  // Top logo
+  .navbar-brand {
+    padding: 25px 20px 0 20px;
+    max-width: 1200px;
+    padding-left: -15px;
+  }
+
+  .navbar-responsive-collapse {
+  	float: right;
+  }
+
+  // Navigation
+  .nav {
+
+    padding: 20px 0;
+
+    > li + li {
+      margin-left: 15px;
+    }
+
+    > li > a {
+      padding: 5px 10px;
+      color: @white;
+      background-color: @grayLight;
+
+      border-radius: @border-radius-small;
+      .transition(0.25s);
+      
+      &:hover {
+        background-color: @grayLighter;
+      }
+
+      /*
+      .caret {
+        border-top-color: @white!important;
+        border-bottom-color: @white!important;
+      }
+      */
+    }
+
+    > li.current-menu-item > a {
+      background-color: @grayDark!important;
+    }
+
+    // Level 2
+    > li.current-menu-item > a {
+      background-color: @gray;
+    }
+    
+    li.dropdown.open > .dropdown-toggle {
+      background-color: @grayLighter;
+    }
+
+    li.dropdown-header {
+    	color: @gray-dark;
+    	padding: 10px 20px 0 20px;
+    }
+
+    .open > .dropdown-menu {
+      background-color: @grayLighter;
+      border-radius: @border-radius-small;
+      margin-top: 2px;
+      border: none;
+      a {
+        
+        color: @white;
+
+        &:hover {
+          background-color: @gray;
+        }
+      }
+    }
+
+    .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
+      background-image:none;
+      background-color: @grayDark;
+    }
+
+    .dropdown-menu li.current-menu-item > a {
+      background-image:none;
+      background-color: @grayDark;
+    }
+
+    
+  }
+}
