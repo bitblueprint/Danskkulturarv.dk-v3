@@ -332,7 +332,7 @@ class WPChaosSearch {
 	public static function generate_pretty_search_url($variables = array()) {
 		$variables = array_merge(self::get_search_vars(), $variables);
 		// Start with the search page uri.
-		$result = '/' . get_page_uri(get_option('wpchaos-searchpage')) . '/';
+		$result = get_page_uri(get_option('wpchaos-searchpage')) . '/';
 		foreach(self::$search_query_variables as $variable) {
 			$value = $variables[$variable['key']];
 			if(empty($value) && $variable['default_value'] != null) {
@@ -350,7 +350,7 @@ class WPChaosSearch {
 				}
 			}
 		}
-		return $result;
+		return site_url($result);
 	}
 	
 	/**
