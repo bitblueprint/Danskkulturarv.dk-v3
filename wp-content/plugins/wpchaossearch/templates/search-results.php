@@ -48,7 +48,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		</div>
 		<div class="span6">
 		<div class="pagination pagination-right">
-		  <?php WPDKASearch::paginate(); ?>
+		  <?php WPChaosSearch::paginate(); ?>
 		</div>
 	</div>
 	</div>
