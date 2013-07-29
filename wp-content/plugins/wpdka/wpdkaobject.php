@@ -219,6 +219,7 @@ class WPDKAObject {
 	
 	public function define_single_object_page() {
 		// Ensure the DKA Crowd metadata schema is present, and redirect to the slug URL if needed.
+		/*
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
 			if(WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET)) {
 				echo "<h1>Crowd metadata is resetting ...</h1>";
@@ -234,6 +235,7 @@ class WPDKAObject {
 				exit;
 			}
 		});
+		*/
 		
 		// Make sure objects are identified if they are there.
 		add_filter(WPChaosClient::GENERATE_SINGLE_OBJECT_SOLR_QUERY, function($query) {
@@ -262,7 +264,8 @@ class WPDKAObject {
 	
 	public static function ensure_crowd_metadata(\WPChaosObject $object) {
 		if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
-			self::reset_crowd_metadata($object);
+			// TODO: Remove this when the CHAOS Service indexing works.
+			//self::reset_crowd_metadata($object);
 		}
 	}
 	
