@@ -28,8 +28,8 @@
 
 //fonts
 
-@baseFontFamily:        Helvetica, Arial, sans-serif;
-@baseFontSize:          13px;
+@baseFontFamily:         Helvetica, Arial, sans-serif;
+@font-size-base:         14px;
 
 
 
@@ -81,18 +81,6 @@ hr {
   border-top-color: @grayBorder;
 }
 
-// clear bootstrap's gutter
-
-.container.single-material > .row {
-  margin: 20px 0;
-}
-
-.container.single-material .span3 {
-  width: 200px;
-}
-
-
-
 // --------------------------------------------------
 // Sprites
 // --------------------------------------------------
@@ -122,6 +110,13 @@ hr {
 
 .navbar {
 
+  padding: 0 40px;
+
+  .navbar-toggle {
+    color: @orange;
+    margin-right: 30px;
+  }
+
   // Top logo
   .navbar-brand {
     text-align: right;
@@ -130,31 +125,35 @@ hr {
   }
 }
 
+.navbar-responsive-collapse {
+  clear: none;
+}
+
+#menu-top-navigation {
+  margin-bottom: 0;
+}
+
 // --------------------------------------------------
 // SEARCH
 // --------------------------------------------------
 
 .container.search {
-  padding: 80px 20px 20px 20px;
+  padding: 70px 20px 20px 0;
   border: 1px solid @grayBorder;
 
   form {
     display: inline-block;
     margin-bottom: 0;
+    padding: 0;
 
-    .input-append {
+    .input-group {
       margin-bottom: 0;
       margin-left: 0;
-    }
-
-    #appendedInputButton {
-      display: inline;
-      width: 100%;
     }
   }
 
   input {
-    height: 34px;
+    height: 44px;
     padding-left: 10px;
   }
 
@@ -163,19 +162,45 @@ hr {
     border: none;
     background: @blue;
     line-height: 22px;
+    height: 44px;
     text-decoration: none;
     text-shadow: none;
+    padding: 0 18px;
+    font-weight: 400;
+    font-size: 14px;
   }
 
   .btn-advanced-search {
     background: none;
     background-color: @white;
+    height: 44px;
+    padding: 0 8px;
+    border: 1px solid @grayBorder;
+    font-weight: 400;
+    font-size: 14px;
+    vertical-align: top;
+    margin-top: 0;
+    width: 100%;
   }
-  
+
+  .btn-advanced-search:hover {
+    color: @white;
+    background-color: @blue;
+  }
+
+  .btn-advanced-search-container {
+    margin-top: 0;
+    padding: 0;
+  }
+
 }
 
 #advanced-search-container {
-  padding-top: 20px;
+  padding: 20px;
+
+  .filter-container {
+    padding: 10px;
+  }
 
   .btn.filter-btn {
     height: 20px;
@@ -244,6 +269,7 @@ hr {
     background-position: center;
     background-size: cover;
     position: relative;
+    margin-bottom: 0;
 
     .duration {
       color: @white;
@@ -274,11 +300,13 @@ hr {
     overflow: hidden;
     text-overflow: ellipsis;
     margin-bottom: 0;
+    margin-top: 0;
   }
 
   .media-type-container {
     height: 20px;
     color: @gray;
+    margin: 0;
 
     .icon-eye-open {
       margin-left: 8px;
@@ -334,13 +362,13 @@ hr {
 .search-results-top .pagination a {
   border: none;
   border-left: 1px dotted @grayBorder;
-  padding: 12px 16px;
+  font-size: 1em;
 }
 
 .search-results-top .pagination li.active span, .search-results-top .pagination li.disabled span  {
   border: none;
   background-color: none;
-  padding: 12px 16px;
+  font-size: 1em;
 }
 
 .search-results-top .pagination li.disabled span  {
