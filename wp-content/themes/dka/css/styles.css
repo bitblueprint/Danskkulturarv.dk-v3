@@ -9031,7 +9031,7 @@ hr {
   background-color: #ffffff;
 }
 #advanced-search-container {
-  margin-top: 20px;
+  padding-top: 20px;
 }
 #advanced-search-container .btn.filter-btn {
   height: 20px;
@@ -9135,6 +9135,10 @@ hr {
 .pagination {
   margin: 0;
   line-height: 0;
+}
+.pagination:nth-child(2) {
+  border-top: 1px dotted #eeeded;
+  background-color: #ff7e21;
 }
 .search-results-top .span6 {
   line-height: 0;
@@ -9285,6 +9289,11 @@ footer .copyright a {
   }
   a.btn.btn-navbar {
     margin-top: 10px;
+  }
+  div#advanced-search-container.container.row.in.collapse {
+    width: 100%;
+    margin-right: 20px;
+    height: auto;
   }
   .navbar {
     position: relative;
