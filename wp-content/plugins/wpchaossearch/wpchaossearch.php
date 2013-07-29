@@ -334,11 +334,14 @@ class WPChaosSearch {
 		// Start with the search page uri.
 		$result = get_page_uri(get_option('wpchaos-searchpage')) . '/';
 		foreach(self::$search_query_variables as $variable) {
+			if(!array_key_exists($variable['key'], $variables)) {
+				$variables[$variable['key']] = "";
+			}
 			$value = $variables[$variable['key']];
 			if(empty($value) && $variable['default_value'] != null) {
 				$value = $variable['default_value'];
 			}
-			if(!empty($value)) {
+			if($value) {
 				if(is_array($value)) {
 					$value = implode($variable['multivalue-seperator'], $value);
 				}
