@@ -122,10 +122,18 @@ hr {
 
 .navbar {
   
+  // Navbar background color
+  .navbar-inner {
+    background-image:none;
+    background-color: @gray;
+  }
+
+  // Top logo
   .brand {
     padding: 25px 20px 0 20px;
   }
 
+  // Navigation
   .nav {
 
     padding: 20px 0;
@@ -136,25 +144,68 @@ hr {
 
     > li > a {
       padding: 5px 10px;
-      color: #fff;
+      color: @white;
       background-color: @grayLight;
+
       .border-radius(6px);
       .box-shadow(none);
       .transition(0.25s);
 
       &:hover {
-        background-color: @gray;
+        background-color: @grayLighter;
       }
 
       .caret {
-        border-top-color: @white;
-        border-bottom-color: @white;
+        border-top-color: @white!important;
+        border-bottom-color: @white!important;
       }
     }
 
     > li.current-menu-item > a {
+      background-color: @grayDark!important;
+    }
+
+    // Level 2
+    > li.current-menu-item > a {
       background-color: @gray;
     }
+    
+    li.dropdown.open > .dropdown-toggle {
+      background-color: @grayLighter;
+    }
+
+    .open > .dropdown-menu {
+      background-color: @grayLighter;
+      a {
+        
+        color: @white;
+
+        &:hover {
+          background-color: @grayDark;
+        }
+      }
+    }
+
+    .dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
+      background-image:none;
+      background-color: @grayDark;
+    }
+
+    .dropdown-menu li.current-menu-item > a {
+      background-image:none;
+    }
+
+    .open > .dropdown-menu:before, 
+    .open > .dropdown-menu:after {
+      border: none!important;
+      content: ""!important;
+    }
+
+    // Level 3
+    .dropdown-menu ul {
+      background-color: @grayLighter;
+    }
+    
   }
 }
 
