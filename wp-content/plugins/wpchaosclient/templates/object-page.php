@@ -6,17 +6,17 @@
 get_header(); ?>
 
 <article class="container single-material">
-	<div class="row">
-		<div class="span9">
-			<div class="row">
+	<div>
+		<div class="col-lg-9 col-12">
+			<div>
 				<?php dynamic_sidebar( 'wpchaos-obj-featured' ); ?>
 			</div>
-			<div class="row">
+			<div>
 				<?php dynamic_sidebar( 'wpchaos-obj-main' ); ?>
 			</div>
 		</div>
-		<div class="span3">
-			<div class="">
+		<div class="col-lg-3 col-12">
+			<div>
 				<ul class="nav info">
 					<li><i class="icon-eye-open"></i> Visninger<strong class="pull-right">342</strong></li>
 					<li><i class="icon-link"></i> <a href="#" class="blue">kltrv.dk/gt7tG</a></li>

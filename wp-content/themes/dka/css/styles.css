@@ -4338,6 +4338,10 @@ hr {
 .orange {
   color: #ff7e21;
 }
+article.container .single-material {
+  border-left: 1px solid #eeeded;
+  border-right: 1px solid #eeeded;
+}
 .single-material .info {
   border: 1px solid #eeeded;
   padding: 10px;
