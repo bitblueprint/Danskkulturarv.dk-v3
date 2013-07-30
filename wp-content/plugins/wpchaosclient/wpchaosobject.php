@@ -68,6 +68,14 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 			return parent::__get($name);
 		}
 	}
+	
+	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response) {
+		$result = array();
+		foreach($response->MCM()->Results() as $object) {
+			$result[] = new WPChaosObject($object);
+		}
+		return $result;
+	}
 
 	// public function get_type() {
 	// 	var_dump($this->chaos_object->getObject()->Files);

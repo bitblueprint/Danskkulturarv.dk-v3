@@ -29,10 +29,11 @@ class WPDKA {
 	 * Construct
 	 */
 	public function __construct() {
-		
 		if(self::check_chaosclient()) {
 
 			$this->load_dependencies();
+			
+			add_action('admin_init', array(&$this, 'get_slug_cleanup_interface'));
 
 		}
 
@@ -48,6 +49,10 @@ class WPDKA {
 		if(self::check_chaosclient()) {
 			WPChaosSearch::flush_rewrite_rules_soon();
 		}
+	}
+	
+	public static function get_slug_cleanup_interface() {
+		echo "..";
 	}
 	
 	/**

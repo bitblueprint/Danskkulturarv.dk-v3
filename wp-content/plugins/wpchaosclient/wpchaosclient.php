@@ -179,8 +179,8 @@ class WPChaosClient {
 			$lastSessionUpdate = get_option(WPPortalClient::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY);
 			printf('<div class="updated"><p><strong>&#x2713; Connection to CHAOS is established</strong> (session is %s last updated %s)</p></div>', $sessionGUID, date('r', $lastSessionUpdate));
 		} catch(Exception $e) {
-			echo '<div class="error"><p>Could not connect to CHAOS. Please check the details below.</p></div>';
-		} 
+			echo '<div class="error"><p>Could not connect to CHAOS. Please check the details below.</p><p><small>'.$e->getMessage().'</small></p></div>';
+		}
 
 		echo '<form method="POST" action="options.php">'."\n";
 		settings_fields($this->menu_page);
