@@ -33,7 +33,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 	</div>
 	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">
 
-		<div class="col-3 filter-container filter-media-type">
+		<div class="col-sm-3 col-12 filter-container filter-media-type">
 			<label class="btn filter-btn filter-btn-all">Alle Typer<i class="icon-ok"></i></label>
 			<hr>
 			<!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
@@ -41,10 +41,11 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 			<label title="<?php echo $args['title']; ?>" for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format_type; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" <?php checked(in_array($format_type,(array)$types)); ?>>
 				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?> (<?php echo get_facet_count(WPDKASearch::QUERY_KEY_TYPE, $format_type) ?>)<i class="icon-remove-sign"></i>
-			</label> 
+			</label>
 <?php endforeach; ?>
 		</div>
-		<div class="col-6 filter-container filter-media-type filter-organizations">
+
+		<div class="col-sm-6 col-12 filter-container filter-media-type filter-organizations">
 			<label class="btn filter-btn filter-btn-all">Alle Organisationer<i class="icon-ok"></i></label>
 			<hr>
 <?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>

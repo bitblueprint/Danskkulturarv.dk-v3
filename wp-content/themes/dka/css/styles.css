@@ -4193,7 +4193,7 @@ hr {
   padding: 0;
 }
 #advanced-search-container {
-  padding: 20px;
+  padding: 0 20px;
 }
 #advanced-search-container .filter-container {
   padding: 10px;
@@ -4208,6 +4208,8 @@ hr {
   border: none;
   padding: 0 8px;
   font-size: 12px;
+  border-radius: 10px;
+  font-weight: 400;
 }
 #advanced-search-container .btn.filter-btn i {
   width: 16px;
@@ -4401,6 +4403,8 @@ footer {
 footer {
   background-color: #f6f6f6;
   border-top: 1px solid #cecece;
+  margin-left: -20px;
+  margin-right: -20px;
 }
 footer .bloginfo-footer {
   font-size: 16px;
@@ -4469,6 +4473,10 @@ footer .copyright a {
   }
   .container.search .row {
     padding: 0 10px 0 20px;
+  }
+  #advanced-search-container .btn.filter-btn {
+    font-size: 12px;
+    min-width: 160px;
   }
   .navbar .navbar-inner {
     background-image: none;
