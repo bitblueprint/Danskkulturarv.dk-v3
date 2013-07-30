@@ -179,6 +179,11 @@ function dka_wp_title( $title, $sep ) {
 	if ( $site_description && ( is_home() || is_front_page() ) )
 		$title = "$title $sep $site_description";
 
+	//Add title from CHAOS object
+	if(WPChaosClient::get_object()) {
+		$title = WPChaosClient::get_object()->title. " $sep $title";
+	}
+
 	// Add a page number if necessary.
 	if ( $paged >= 2 || $page >= 2 )
 		$title = "$title $sep " . sprintf( __( 'Page %s', 'dka' ), max( $paged, $page ) );
@@ -186,6 +191,52 @@ function dka_wp_title( $title, $sep ) {
 	return $title;
 }
 add_filter( 'wp_title', 'dka_wp_title', 10, 2 );
+
+function dka_wp_head() {
+	global $post;
+
+	$metadatas = array();
+
+	setup_postdata($post);
+
+	if(is_singular()) {
+		$metadatas['description'] = array(
+			'name' => 'description',
+			'content' => dka_custom_excerpt(20)
+		);
+	}
+
+	$metadatas = apply_filters('wpchaos-head-meta',$metadatas);
+
+	//Loop over metadata
+	foreach($metadatas as $metadata) {
+		$fields = array();
+		//Loop over each metadata attribute
+		foreach($metadata as $key => $value) {
+			$fields[] = $key.'="'.$value.'"';
+		}
+		//Insert attributes in meta node and print
+		echo "<meta ".implode(" ", $fields).">\n";
+	}
+	
+	/*<meta property="og:title" content="The Rock" />
+<meta property="og:type" content="video.movie" />
+<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
+<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />*/
+
+	wp_reset_postdata();
+}
+
+add_action('wp_head','dka_wp_head',99);
+
+remove_action( 'wp_head','rsd_link',10);
+remove_action( 'wp_head','wlwmanifest_link',10);
+
+function dka_custom_excerpt($new_length = 20) {
+  add_filter('excerpt_length', create_function('$new_length',"return $new_length;"), 999);
+  $output = get_the_excerpt();
+  return $output;
+}
 
 /*function dka_sanitize_title($title, $raw_title, $context) {
 
