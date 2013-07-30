@@ -27,12 +27,66 @@ class WPDKASearch {
 	 */
 	public function __construct() {
 
+		add_action('template_redirect',array(&$this,'set_search_title'),0);
+
 		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
 		WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w+]+', true, ' ');
 		
 		// Define the free-text search filter.
 		$this->define_search_filters();
 		
+	}
+
+	/**
+	 * Set title and meta nodes for search results
+	 */
+	public function set_search_title() {
+		
+		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+			global $wp_query;
+			$wp_query->queried_object->post_title = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
+
+			//Alter some meta nodes to show information about the current search
+			add_filter('wpchaos-head-meta',function($metadatas) {
+
+				$extra_description = '';
+
+				//Fetch titles from the organizations searched in
+				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION)) {
+					$organizations = self::get_organizations();
+					foreach($organizations as $organization) {
+						if(in_array($organization['slug'],WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION))) {
+							$temp[] = $organization['title'];
+						}
+					}
+
+					$extra_description .= ' De fremsøgte materialer er fra '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+					unset($temp);
+					
+				}
+				
+				//Fetch the titles from the formats searched in
+				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE)) {
+
+					foreach(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE) as $format) {
+						if(isset(WPDKAObject::$format_types[$format])) {
+							$temp[] = strtolower(WPDKAObject::$format_types[$format]['title']);
+						}
+					}
+
+					$extra_description .= ' Formatet er '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+					unset($temp);
+					
+				}
+
+				$metadatas['og:title']['content'] = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
+				$metadatas['description']['content'] = $metadatas['og:description']['content'] = get_bloginfo('title').' indeholder '.WPChaosSearch::get_search_results()->MCM()->TotalCount().
+				' materialer om "'.WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html').
+				'".'.$extra_description;
+
+				return $metadatas;
+			});
+		}
 	}
 
 	/**
