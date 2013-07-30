@@ -8,7 +8,7 @@
 <article class="container search-results">
 	<div class="row search-results-top">
 		<div class="col-6">
-			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
+			<p><span class="hidden-sm">Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav&nbsp;</span><span><?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</span></p>
 		</div>
 		<div class="col-6">
 		<ul class="pagination pagination-large pull-right">
@@ -41,7 +41,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 
 	<div class="row search-results-top">
 		<div class="col-6">
-			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
+			<p><span class="hidden-sm">Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav&nbsp;</span><span><?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</span></p>
 		</div>
 		<div class="col-6">
 		<ul class="pagination pagination-large pull-right">

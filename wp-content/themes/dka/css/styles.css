@@ -4284,6 +4284,10 @@ hr {
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
 }
+.search-results span {
+  display: block;
+  float: left;
+}
 .search-results-top {
   border-bottom: 1px solid #eeeded;
   margin-bottom: 20px;
