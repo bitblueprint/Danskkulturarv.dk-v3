@@ -303,7 +303,7 @@ class WPDKAObject {
 		
 		// Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned.
 		$start = time(); // Time in milliseconds
-		while(self::getObjectFromSlug($slug) == null || true) {
+		while(self::getObjectFromSlug($slug) == null) {
 			$now = time();
 			
 			if($now > $start + self::RESET_TIMEOUT_S) {
