@@ -283,10 +283,6 @@ class WPChaosClient {
 					self::set_object($object);
 				
 					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
-					
-					add_filter('wp_title', function($title, $sep) use ($object) {
-						return $object->title .' '. $sep .' '. $title;
-					}, 10, 2);
 		
 					//Look in theme dir and include if found
 					$include = locate_template('templates/chaos-object-page.php', false);
