@@ -35,7 +35,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 
 		<div class="col-sm-3 col-12 filter-container filter-media-type">
 			<label class="btn filter-btn filter-btn-all">Alle Typer<i class="icon-ok"></i></label>
-			<hr>
+			<hr class="hidden-sm">
 			<!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 <?php foreach(WPDKAObject::$format_types as $format_type => $args) : if($format_type == WPDKAObject::TYPE_IMAGE_AUDIO) continue; ?>
 			<label title="<?php echo $args['title']; ?>" for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" class="btn filter-btn filter-btn-single">
@@ -47,7 +47,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 
 		<div class="col-sm-6 col-12 filter-container filter-media-type filter-organizations">
 			<label class="btn filter-btn filter-btn-all">Alle Organisationer<i class="icon-ok"></i></label>
-			<hr>
+			<hr class="hidden-sm">
 <?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>
 			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" <?php checked(in_array($organization['slug'],(array)$organizations)); ?>>

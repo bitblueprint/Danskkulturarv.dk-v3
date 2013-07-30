@@ -4210,6 +4210,7 @@ hr {
   font-size: 12px;
   border-radius: 10px;
   font-weight: 400;
+  line-height: 20px;
 }
 #advanced-search-container .btn.filter-btn i {
   width: 16px;
@@ -4238,13 +4239,6 @@ hr {
 }
 #advanced-search-container .btn.filter-btn.filter-btn-all.active i.icon-ok {
   visibility: visible;
-}
-#advanced-search-container .filter-organizations .btn.filter-btn-single {
-  width: 48%;
-  float: left;
-}
-#advanced-search-container .filter-organizations .btn.filter-btn-single:nth-child(odd) {
-  margin-right: 4%;
 }
 .search-object .thumb {
   width: 100%;
@@ -4561,6 +4555,13 @@ footer .copyright a {
   be seen on the Desktop. 
   
   -------------------------------------------------- */
+  #advanced-search-container .filter-organizations .btn.filter-btn-single {
+    width: 48%;
+    float: left;
+  }
+  #advanced-search-container .filter-organizations .btn.filter-btn-single:nth-child(odd) {
+    margin-right: 4%;
+  }
 }
 @media only screen and (min-width: 1200px) {
   /*
