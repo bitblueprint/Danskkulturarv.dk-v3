@@ -12,7 +12,7 @@
 		</div>
 		<div class="col-6">
 		<ul class="pagination pagination-large pull-right">
-		  <?php echo $pagination = WPChaosSearch::paginate('echo=0'); ?>
+		  <?php echo $pagination = WPChaosSearch::paginate('echo=0&before=&after='); ?>
 		</ul>
 		</div>
 	</div>
