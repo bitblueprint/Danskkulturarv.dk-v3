@@ -23,7 +23,7 @@ get_header(); ?>
 			<?php else : ?>
 				<ul class="nav info">
 					<li><i class="icon-eye-open"></i> Visninger<strong class="pull-right">342</strong></li>
-					<li><i class="icon-link"></i> <a href="#" class="blue">kltrv.dk/gt7tG</a></li>
+					<!-- <li><i class="icon-link"></i> <a href="#" class="blue">kltrv.dk/gt7tG</a></li> -->
 					<li>&copy; Copyright DR. Materialet må ikke gengives uden tilladelse.</li>
 					<hr>
 					<li class="social"><a href="#" class="pull-left"><i class="icon-facebook-sign"></i></a><a href="#" class="pull-left"><i class="icon-twitter"></i></a><a href="#" class="pull-left"><i class="icon-google-plus-sign"></i></a><a href="#" class="pull-left"><i class="icon-envelope"></i></a></li>
