@@ -60,7 +60,7 @@ class WPDKASearch {
 						}
 					}
 
-					$extra_description .= ' De fremsøgte materialer er fra '.implode(", ", $temp).'.';
+					$extra_description .= ' De fremsøgte materialer er fra '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
 					unset($temp);
 					
 				}
@@ -74,7 +74,7 @@ class WPDKASearch {
 						}
 					}
 
-					$extra_description .= ' Formatet er '.implode(", ", $temp).'.';
+					$extra_description .= ' Formatet er '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
 					unset($temp);
 					
 				}
