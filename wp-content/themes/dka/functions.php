@@ -4,7 +4,7 @@
  * @subpackage DKA
  */
 
-require_once('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
+require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 
 function dka_setup() {
 
@@ -16,6 +16,9 @@ function dka_setup() {
 
 	register_nav_menu( 'primary','Primary');
 	register_nav_menu( 'secondary','Secondary');
+
+	remove_action( 'wp_head','rsd_link',10);
+	remove_action( 'wp_head','wlwmanifest_link',10);
 
 	//add_theme_support( 'post-thumbnails' );
 	//set_post_thumbnail_size( 624, 9999 ); // Unlimited height, soft crop
@@ -192,19 +195,59 @@ function dka_wp_title( $title, $sep ) {
 }
 add_filter( 'wp_title', 'dka_wp_title', 10, 2 );
 
-function dka_wp_head() {
-	global $post;
+
+function dka_wp_head() {	
 
 	$metadatas = array();
 
-	setup_postdata($post);
-
 	if(is_singular()) {
+		global $post;
+		setup_postdata($post);
+		
+		$excerpt = dka_custom_excerpt(20);
 		$metadatas['description'] = array(
 			'name' => 'description',
-			'content' => dka_custom_excerpt(20)
+			'content' => $excerpt
+		);
+		$metadatas['og:description'] = array(
+			'name' => 'og:description',
+			'property' => $excerpt
+		);
+
+		wp_reset_postdata();
+	}
+
+	if(WPChaosClient::get_object()) {
+		$metadatas['description'] = array(
+			'name' => 'description',
+			'content' => WPChaosClient::get_object()->description
+		);
+		$metadatas['og:description'] = array(
+			'property' => 'og:description',
+			'content' => WPChaosClient::get_object()->description
+		);
+		$metadatas['og:title'] = array(
+			'property' => 'og:title',
+			'content' => WPChaosClient::get_object()->title
+		);
+		$metadatas['og:type'] = array(
+			'property' => 'og:type',
+			'content' => WPChaosClient::get_object()->type
+		);
+		$metadatas['og:url'] = array(
+			'property' => 'og:url',
+			'content' => WPChaosClient::get_object()->url
+		);
+		$metadatas['og:image'] = array(
+			'property' => 'og:image',
+			'content' => WPChaosClient::get_object()->thumbnail
 		);
 	}
+
+	$metadatas['og:site_name'] = array(
+			'property' => 'og:site_name',
+			'content' => get_bloginfo('title')
+	);
 
 	$metadatas = apply_filters('wpchaos-head-meta',$metadatas);
 
@@ -213,24 +256,15 @@ function dka_wp_head() {
 		$fields = array();
 		//Loop over each metadata attribute
 		foreach($metadata as $key => $value) {
-			$fields[] = $key.'="'.$value.'"';
+			$fields[] = $key.'="'.esc_attr($value).'"';
 		}
 		//Insert attributes in meta node and print
 		echo "<meta ".implode(" ", $fields).">\n";
 	}
 	
-	/*<meta property="og:title" content="The Rock" />
-<meta property="og:type" content="video.movie" />
-<meta property="og:url" content="http://www.imdb.com/title/tt0117500/" />
-<meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" />*/
-
-	wp_reset_postdata();
 }
 
 add_action('wp_head','dka_wp_head',99);
-
-remove_action( 'wp_head','rsd_link',10);
-remove_action( 'wp_head','wlwmanifest_link',10);
 
 function dka_custom_excerpt($new_length = 20) {
   add_filter('excerpt_length', create_function('$new_length',"return $new_length;"), 999);
