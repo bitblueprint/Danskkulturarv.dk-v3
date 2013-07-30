@@ -200,18 +200,36 @@ function dka_wp_head() {
 
 	$metadatas = array();
 
+	$metadatas['og:site_name'] = array(
+		'property' => 'og:site_name',
+		'content' => get_bloginfo('title')
+	);
+	$metadatas['og:locale'] = array(
+		'property' => 'og:locale',
+		'content' => get_locale()
+	);
+	$metadatas['og:type'] = array(
+		'property' => 'og:type',
+		'content' => 'website'
+	);
+
 	if(is_singular()) {
 		global $post;
 		setup_postdata($post);
 		
 		$excerpt = dka_custom_excerpt(20);
+
 		$metadatas['description'] = array(
 			'name' => 'description',
 			'content' => $excerpt
 		);
+		$metadatas['og:title'] = array(
+			'property' => 'og:title',
+			'content' => get_the_title()
+		);
 		$metadatas['og:description'] = array(
-			'name' => 'og:description',
-			'property' => $excerpt
+			'property' => 'og:description',
+			'content' => $excerpt
 		);
 
 		wp_reset_postdata();
@@ -222,13 +240,13 @@ function dka_wp_head() {
 			'name' => 'description',
 			'content' => WPChaosClient::get_object()->description
 		);
-		$metadatas['og:description'] = array(
-			'property' => 'og:description',
-			'content' => WPChaosClient::get_object()->description
-		);
 		$metadatas['og:title'] = array(
 			'property' => 'og:title',
 			'content' => WPChaosClient::get_object()->title
+		);
+		$metadatas['og:description'] = array(
+			'property' => 'og:description',
+			'content' => WPChaosClient::get_object()->description
 		);
 		$metadatas['og:type'] = array(
 			'property' => 'og:type',
@@ -243,11 +261,6 @@ function dka_wp_head() {
 			'content' => WPChaosClient::get_object()->thumbnail
 		);
 	}
-
-	$metadatas['og:site_name'] = array(
-			'property' => 'og:site_name',
-			'content' => get_bloginfo('title')
-	);
 
 	$metadatas = apply_filters('wpchaos-head-meta',$metadatas);
 
