@@ -49,11 +49,10 @@ function dka_scripts_styles() {
 		'tab',
 		'tooltip',
 		'popover',
-		'typeahead',
 		'affix'
 	);
 	foreach($bootstrap_scripts as $bootscript) {
-		wp_enqueue_script('bootstrap-'. $bootscript, get_template_directory_uri() . '/js/bootstrap-'.$bootscript.'.js', array(), '2.3.2', true );
+		wp_enqueue_script($bootscript, get_template_directory_uri() . '/js/bootstrap/'.$bootscript.'.js', array(), '3.0.0', true );
 	}
 
 

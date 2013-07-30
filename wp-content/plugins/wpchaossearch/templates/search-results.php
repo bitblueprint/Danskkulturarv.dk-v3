@@ -7,22 +7,22 @@
 <?php get_header(); ?>
 <article class="container search-results">
 	<div class="row search-results-top">
-		<div class="span6">
+		<div class="col-6">
 			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
 		</div>
-		<div class="span6">
-		<div class="pagination pagination-right">
+		<div class="col-6">
+		<ul class="pagination pagination-large pull-right">
 		  <?php echo $pagination = WPChaosSearch::paginate('echo=0'); ?>
+		</ul>
 		</div>
 	</div>
-	</div>
-	<ul class="row thumbnails mobile-two-up">
+	<ul class="row thumbnails">
 
 <?php
 foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 	WPChaosClient::set_object($object);
 ?>
-		<li class="search-object span3">
+		<div class="search-object col-12 col-sm-6 col-lg-3">
 			<a class="thumbnail" href="<?php echo WPChaosClient::get_object()->url; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
 				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
 					<div class="duration">1:30:22</div>
@@ -35,20 +35,19 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> 132</i>
 				</div>
 			</a>
-		</li>
+		</div>
  <?php endforeach; WPChaosClient::reset_object(); ?>
 	</ul>
-	<div class="search-results-bottom">
-		<div class="row search-results-top">
-		<div class="span6">
+
+	<div class="row search-results-top">
+		<div class="col-6">
 			<p>Søgningen på <strong class="blue"><?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'); ?></strong> gav <?php echo WPChaosSearch::get_search_results()->MCM()->TotalCount(); ?> resultater</p>
 		</div>
-		<div class="span6">
-		<div class="pagination pagination-right">
+		<div class="col-6">
+		<ul class="pagination pagination-large pull-right">
 		  <?php echo $pagination; ?>
+		</ul>
 		</div>
-	</div>
-	</div>
 	</div>
 </article>
 

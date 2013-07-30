@@ -16,6 +16,8 @@
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
 	<?php wp_head(); ?>
 </head>
 <body>
@@ -23,27 +25,26 @@
 	<div id="wrap">
 		<!-- start navigation -->
 		<div class="navbar navbar-inverse navbar-fixed-top">
-			<div class="navbar-inner">
-				<div class="container">
-					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</a>
-					<a class="brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><img width?="264" height="27" src="<?php echo get_template_directory_uri() . '/img/dka-logo-top.png' ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"></a>
-					<div class="nav-collapse collapse">
+			<div class="container">		
+				<!-- .navbar-toggle is used as the toggle for collapsed navbar content -->
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home"><img width?="264" height="27" src="<?php echo get_template_directory_uri() . '/img/dka-logo-top.png' ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"></a>
+				<div class="nav-collapse collapse navbar-responsive-collapse">
 <?php 
     wp_nav_menu( array(
         'theme_location'       => 'primary',
-        'depth'      => 2,
+        'depth'      => 3,
         'container'  => false,
-        'menu_class' => 'nav',
+        'menu_class' => 'nav navbar-nav',
         'fallback_cb' => false,
         'walker' => new wp_bootstrap_navwalker())
     );
 ?>
-					</div><!--/.nav-collapse -->
-				</div>
+				</div><!--/.nav-collapse -->
 			</div>
 		</div><!-- end navigation -->
 		<!-- start search -->
