@@ -463,14 +463,17 @@ class WPChaosSearch {
 	public static function paginate($args = array()) {
 		// Grab args or defaults
 		$args = wp_parse_args($args, array(
-			'before' => '' /* '<ul>' */,
-			'after' => '' /* '</ul>' */,
-			'before_link' => '<li>',
-			'after_link' => '</li>',
-			'count' => 5,
-			'next' => '&raquo;',
-			'previous' => '&laquo;',
-			'echo' => true
+			'before' 			=> '<ul>',
+			'after' 			=> '</ul>',
+			'before_link' 		=> '<li class="%s">',
+			'after_link' 		=> '</li>',
+			'class' 			=> 'hidden-sm',
+			'class_disabled' 	=> 'disabled',
+			'class_active' 		=> 'active',
+			'count' 			=> 5,
+			'previous' 			=> '&laquo;',
+			'next' 				=> '&raquo;',
+			'echo' 				=> true
 		));
 		extract($args, EXTR_SKIP);
 		
@@ -493,17 +496,17 @@ class WPChaosSearch {
 
 		//Is prevous wanted
 		if($previous) {
-			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous);
+			$result .= self::paginate_page($before_link,$after_link,$page-1,$start,$max_page,$page,$previous,$class,$class_active,$class_disabled);
 		}
 
 		//Set enumeration
 		for($i = $start; $i < $end; $i++) {
-			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page);
+			$result .= self::paginate_page($before_link,$after_link,$i,$start,$max_page,$page,$class,$class_active,$class_disabled);
 		}
 
 		//Is next wanted
 		if($next) {
-			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next);
+			$result .= self::paginate_page($before_link,$after_link,$page+1,$start,$max_page,$page,$next,$class,$class_active,$class_disabled);
 		}
 
 		$result .= $after;
@@ -529,15 +532,19 @@ class WPChaosSearch {
 	 * @param  string $title       
 	 * @return string              
 	 */
-	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "") {
+	public static function paginate_page($before_link,$after_link,$page,$min,$max,$current,$title = "",$class,$class_active,$class_disabled) {
+		if($title)
+			$class = "";
 		if($page > $max || $page < $min) {
-			$result = str_replace('>',' class="disabled">',$before_link).'<span>'.($title?:$page).'</span>'.$after_link;
+			$class .= " ".$class_disabled;
+			$result = '<span>'.($title?:$page).'</span>'.$after_link;
 		} else if(!$title && $page == $current) {
-			$result = str_replace('>',' class="active">',$before_link).'<span>'.$page.'</span>'.$after_link;
+			$class .= " ".$class_active;
+			$result = '<span>'.$page.'</span>'.$after_link;
 		} else {
-			$result = $before_link.'<a href="'. WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_PAGE => $page)) .'">'.($title?:$page).'</a>'.$after_link;
+			$result = '<a href="'. WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_PAGE => $page)) .'">'.($title?:$page).'</a>'.$after_link;
 		}
-		return $result;
+		return sprintf($before_link,$class).$result;
 	}
 
 	/**
