@@ -45,6 +45,18 @@ class WPDKAObject {
 	const TYPE_IMAGE = 'image';
 	const TYPE_IMAGE_AUDIO = 'image-audio';
 	const TYPE_UNKNOWN = 'unknown';
+	
+	/**
+	 * How many seconds should we wait for the CHAOS service to realize the slug has changed?
+	 * @var integer
+	 */
+	const RESET_TIMEOUT_S = 5; // 5 seconds.
+	
+	/**
+	 * How many milliseconds delay between checking the service for the object to become searchable on the slug.
+	 * @var integer
+	 */
+	const RESET_DELAY_MS = 100; // 0.1 seconds.
 
 	public static $format_types = array(
 		WPDKAObject::TYPE_AUDIO => array(
@@ -205,7 +217,6 @@ class WPDKAObject {
 			$result = site_url() . '/';
 			$slug = $object->slug;
 			if($slug) {
-				// Redirect to a webpage with the slug instead of the GUID.
 				$organizations = WPDKASearch::get_organizations();
 				if(array_key_exists($object->organization_raw, $organizations)) {
 					$result .= $organizations[$object->organization_raw]['slug'] . '/';
@@ -289,7 +300,22 @@ class WPDKAObject {
 		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
 		}
-		// TODO: Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned. 
+		
+		// Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned.
+		$start = time(); // Time in milliseconds
+		while(self::getObjectFromSlug($slug) == null || true) {
+			$now = time();
+			
+			if($now > $start + self::RESET_TIMEOUT_S) {
+				error_log(__FILE__. ": reset_crowd_metadata loop failed to find the CHAOS object within the timeout (".self::RESET_TIMEOUT_S."s)");
+				return $metadataXML;
+			}
+
+			//error_log(__FILE__. " ... waiting for CHAOS to commit the change. ");
+			usleep(self::RESET_DELAY_MS * 1000);
+		};
+		
+		return $metadataXML;
 	}
 	
 	/**
@@ -317,7 +343,7 @@ class WPDKAObject {
 			$objects = self::getObjectFromSlug($slug, true);
 			// If there is one object on this slug, and this is not itself.
 			// Or if there are more than one object on the slug.
-			$try_next_slug = (count($objects) == 1 && $objects[0]->guid != $object->guid) || (count($objects) > 1);
+			$try_next_slug = (count($objects) == 1 && $objects[0]->GUID != $object->GUID) || (count($objects) > 1);
 			
 			$postfix++; // Try the next
 		} while($try_next_slug); // Until no object is returned.
@@ -354,7 +380,7 @@ class WPDKAObject {
 				return WPChaosObject::parseResponse($response);
 			} else {
 				$results = $response->MCM()->Results();
-				return new \WPChaosObject($result[0]);
+				return new \WPChaosObject($results[0]);
 			}
 		}
 	}
