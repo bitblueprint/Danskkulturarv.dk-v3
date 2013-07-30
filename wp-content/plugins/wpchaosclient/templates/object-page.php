@@ -6,21 +6,21 @@
 get_header(); ?>
 
 <article class="container single-material">
-	<div class="row">
-		<div class="span9">
-			<div class="row">
+	<div>
+		<div class="col-lg-9 col-12">
+			<div>
 				<?php dynamic_sidebar( 'wpchaos-obj-featured' ); ?>
 			</div>
-			<div class="row">
+			<div>
 				<?php dynamic_sidebar( 'wpchaos-obj-main' ); ?>
 			</div>
 		</div>
-		<div class="span3">
-				<?php if(is_active_sidebar('wpchaos-obj-sidebar')) : ?>
+		<div class="col-lg-3 col-12">
+			<?php if(is_active_sidebar('wpchaos-obj-sidebar')) : ?>
 				<ul class="nav info">
-				<?php dynamic_sidebar( 'wpchaos-obj-sidebar' ); ?>
+					<?php dynamic_sidebar( 'wpchaos-obj-sidebar' ); ?>
 				</ul>
-				<?php else : ?>
+			<?php else : ?>
 				<ul class="nav info">
 					<li><i class="icon-eye-open"></i> Visninger<strong class="pull-right">342</strong></li>
 					<li><i class="icon-link"></i> <a href="#" class="blue">kltrv.dk/gt7tG</a></li>
@@ -28,7 +28,7 @@ get_header(); ?>
 					<hr>
 					<li class="social"><a href="#" class="pull-left"><i class="icon-facebook-sign"></i></a><a href="#" class="pull-left"><i class="icon-twitter"></i></a><a href="#" class="pull-left"><i class="icon-google-plus-sign"></i></a><a href="#" class="pull-left"><i class="icon-envelope"></i></a></li>
 				</ul>
-				<?php endif;?>
+			<?php endif;?>
 		</div>
 	</div>
 </article>
