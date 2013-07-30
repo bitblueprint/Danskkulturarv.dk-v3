@@ -4358,6 +4358,8 @@ hr {
 .single-material {
   padding: 0 20px 20px 20px;
   margin-left: -21px;
+}
+article.container .single-material {
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
 }
