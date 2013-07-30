@@ -29,7 +29,7 @@
 //fonts
 
 @baseFontFamily:         Helvetica, Arial, sans-serif;
-@font-size-base:         14px;
+@font-size-base:         13px;
 
 
 
@@ -49,22 +49,8 @@
   background-repeat: repeat;
 }
 
-
-// removal of the admin bar will cause a 28px top margin on small devices when logged into WP
-
-#wpadminbar {
-  display: none;
-}
-
 html, body { 
   height: 100%;
-  //margin-bottom: 0;
-  //padding: 0;
-  //padding-top: 71px;
-}
-
-body {
-  //padding-top: 71px;
 }
 
 h1 {
@@ -137,14 +123,13 @@ hr {
 // PAGES / POSTS
 // --------------------------------------------------
 
-.post {
-
-  padding: 0 20px 20px 20px;
-  margin-left: -21px;
+.type-page {
+  padding: 20px 20px 20px 20px;
   border-left: 1px solid @grayBorder;
   border-right: 1px solid @grayBorder;
+  height: 100%;
+  margin-top: -20px;
 }
-
 
 // --------------------------------------------------
 // SEARCH
@@ -212,7 +197,7 @@ hr {
   padding: 0 20px;
 
   .filter-container {
-    padding: 10px;
+    padding: 10px 0 0 10px;
   }
 
   .btn.filter-btn {
