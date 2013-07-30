@@ -4354,14 +4354,14 @@ article.container .single-material {
   border-right: 1px solid #eeeded;
 }
 .single-material {
-  padding: 0 20px 20px 20px;
-  margin-left: -21px;
+  padding: 20px 0 0 0 ;
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;
 }
 .single-material .info {
   border: 1px solid #eeeded;
   padding: 10px;
+  margin-bottom: 20px;
 }
 .nav.info a {
   display: inline-block;
@@ -4374,6 +4374,9 @@ article.container .single-material {
 }
 .nav.info li.social a {
   margin-right: 8px;
+  font-size: 15px;
+  border: none;
+  padding: 0;
 }
 .nav.info li.social a:hover {
   background: none;

@@ -13,7 +13,7 @@
 </span>&nbsp;&nbsp;
 <i class="icon-calendar"></i>&nbsp;
 <span class="date"><?php echo WPChaosClient::get_object()->published; ?></span>
-<hr></hr>
+<hr>
 <div class="description">
 	<p><strong>Beskrivelse</strong></p>
 	<?php echo WPChaosClient::get_object()->description; ?>
