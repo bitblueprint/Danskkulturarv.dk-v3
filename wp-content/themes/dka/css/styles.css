@@ -4128,6 +4128,12 @@ hr {
   padding-left: 0px;
   margin-left: 0px;
 }
+.navbar .menu-item a {
+  background-color: none;
+}
+.navbar .menu-item {
+  margin-bottom: 10px;
+}
 .navbar-responsive-collapse {
   clear: none;
 }
