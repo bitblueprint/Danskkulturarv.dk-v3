@@ -44,7 +44,7 @@ class WPDKASearch {
 		
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
 			global $wp_query;
-			$wp_query->queried_object->post_title = "Søgeresultater for ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
+			$wp_query->queried_object->post_title = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
 
 			//Alter some meta nodes to show information about the current search
 			add_filter('wpchaos-head-meta',function($metadatas) {
@@ -79,9 +79,10 @@ class WPDKASearch {
 					
 				}
 
-				$metadatas['og:title']['content'] = "Søgeresultater for ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
-				$metadatas['description']['content'] = $metadatas['og:description']['content'] = 'En søgning på "'.WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html').
-				'" gav '.WPChaosSearch::get_search_results()->MCM()->TotalCount().' resultater.'.$extra_description;
+				$metadatas['og:title']['content'] = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
+				$metadatas['description']['content'] = $metadatas['og:description']['content'] = get_bloginfo('title').' indeholder '.WPChaosSearch::get_search_results()->MCM()->TotalCount().
+				' materialer om "'.WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html').
+				'".'.$extra_description;
 
 				return $metadatas;
 			});

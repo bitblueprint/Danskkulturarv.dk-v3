@@ -10,7 +10,7 @@ function dka_setup() {
 
 	add_editor_style();
 
-	add_theme_support( 'automatic-feed-links' );
+	//add_theme_support( 'automatic-feed-links' );
 
 	//add_theme_support( 'post-formats', array( 'aside', 'image', 'link', 'quote', 'status' ) );
 
@@ -212,6 +212,10 @@ function dka_wp_head() {
 		'property' => 'og:type',
 		'content' => 'website'
 	);
+	$metadatas['twitter:site'] = array(
+		'name' => 'twitter:site',
+		'content' => '@danskkulturarv'
+	);
 
 	if(is_singular()) {
 		global $post;
@@ -263,7 +267,7 @@ function dka_wp_head() {
 	}
 
 	$metadatas = apply_filters('wpchaos-head-meta',$metadatas);
-
+	ksort($metadatas);
 	//Loop over metadata
 	foreach($metadatas as $metadata) {
 		$fields = array();
