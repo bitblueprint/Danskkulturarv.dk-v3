@@ -53,7 +53,7 @@ class WPDKASearch {
 
 				//Fetch titles from the organizations searched in
 				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION)) {
-					$organizations = self::get_organizations();
+					$organizations = WPDKASearch::get_organizations();
 					foreach($organizations as $organization) {
 						if(in_array($organization['slug'],WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION))) {
 							$temp[] = $organization['title'];
