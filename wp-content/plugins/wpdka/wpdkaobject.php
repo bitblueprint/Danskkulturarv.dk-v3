@@ -50,7 +50,7 @@ class WPDKAObject {
 	 * How many seconds should we wait for the CHAOS service to realize the slug has changed?
 	 * @var integer
 	 */
-	const RESET_TIMEOUT_S = 5; // 5 seconds.
+	const RESET_TIMEOUT_S = 10; // 10 seconds.
 	
 	/**
 	 * How many milliseconds delay between checking the service for the object to become searchable on the slug.
@@ -133,7 +133,7 @@ class WPDKAObject {
 		\CHAOS\Portal\Client\Data\Object::registerXMLNamespace('xhtml', 'http://www.w3.org/1999/xhtml');
 
 		//object->title
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:Title/text()', '/DKA/Title/text()')
@@ -141,7 +141,7 @@ class WPDKAObject {
 		}, 10, 2);
 
 		//object->organization
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:Organization/text()', '/DKA/Organization/text()')
@@ -150,7 +150,7 @@ class WPDKAObject {
 		}, 10, 2);
 
 		//object->organization
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization', function($value, \WPCHAOSObject $object) {
 			$organizations = WPDKASearch::get_organizations();
 			$organization = $object->organization_raw;
 
@@ -161,15 +161,15 @@ class WPDKAObject {
 		}, 10, 2);
 
 		//object->description
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:Description/text()', '/DKA/Description/text()')
+					array('/dka2:DKA/dka2:Description', '/DKA/Description/text()')
 			);
 		}, 10, 2);
 
 		//object->published
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, \WPCHAOSObject $object) {
 			$time = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:FirstPublishedDate/text()', '/DKA/FirstPublishedDate/text()')
@@ -179,23 +179,31 @@ class WPDKAObject {
 			return $value . $time;
 		}, 10, 2);
 
+		//object->rights
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'rights', function($value, $object) {
+			return $value . $object->metadata(
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:RightsDescription/text()', '/DKA/RightsDescription/text()')
+			);
+		}, 10, 2);
+
 		//object->type
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, \WPCHAOSObject $object) {
 			return $value . WPDKAObject::determine_type($object);
 		}, 10, 2);
 
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_class', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_class', function($value, \WPCHAOSObject $object) {
 			$type = $object->type;
 			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['class'] : $type);
 		}, 10, 2);
 
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, \WPCHAOSObject $object) {
 			$type = $object->type;
 			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['title'] : $type);
 		}, 10, 2);
 
 		//object->thumbnail
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, \WPCHAOSObject $object) {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
@@ -208,12 +216,12 @@ class WPDKAObject {
 		}, 10, 2);
 
 		//object->slug
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'slug', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'slug', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Slug/text()');
 		}, 10, 2);
 
 		//object->url
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'url', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'url', function($value, \WPCHAOSObject $object) {
 			$result = site_url() . '/';
 			$slug = $object->slug;
 			if($slug) {
@@ -226,16 +234,53 @@ class WPDKAObject {
 				return $result . '?guid=' . $object->GUID . $value;
 			}
 		}, 10, 2);
+
+		//object->views
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'views', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()');
+		}, 10, 2);
+
+		//object->shares
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'shares', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Shares/text()');
+		}, 10, 2);
+
+		//object->likes
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'likes', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Likes/text()');
+		}, 10, 2);
+
+		//object->ratings
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'ratings', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Ratings/text()');
+		}, 10, 2);
+
+		//object->accumulatedrate
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'accumulatedrate', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
+		}, 10, 2);
+
+		//object->tags
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
+		}, 10, 2);
+
 	}
 	
 	public function define_single_object_page() {
 		// Ensure the DKA Crowd metadata schema is present, and redirect to the slug URL if needed.
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
-			WPDKAObject::ensure_crowd_metadata($object);
-			if(isset($_GET['guid'])) {
-				$redirection = $object->url;
-				status_header(301);
-				header("Location: $redirection");
+			// If a guid was used to retreive the object, this might not have the crowd metadata connected to it.
+			if(array_key_exists('guid', $_GET)) {
+				try {
+					$object = WPDKAObject::ensure_crowd_metadata($object, true);
+					$redirection = $object->url;
+					status_header(301);
+					header("Location: $redirection");
+				} catch(\CHAOSException $e) {
+					error_log($e->getMessage());
+					wp_die($e->getMessage());
+				}
 				exit;
 			}
 		});
@@ -267,17 +312,39 @@ class WPDKAObject {
 	}
 	*/
 	
-	public static function ensure_crowd_metadata(\WPChaosObject $object) {
-		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET);
-		if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID) || $forceReset) {
-			self::reset_crowd_metadata($object);
-			if($forceReset) {
-				$link = $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-				$link = str_replace('reset-crowd-metadata', '', $link);
-				$link = "<a href='$link'>Click to get back</a>";
-				wp_die("Crowd Metadata was reset: $link");
-			}
+	public static function ensure_crowd_metadata(\WPChaosObject $object, $ensureObjectIsReachableFromSlug = false) {
+		// Is this the admin force resetting from URL?
+		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET) && current_user_can('edit_posts');
+		
+		if($forceReset || !$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
+			$slug = self::reset_crowd_metadata($object);
+		} else {
+			// If the metadata is present, we can extract the slug from there.
+			$slug = $object->slug;
 		}
+		
+		// If needed, a loop is performed until the object is reachable or a timeout is reached and an exception is thrown.
+		if($ensureObjectIsReachableFromSlug) {
+			// Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned.
+			$start = time(); // Time in milliseconds
+			while(($object = self::getObjectFromSlug($slug)) == null) {
+				$now = time();
+				if($now > $start + self::RESET_TIMEOUT_S) {
+					// Timeout was reached.
+					throw new \CHAOSException("reset_crowd_metadata loop failed to find the CHAOS object within the timeout (".self::RESET_TIMEOUT_S."s)");
+				}
+				usleep(self::RESET_DELAY_MS * 1000);
+			};
+		}
+		
+		if($forceReset) {
+			$link = $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+			$link = str_replace('reset-crowd-metadata', '', $link);
+			$link = "<a href='$link'>Click to get back</a>";
+			wp_die("Crowd Metadata was reset: $link");
+		}
+		
+		return $object;
 	}
 	
 	public static function reset_crowd_metadata(\WPChaosObject $object) {
@@ -300,22 +367,7 @@ class WPDKAObject {
 		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
 		}
-		
-		// Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned.
-		$start = time(); // Time in milliseconds
-		while(self::getObjectFromSlug($slug) == null) {
-			$now = time();
-			
-			if($now > $start + self::RESET_TIMEOUT_S) {
-				error_log(__FILE__. ": reset_crowd_metadata loop failed to find the CHAOS object within the timeout (".self::RESET_TIMEOUT_S."s)");
-				return $metadataXML;
-			}
-
-			//error_log(__FILE__. " ... waiting for CHAOS to commit the change. ");
-			usleep(self::RESET_DELAY_MS * 1000);
-		};
-		
-		return $metadataXML;
+		return $slug;
 	}
 	
 	/**
@@ -362,7 +414,7 @@ class WPDKAObject {
 		// TODO: Use this instead, when DKA-Slug is added to the index.
 		// $response = WPChaosClient::instance()->Object()->Get("DKA-Slug:'$slug'");
 		$query = WPDKAObject::DKA_CROWD_SLUG_SOLR_FIELD. ':"' . $slug . '"';
-		$response = WPChaosClient::instance()->Object()->Get($query, null, null, 0, 1);
+		$response = WPChaosClient::instance()->Object()->Get($query, null, null, 0, 1, true);
 		if(!$response->WasSuccess()) {
 			throw new \RuntimeException("Couldn't get object from slug: ".$response->Error()->Message());
 		} elseif (!$response->MCM()->WasSuccess()) {
