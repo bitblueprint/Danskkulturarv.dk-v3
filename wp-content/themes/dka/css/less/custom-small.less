@@ -80,20 +80,6 @@ and other resources.
       background-color: @grayDark!important;
     }
 
-    // Level 2
-    > li.current-menu-item > a {
-      background-color: @gray;
-    }
-    
-    li.dropdown.open > .dropdown-toggle {
-      background-color: @grayLighter;
-    }
-
-    li.dropdown-header {
-      color: @gray-dark;
-      padding: 10px 20px 0 20px;
-    }
-
     .open > .dropdown-menu {
       background-color: @grayLighter;
       border-radius: @border-radius-small;
@@ -118,8 +104,6 @@ and other resources.
       background-image:none;
       background-color: @grayDark;
     }
-
-    
   }
 }
 
@@ -132,15 +116,30 @@ li.menu-item a {
   padding: 4px 10px !important;
 }
 
+.menu-item li {
+  float: left !important;
+  clear: all !important;
+  width: auto;
+  list-style: none;
+  width: 100%;
+}
+
+.dropdown-header {
+  padding: 10px 0 4px 10px;
+}
+
+li.menu-item a:hover {
+  background-color: @blue !important;
+}
+
 li.menu-item {
   float: left !important;
   display: inline-block!important;
   clear: all;
 }
 
-.dropdown-menu li {
-  float: none !important;
-  width: 100%;
+.dropdown-menu {
+position: absolute!important;
 }
 
 #menu-top-navigation {

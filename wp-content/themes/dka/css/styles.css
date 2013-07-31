@@ -4540,16 +4540,6 @@ footer .copyright a {
   .navbar .nav > li.current-menu-item > a {
     background-color: #333333 !important;
   }
-  .navbar .nav > li.current-menu-item > a {
-    background-color: #555555;
-  }
-  .navbar .nav li.dropdown.open > .dropdown-toggle {
-    background-color: #888888;
-  }
-  .navbar .nav li.dropdown-header {
-    color: #333333;
-    padding: 10px 20px 0 20px;
-  }
   .navbar .nav .open > .dropdown-menu {
     background-color: #888888;
     border-radius: 3px;
@@ -4579,14 +4569,26 @@ footer .copyright a {
   li.menu-item a {
     padding: 4px 10px !important;
   }
+  .menu-item li {
+    float: left !important;
+    clear: all !important;
+    width: auto;
+    list-style: none;
+    width: 100%;
+  }
+  .dropdown-header {
+    padding: 10px 0 4px 10px;
+  }
+  li.menu-item a:hover {
+    background-color: #2f94fd !important;
+  }
   li.menu-item {
     float: left !important;
     display: inline-block !important;
     clear: all;
   }
-  .dropdown-menu li {
-    float: none !important;
-    width: 100%;
+  .dropdown-menu {
+    position: absolute!important;
   }
   #menu-top-navigation {
     width: 100% !important;
