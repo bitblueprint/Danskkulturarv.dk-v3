@@ -51,7 +51,7 @@ class WPDKASearch {
 
 				$extra_description = '';
 
-				//Fetch titles from the organizations searched in
+				// Fetch titles from the organizations searched in
 				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION)) {
 					$organizations = WPDKASearch::get_organizations();
 					foreach($organizations as $organization) {

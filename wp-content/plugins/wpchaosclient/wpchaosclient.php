@@ -65,6 +65,7 @@ class WPChaosClient {
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
 		add_action('admin_init', array(&$this,'settings_updated'));
+		
 		add_action('template_redirect', array(&$this,'get_object_page'));
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
 		
