@@ -231,12 +231,15 @@ class WPDKAObject {
 	public function define_single_object_page() {
 		// Ensure the DKA Crowd metadata schema is present, and redirect to the slug URL if needed.
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
-			WPDKAObject::ensure_crowd_metadata($object);
+			$newObject = WPDKAObject::ensure_crowd_metadata($object);
 			if(isset($_GET['guid'])) {
-				$redirection = $object->url;
+				$redirection = $newObject->url;
 				status_header(301);
 				header("Location: $redirection");
 				exit;
+			} elseif($newObject != $object) {
+				// Use this new object form now on.
+				WPChaosClient::set_object($object);
 			}
 		});
 		
@@ -270,7 +273,7 @@ class WPDKAObject {
 	public static function ensure_crowd_metadata(\WPChaosObject $object) {
 		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET);
 		if(!$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID) || $forceReset) {
-			self::reset_crowd_metadata($object);
+			return self::reset_crowd_metadata($object);
 			if($forceReset) {
 				$link = $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 				$link = str_replace('reset-crowd-metadata', '', $link);
@@ -278,6 +281,7 @@ class WPDKAObject {
 				wp_die("Crowd Metadata was reset: $link");
 			}
 		}
+		return $object;
 	}
 	
 	public static function reset_crowd_metadata(\WPChaosObject $object) {
@@ -303,19 +307,18 @@ class WPDKAObject {
 		
 		// Make sure the object is reachable on the slug, by performing multiple requests for the object until its returned.
 		$start = time(); // Time in milliseconds
-		while(self::getObjectFromSlug($slug) == null) {
+		while(($objectFromSlug = self::getObjectFromSlug($slug)) == null) {
 			$now = time();
 			
 			if($now > $start + self::RESET_TIMEOUT_S) {
 				error_log(__FILE__. ": reset_crowd_metadata loop failed to find the CHAOS object within the timeout (".self::RESET_TIMEOUT_S."s)");
-				return $metadataXML;
+				return $object;
 			}
 
 			//error_log(__FILE__. " ... waiting for CHAOS to commit the change. ");
 			usleep(self::RESET_DELAY_MS * 1000);
 		};
-		
-		return $metadataXML;
+		return $objectFromSlug;
 	}
 	
 	/**
@@ -362,7 +365,7 @@ class WPDKAObject {
 		// TODO: Use this instead, when DKA-Slug is added to the index.
 		// $response = WPChaosClient::instance()->Object()->Get("DKA-Slug:'$slug'");
 		$query = WPDKAObject::DKA_CROWD_SLUG_SOLR_FIELD. ':"' . $slug . '"';
-		$response = WPChaosClient::instance()->Object()->Get($query, null, null, 0, 1);
+		$response = WPChaosClient::instance()->Object()->Get($query, null, null, 0, 1, true);
 		if(!$response->WasSuccess()) {
 			throw new \RuntimeException("Couldn't get object from slug: ".$response->Error()->Message());
 		} elseif (!$response->MCM()->WasSuccess()) {

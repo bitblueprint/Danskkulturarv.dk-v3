@@ -282,6 +282,7 @@ class WPChaosClient {
 					$object = new WPChaosObject($objects[0]);
 					self::set_object($object);
 				
+					// Call this by reference.
 					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
 		
 					//Look in theme dir and include if found
