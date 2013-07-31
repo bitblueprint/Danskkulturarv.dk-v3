@@ -19,7 +19,7 @@ function get_facet_count($field, $value) {
 $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
 ?>
 <form method="GET" action="<?php echo $page; ?>" class="col-12">
-	<div class="col-8">
+	<div class="col-lg-8 col-10">
 		<div class="input-group">
 			<input class="form-control" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_attr'); ?>" placeholder="<?php echo $freetext_placeholder; ?>" />
 			<span class="input-group-btn">
@@ -27,7 +27,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 			</span>
 	</div>
 	</div>
-	<div class="col-4 btn-advanced-search-container">
+	<div class="col-lg-4 col-2 btn-advanced-search-container">
 		<button class="btn btn-large btn-block btn-advanced-search collapsed blue visible-lg" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning <i class="icon-angle-down pull-right">&nbsp;&nbsp;</i></button>
 		<button class="btn btn-large btn-block btn-advanced-search collapsed blue hidden-lg" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i><i class="icon-angle-down pull-right"></i></button>
 	</div>
