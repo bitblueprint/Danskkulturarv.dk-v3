@@ -97,8 +97,9 @@ class WPDKA {
 		}
 		?>
 		<div class="wrap"><h2><?php echo get_admin_page_title() ?></h2>
-		<h3>Dansk Kulturarv CHAOS Object slugs</h3>
-		<p>When installing the website or when experiencing inconsitent crowd metadata it might make sence to reset crowd metadata.</p>
+		<h3>Resetting Dansk Kulturarv's Crowd Metadata</h3>
+		<p>When installing the website or when experiencing inconsitent crowd metadata it might make sence to reset the crowd metadata.</p>
+		<p><strong>Warning:</strong> This will <strong>remove all</strong> counts on views, shares, likes, ratings and user tags.</p>
 		<style type='text/css'>
 		#reset-crowd-metadata-start-button, #reset-crowd-metadata-pause-button, #reset-crowd-metadata-stop-button, #progress-objects { float:left; margin: 0px 2px; }
 		.media-item .progress { position:relative; float:left; margin: 0px 10px; }
