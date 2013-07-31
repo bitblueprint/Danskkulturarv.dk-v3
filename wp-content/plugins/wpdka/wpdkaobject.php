@@ -231,18 +231,18 @@ class WPDKAObject {
 	public function define_single_object_page() {
 		// Ensure the DKA Crowd metadata schema is present, and redirect to the slug URL if needed.
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
-			if(isset($_GET['guid'])) {
-				$object = WPDKAObject::ensure_crowd_metadata($object, true);
-				$redirection = $object->url;
-				status_header(301);
-				header("Location: $redirection");
+			// If a guid was used to retreive the object, this might not have the crowd metadata connected to it.
+			if(array_key_exists('guid', $_GET)) {
+				try {
+					$object = WPDKAObject::ensure_crowd_metadata($object, true);
+					$redirection = $object->url;
+					status_header(301);
+					header("Location: $redirection");
+				} catch(\CHAOSException $e) {
+					error_log($e->getMessage());
+					wp_die($e->getMessage());
+				}
 				exit;
-			} else {
-				// $ensureObjectIsReachableFromSlug is not needed, as this was how we found the object in the first place.
-				/*
-				$object = WPDKAObject::ensure_crowd_metadata($object);
-				WPChaosClient::set_object($object);
-				*/
 			}
 		});
 		
