@@ -4428,16 +4428,16 @@ footer {
 }
 footer {
   background-color: #f6f6f6;
-  border-top: 1px solid #cecece;
+  border-top: 1px solid #aaaaaa;
   margin-left: -20px;
   margin-right: -20px;
 }
 footer .bloginfo-footer {
-  font-size: 16px;
+  font-size: 14px;
   text-transform: uppercase;
   font-weight: bold;
   color: #646464;
-  margin: 15px 0 20px 0;
+  margin: 12px 0;
 }
 footer .bloginfo-footer span {
   color: #ff7e21;
@@ -4445,29 +4445,41 @@ footer .bloginfo-footer span {
   font-style: italic;
   font-weight: normal;
 }
-footer .nav-footer {
+footer ul#menu-footer.nav-footer {
   margin-left: 0;
   padding-left: 0;
-  display: inline;
+  display: inline-block;
   font-weight: bold;
+  margin-bottom: 2px;
+  line-height: 20px;
 }
-footer .nav-footer > li + li {
-  border-left: 1px solid #646464;
+footer ul#menu-footer.nav-footer a {
+  color: #333333 !important;
+}
+footer ul#menu-footer.nav-footer a:hover {
+  background: none!important;
+  color: #646464 !important;
+  text-decoration: none;
+}
+footer ul#menu-footer.nav-footer > li + li {
+  border-left: 1px solid #aaaaaa;
   margin-left: 10px;
   padding-left: 10px;
 }
-footer .nav-footer > li {
+footer ul#menu-footer.nav-footer > li {
   display: inline-block;
   list-style: none;
   line-height: 16px;
 }
-footer .nav-footer > li a {
-  color: #646464;
+footer .social {
+  font-size: 16px;
+  line-height: 12px;
+  margin-right: 6px;
 }
 footer .copyright,
 footer .copyright a {
-  margin-top: 20px;
-  color: #888888;
+  margin-top: 6px;
+  color: #aaaaaa;
 }
 .mejs-container {
   position: relative;
@@ -4689,7 +4701,7 @@ footer .copyright a {
 }
 .mejs-controls .mejs-time-rail .mejs-time-total {
   margin: 5px;
-  background: #aaa;
+  background: #aaaaaa;
 }
 .mejs-controls .mejs-time-rail .mejs-time-buffering {
   width: 100%;
@@ -5362,6 +5374,20 @@ footer .copyright a {
   }
   #menu-top-navigation {
     width: 100% !important;
+  }
+  footer .bloginfo-footer {
+    margin: 20px 0;
+    font-size: 18px;
+  }
+  footer .social {
+    font-size: 16px;
+    line-height: 12px;
+    margin-right: 6px;
+  }
+  footer .copyright,
+  footer .copyright a {
+    margin-top: 18px;
+    color: #aaaaaa;
   }
 }
 @media only screen and (min-width: 992px) {
