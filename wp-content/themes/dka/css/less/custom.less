@@ -14,6 +14,7 @@
 @grayLight:             #646464;
 //@grayLighter:           #eee;
 @grayLighter:           #888888;
+@grayLightest:          #aaaaaa;
 @grayBorder:            #eeeded;
 @white:                 #fff;
 
@@ -498,17 +499,17 @@ footer {
 
 footer {
   background-color: #f6f6f6;
-  border-top: 1px solid #cecece;
+  border-top: 1px solid @grayLightest;
   margin-left: -20px;
   margin-right: -20px;
   //padding-top: 15px;
 
   .bloginfo-footer {
-    font-size: 16px;
+    font-size: 14px;
     text-transform: uppercase;
     font-weight: bold;
     color: @grayLight;
-    margin:15px 0 20px 0;
+    margin: 12px 0;
     span {
       color: @orange;
       text-transform: lowercase;
@@ -517,13 +518,23 @@ footer {
     }
   }
 
-  .nav-footer {
+ ul#menu-footer.nav-footer {
     margin-left: 0;
     padding-left: 0;
-    display: inline;
+    display: inline-block;
     font-weight: bold;
+    margin-bottom: 2px;
+    line-height: 20px;
+      a {
+        color: @grayDark !important;
+      }
+      a:hover {
+        background: none!important;
+        color: @grayLight!important;
+        text-decoration: none;
+      }
     > li+li {
-      border-left: 1px solid @grayLight;
+      border-left: 1px solid @grayLightest;
       margin-left: 10px;
       padding-left: 10px;
     }
@@ -531,15 +542,18 @@ footer {
       display: inline-block;
       list-style: none;
       line-height: 16px;
-      a {
-        color: @grayLight;
-      }
     }
   }
 
+  .social {
+    font-size: 16px;
+    line-height: 12px;
+    margin-right: 6px;
+  }
+
   .copyright, .copyright a {
-    margin-top: 20px;
-    color: @grayLighter;
+    margin-top: 6px;
+    color: @grayLightest;
   }
 }
 

@@ -21,6 +21,7 @@
         'container'  => false,
         'menu_class' => 'nav-footer',
         'fallback_cb' => false,
+        'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s<a href="#" class="social"><i class="icon-facebook-sign"></i></a><a href="#" class="social"><i class="icon-twitter"></i></a></ul>'
         )
     );
 ?>
