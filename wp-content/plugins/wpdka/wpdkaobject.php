@@ -179,6 +179,14 @@ class WPDKAObject {
 			return $value . $time;
 		}, 10, 2);
 
+		//object->rights
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'rights', function($value, $object) {
+			return $value . $object->metadata(
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:RightsDescription/text()', '/DKA/RightsDescription/text()')
+			);
+		}, 10, 2);
+
 		//object->type
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, \WPCHAOSObject $object) {
 			return $value . WPDKAObject::determine_type($object);
@@ -226,6 +234,37 @@ class WPDKAObject {
 				return $result . '?guid=' . $object->GUID . $value;
 			}
 		}, 10, 2);
+
+		//object->views
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'views', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()');
+		}, 10, 2);
+
+		//object->shares
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'shares', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Shares/text()');
+		}, 10, 2);
+
+		//object->likes
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'likes', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Likes/text()');
+		}, 10, 2);
+
+		//object->ratings
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'ratings', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Ratings/text()');
+		}, 10, 2);
+
+		//object->accumulatedrate
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'accumulatedrate', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
+		}, 10, 2);
+
+		//object->tags
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, $object) {
+			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
+		}, 10, 2);
+
 	}
 	
 	public function define_single_object_page() {
