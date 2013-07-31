@@ -23,10 +23,14 @@ class WPDKA {
 	 * Name for setting page
 	 * @var string
 	 */
-	protected $menu_page = 'wpdka-administration';
+	const MENU_PAGE = 'wpdka-administration';
 	
-	const CLEAN_UP_SLUGS_BTN = 'Clean up slugs';
-	const CLEAN_OBJECT_SLUGS_AJAX = 'wp_dka_clean_object_slugs';
+	const RESET_CROWD_METADATA_START_BTN = 'Start Resetting Crowd Metadata';
+	const RESET_CROWD_METADATA_PAUSE_BTN = 'Pause';
+	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
+	const RESET_CROWD_METADATA_AJAX = 'wp_dka_reset_crowd_metadata';
+	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
+	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
 
 	//List of plugins depending on
 	private static $plugin_dependencies = array(
@@ -41,10 +45,10 @@ class WPDKA {
 		if(self::check_chaosclient()) {
 
 			$this->load_dependencies();
-
 			add_action('admin_menu', array(&$this, 'create_menu'));
+			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 			
-			add_action('wp_ajax_' . self::CLEAN_OBJECT_SLUGS_AJAX, array(&$this, 'ajax_clean_object_slugs'));
+			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
 
 		}
 
@@ -71,7 +75,7 @@ class WPDKA {
 			'Dansk Kulturarv',
 			'DKA',
 			'manage_options',
-			$this->menu_page,
+			self::MENU_PAGE,
 			array(&$this, 'create_menu_page'),
 			'none',
 			81
@@ -83,94 +87,138 @@ class WPDKA {
 	 * @return void
 	 */
 	public function create_menu_page() {
-		echo '<div class="wrap"><h2>'.get_admin_page_title().'</h2>'."\n";
-		/*
-		if(array_key_exists('action', $_GET) && $_GET['action'] == self::CLEAN_UP_SLUGS_BTN) {
-			echo '<div class="updated">';
-			$this->clean_up_slugs();
-			echo '</div>';
+		$defaultPageSize = array_key_exists('pageSize', $_GET) ? intval($_GET['pageSize']) : 3;
+		$pageIndex = intval(get_option(self::RESET_CROWD_METADATA_PAGE_INDEX_OPTION, 0));
+		$pageSize = intval(get_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION, $defaultPageSize));
+		if($pageIndex == 0) {
+			$start_btn_text = "";
+		} else {
+			$start_btn_text = " (from page $pageIndex)";
 		}
-		*/
-		//Add section to WordPress
-		echo '<h3>Dansk Kulturarv CHAOS Object slugs</h3>';
-		echo '<p>These are the nice URLs every object gets when clicked in a search url. If the CHAOS indexing for some reason fails, multiple objects might be given the same slug, this is why it might be nessesary to clean these up.</p>';
-		//echo '<form method="get">';
-		//echo '<input type="hidden" name="page" value="'. esc_attr($_GET['page']) .'"/>';
-		//echo '<input type="submit" name="action" id="submit" class="button button-primary" value="'. self::CLEAN_UP_SLUGS_BTN .'" />';
-		//echo '</form>';
 		?>
+		<div class="wrap"><h2><?php echo get_admin_page_title() ?></h2>
+		<h3>Resetting Dansk Kulturarv's Crowd Metadata</h3>
+		<p>When installing the website or when experiencing inconsitent crowd metadata it might make sence to reset the crowd metadata.</p>
+		<p><strong>Warning:</strong> This will <strong>remove all</strong> counts on views, shares, likes, ratings and user tags.</p>
 		<style type='text/css'>
-		#clean-slugs-button, #progress-objects { float:left; }
+		#reset-crowd-metadata-start-button, #reset-crowd-metadata-pause-button, #reset-crowd-metadata-stop-button, #progress-objects { float:left; margin: 0px 2px; }
 		.media-item .progress { position:relative; float:left; margin: 0px 10px; }
 		.media-item .progress .state { display:block; position:absolute; top:0px; right:7px; color: rgba(0, 0, 0, 0.6); padding: 0 8px; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4); z-index: 10; }
-		#ajax-messages {clear:both;}
+		.media-item .eta { float:right; line-height:24px; }
+		#ajax-messages {clear:both;max-height:200px;overflow:auto;padding:10px;}
 		</style>
-		<button class="button button-primary" id="clean-slugs-button"><?php echo self::CLEAN_UP_SLUGS_BTN ?></button>
+		<button class="button button-primary" id="reset-crowd-metadata-start-button"><?php echo self::RESET_CROWD_METADATA_START_BTN ?><?php echo $start_btn_text ?></button>
+		<button class="button button-primary" id="reset-crowd-metadata-pause-button" disabled><?php echo self::RESET_CROWD_METADATA_PAUSE_BTN ?></button>
+		<button class="button button-primary" id="reset-crowd-metadata-stop-button"><?php echo self::RESET_CROWD_METADATA_STOP_BTN ?></button>
 		<div class='media-item' id='progress-objects' style='display:none;'>
 			<div class='progress'><div class='percent'>0%</div><div class='state'><span class='d'>0</span> of <span class='t'>?</span> objects</div><div class='bar'></div></div>
+			<div class='eta'>ETA: <span></span></div>
 		</div>
 		<pre id="ajax-messages"></pre>
 		<script>
 		jQuery(document).ready(function($) {
-			function clean_object_metadata(data) {
-				data['action'] = "<?php echo WPDKA::CLEAN_OBJECT_SLUGS_AJAX ?>";
+			var pageIndex = <?php echo $pageIndex ?>;
+			var pageSize = <?php echo $pageSize ?>;
+			var startDate = null;
+			var objectsProcessedSinceStart = 0;
+
+			// See: http://codeaid.net/javascript/convert-seconds-to-hours-minutes-and-seconds-(javascript)
+			function secondsToTime(secs)
+			{
+			    var hours = Math.floor(secs / (60 * 60));
+			   
+			    var divisor_for_minutes = secs % (60 * 60);
+			    var minutes = Math.floor(divisor_for_minutes / 60);
+			 
+			    var divisor_for_seconds = divisor_for_minutes % 60;
+			    var seconds = Math.ceil(divisor_for_seconds);
+			   
+			    var obj = {
+			        "h": hours,
+			        "m": minutes,
+			        "s": seconds
+			    };
+			    return obj;
+			}
+
+			function calculate_eta(time_elapsed, objects_processed, objects_left) {
+				// time_elapsed in s.
+				time_elapsed /= 1000;
+				var rate = objects_processed / time_elapsed;
+				var eta_seconds = Math.round(objects_left / rate);
+				var eta = secondsToTime(eta_seconds);
+				var result = ""
+				if(eta.h > 0) {
+					result += eta.h+" hours ";
+				}
+				if(eta.m > 0) {
+					result += eta.m+" minutes ";
+				}
+				if(eta.s > 0) {
+					result += eta.s+" seconds ";
+				}
+				return result;
+			}
+			
+			function reset_crowd_metadata(data) {
+				data['action'] = "<?php echo WPDKA::RESET_CROWD_METADATA_AJAX ?>";
 				// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 				$.post(ajaxurl, data, function(response) {
+					// Update the page index, used if the user presses pause.
+					pageIndex = response.pageIndex;
+					// Overall objects processed.
 					var objectsProcessed = (response.pageIndex+1)*response.pageSize;
+					// Update the number of objects processed since start.
+					objectsProcessedSinceStart += response.pageSize;
+					// The procentage.
 					var progressProcentage = Math.round(objectsProcessed * 100.0 / response.totalCount);
+					// Objects left to process
+					var objectsLeft = response.totalCount - objectsProcessed;
+					eta = calculate_eta(new Date() - startDate, objectsProcessedSinceStart, objectsLeft);
 					$("#progress-objects")
 						.find(".percent").text(progressProcentage+"%").end()
 						.find(".state .d").text(objectsProcessed).end()
 						.find(".state .t").text(response.totalCount).end()
 						.find(".bar").css("width", progressProcentage+"%").end()
+						.find(".eta span").text(eta).end()
 					.fadeIn();
 					// Get the next.
 					data['pageIndex'] = response.nextPageIndex;
 					for(var m = 0; m < response.messages.length; m++) {
-						$("#ajax-messages").append(response.messages[m]+"\n");
+						$("#ajax-messages").prepend(response.messages[m]+"\n");
 					}
-					clean_object_metadata(data);
+					reset_crowd_metadata(data);
 				}, 'json');
 			}
 			
-			$("#clean-slugs-button").click(function() {
-				var data = { pageSize: 49 };
-				clean_object_metadata(data);
+			$("#reset-crowd-metadata-start-button").click(function() {
+				var data = { pageSize: pageSize, pageIndex: pageIndex };
+				reset_crowd_metadata(data);
+				startDate = new Date();
+				$(this).attr('disabled', true);
+				$("#reset-crowd-metadata-pause-button").attr('disabled', false);
+			});
+			$("#reset-crowd-metadata-pause-button").click(function() {
+				location.reload();
+			});
+			$("#reset-crowd-metadata-stop-button").click(function() {
+				location.href = location.search + "&action=stop";
 			});
 		});
 		</script>
 		<?php
 	}
 	
-	/*
-	public function clean_up_slugs() {
-		// We are cleaning up slugs ..
-		echo "<h3>Cleaning up slugs</h3>";
-		// Ask the index for all unique slugs.
-		$response = WPChaosClient::instance()->Index()->Search('field:DKA-Crowd-Slug_string');
-		foreach($response->Index()->Results() as $facetResults) {
-			foreach($facetResults->FacetFieldsResult as $facetResult) {
-				foreach($facetResult->Facets as $facet) {
-					if($facet->Count > 1) {
-						echo '<hr />';
-						echo '<p><strong>' . $facet->Value . '</strong> has '.$facet->Count.' objects associated with it.</p>';
-						$objectsResponse = WPChaosClient::instance()->Object()->Get('DKA-Crowd-Slug_string:' . $facet->Value, null, null, 0, $facet->Count, true);
-						$objects = WPChaosObject::parseResponse($objectsResponse);
-						echo '<ul>';
-						foreach($objects as $object) {
-							$metadataXML = WPDKAObject::reset_crowd_metadata($object);
-							var_dump($metadataXML);
-							echo '<li>' . $object->GUID . '</li>';
-						}
-						echo '<p>';
-					}
-				}
-			}
+	public function reset_crowd_metadata() {
+		$action = array_key_exists('action', $_GET) ? $_GET['action'] : null;
+		if($action == 'stop') {
+			delete_option(self::RESET_CROWD_METADATA_PAGE_INDEX_OPTION);
+			delete_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION);
+			wp_redirect(admin_url('admin.php?page='.self::MENU_PAGE));
 		}
 	}
-	*/
 	
-	public function ajax_clean_object_slugs () {
+	public function ajax_reset_crowd_metadata () {
 		$result = array();
 		$result['messages'] = array();
 		
@@ -190,12 +238,18 @@ class WPDKA {
 		$response = WPChaosClient::instance()->Object()->Get($query, "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
 		$result['totalCount'] = $response->MCM()->TotalCount();
 		
+		$objects = WPChaosObject::parseResponse($response);
 		// Process the objects
-		foreach($response->MCM()->Results() as $object) {
+		foreach($objects as $object) {
+			$slug = WPDKAObject::reset_crowd_metadata($object);
+			$result['messages'][] = $object->GUID .' is now reacheable with slug: '. $slug;
 			// Ensure its crowd metadata.
 			// Make sure the object is reachable on its slug - if not, reset its metadata.
 			// $result['messages'][] = "";
 		}
+
+		update_option(self::RESET_CROWD_METADATA_PAGE_INDEX_OPTION, $result['pageIndex']);
+		update_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION, $result['pageSize']);
 		
 		$result['nextPageIndex'] = $result['pageIndex'] + 1;
 		echo json_encode($result);

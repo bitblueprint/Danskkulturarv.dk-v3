@@ -140,6 +140,19 @@ class WPDKAObject {
 			);
 		}, 10, 2);
 
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, \WPCHAOSObject $object) {
+			// If we have no title at all.
+			if($value == "") {
+				$typeTitle = $object->type_title;
+				if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
+					$typeTitle = __('Materiale');
+				}
+				return $typeTitle . __(' uden title');
+			} else {
+				return $value;
+			}
+		}, 20, 2);
+
 		//object->organization
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
