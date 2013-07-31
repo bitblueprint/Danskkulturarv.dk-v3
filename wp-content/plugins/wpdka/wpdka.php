@@ -108,7 +108,7 @@ class WPDKA {
 		</style>
 		<button class="button button-primary" id="reset-crowd-metadata-start-button"><?php echo self::RESET_CROWD_METADATA_START_BTN ?><?php echo $start_btn_text ?></button>
 		<button class="button button-primary" id="reset-crowd-metadata-pause-button" disabled><?php echo self::RESET_CROWD_METADATA_PAUSE_BTN ?></button>
-		<button class="button button-primary" id="reset-crowd-metadata-stop-button" disabled><?php echo self::RESET_CROWD_METADATA_STOP_BTN ?></button>
+		<button class="button button-primary" id="reset-crowd-metadata-stop-button"><?php echo self::RESET_CROWD_METADATA_STOP_BTN ?></button>
 		<div class='media-item' id='progress-objects' style='display:none;'>
 			<div class='progress'><div class='percent'>0%</div><div class='state'><span class='d'>0</span> of <span class='t'>?</span> objects</div><div class='bar'></div></div>
 			<div class='eta'>ETA: <span></span></div>
@@ -195,7 +195,7 @@ class WPDKA {
 				reset_crowd_metadata(data);
 				startDate = new Date();
 				$(this).attr('disabled', true);
-				$("#reset-crowd-metadata-pause-button, #reset-crowd-metadata-stop-button").attr('disabled', false);
+				$("#reset-crowd-metadata-pause-button").attr('disabled', false);
 			});
 			$("#reset-crowd-metadata-pause-button").click(function() {
 				location.reload();
