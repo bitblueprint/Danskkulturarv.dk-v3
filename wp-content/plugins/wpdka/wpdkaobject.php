@@ -50,7 +50,7 @@ class WPDKAObject {
 	 * How many seconds should we wait for the CHAOS service to realize the slug has changed?
 	 * @var integer
 	 */
-	const RESET_TIMEOUT_S = 5; // 5 seconds.
+	const RESET_TIMEOUT_S = 10; // 10 seconds.
 	
 	/**
 	 * How many milliseconds delay between checking the service for the object to become searchable on the slug.
