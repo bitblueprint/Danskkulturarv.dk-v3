@@ -175,10 +175,9 @@
   position: absolute;
   height: 22px;
   width: 22px;
-  border: 1px solid @grayLight;
-  background-color: @white;
-  border-radius: 2px;
-  background: transparent url(../img/controls.svg) no-repeat;
+  border: 1px solid @grayLighter;
+  border-radius: 3px;
+  background: @grayBorder url(../img/controls.svg) no-repeat;
 }
 
 .no-svg .mejs-controls .mejs-button button { 
@@ -194,7 +193,7 @@
 
 /* Start: Time (Current / Duration) */
 .mejs-container .mejs-controls .mejs-time {
-  color: #fff;
+  color: @white;
   display: block;
   height: 17px;
   width: auto;
@@ -219,11 +218,11 @@
 
 /* Start: Play/Pause/Stop */
 .mejs-controls .mejs-play button {
-  background-position: 3px 3px;
+  background-position: 0 0;
 }
 
 .mejs-controls .mejs-pause button {
-  background-position: 3 -13px;
+  background-position: 0 -20px;
 }
 
 .mejs-controls .mejs-stop button {
@@ -250,7 +249,7 @@
 
 .mejs-controls .mejs-time-rail .mejs-time-total {
   margin: 5px;
-  background: @grayLighter;
+  background: #aaa;
 }
 
 .mejs-controls .mejs-time-rail .mejs-time-buffering {
@@ -273,12 +272,12 @@
 @keyframes buffering-stripes { from {background-position: 0 0;} to {background-position: 30px 0;} }
 
 .mejs-controls .mejs-time-rail .mejs-time-loaded {
-  background: @grayLight;
+  background: @grayLighter;
   width: 0;
 }
 
 .mejs-controls .mejs-time-rail .mejs-time-current {
-  background: @grayDark;
+  background: @gray;
   width: 0;
 }
 
@@ -351,11 +350,11 @@
 
 /* Start: Fullscreen */
 .mejs-controls .mejs-fullscreen-button button {
-  background-position: -32px 0;
+  background-position: -40px 0;
 }
 
 .mejs-controls .mejs-unfullscreen button {
-  background-position: -32px -16px;
+  background-position: -40px -20px;
 }
 /* End: Fullscreen */
 
@@ -365,11 +364,11 @@
 }
 
 .mejs-controls .mejs-mute button {
-  background-position: -16px -16px;
+  background-position: -20px -20px;
 }
 
 .mejs-controls .mejs-unmute button {
-  background-position: -16px 0;
+  background-position: -20px 0;
 }
 
 .mejs-controls .mejs-volume-button {
