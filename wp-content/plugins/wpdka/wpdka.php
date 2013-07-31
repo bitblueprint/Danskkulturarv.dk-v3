@@ -87,8 +87,9 @@ class WPDKA {
 	 * @return void
 	 */
 	public function create_menu_page() {
+		$defaultPageSize = array_key_exists('pageSize', $_GET) ? intval($_GET['pageSize']) : 3;
 		$pageIndex = intval(get_option(self::RESET_CROWD_METADATA_PAGE_INDEX_OPTION, 0));
-		$pageSize = intval(get_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION, 3));
+		$pageSize = intval(get_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION, $defaultPageSize));
 		if($pageIndex == 0) {
 			$start_btn_text = "";
 		} else {
