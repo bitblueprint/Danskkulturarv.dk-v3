@@ -4,15 +4,14 @@
  * @version 1.0
  */
 ?>
-<video controls="controls" preload="true">
+<video controls="controls" preload="true" title="Video til <?php echo WPChaosClient::get_object()->title; ?>">
 <?php 
 /*poster="<?php echo WPChaosClient::get_object()->thumbnail; ?>"*/
 //Loop through each file and skip those whose format is not video ?>
-<?php foreach(WPChaosClient::get_object()->Files as $file) : if($file->FormatType != 'Video') continue; ?>
-<?php
-$extdot = strrpos($file->URL, ".");
-$ext = substr($file->URL, $extdot+1);
- ?>
-<source src="<?php echo $file->URL; ?>" type="video/<?php echo $ext; ?>" />
+<?php foreach(WPChaosClient::get_object()->Files as $file) :
+	if($file->FormatType != 'Video') continue;
+	$ext = substr($file->URL, strrpos($file->URL, ".")+1);
+?>
+	<source src="<?php echo $file->URL; ?>" type="video/<?php echo $ext; ?>" />
 <?php endforeach; ?>
 </video>
