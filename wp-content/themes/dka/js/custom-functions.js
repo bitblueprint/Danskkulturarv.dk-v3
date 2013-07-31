@@ -18,7 +18,8 @@
 
 			this.addCheckboxListener();
 			this.addToggleAllListener();
-			
+			this.addFlexSliders();
+
 		},
 
 		/**
@@ -71,6 +72,17 @@
 		 */
 		forceSubmitForm: function() {
 			$("#searchsubmit").click();
+		},
+
+		/**
+		 * Adding FlexSlider functionality
+		 * @return {void} 
+		 */
+		addFlexSliders: function() {
+			$('.flexslider').flexslider({
+				animation: "slide",
+				touch: true
+			});
 		}
 
 	}
