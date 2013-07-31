@@ -5,10 +5,17 @@
  */
 ?>
 <?php //Loop through each file and skip those whose format is not image ?>
-<?php foreach(WPChaosClient::get_object()->Files as $file) : if($file->FormatType != 'Image' || $file->FormatID == 10) continue; ?>
+<div class="flexslider">
+	<ul class="slides">
+<?php foreach(WPChaosClient::get_object()->Files as $file) :
+	if($file->FormatType != 'Image' || $file->FormatID == 10) continue;
+	$title = esc_attr('Billede '.$file->Filename.' til '.WPChaosClient::get_object()->title);
+?>
+		<li>
+			<img src="<?php echo $file->URL; ?>" title="<?php echo $title; ?>" alt="<?php echo $title; ?>">
+		</li>
+<?php ;endforeach; ?>
+	</ul>
+</div>
+  
 
-<?php var_dump($file); ?>
-
-<strong><?php echo $file->URL; ?></strong>
-
-<?php endforeach; ?>
