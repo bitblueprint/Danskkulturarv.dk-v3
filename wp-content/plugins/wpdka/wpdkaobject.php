@@ -367,7 +367,7 @@ class WPDKAObject {
 		// The object has not been extended with the crowd matadata schema.
 		$objectGUID = $object->GUID;
 		$metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkac:DKACrowd xmlns:dkac='http://www.danskkulturarv.dk/DKA-Crowd.xsd'></dkac:DKACrowd>");
-		$metadataXML->addChild('Views', '0');
+		$metadataXML->addChild('Views', WPDKAObject::restore_views($object->GUID));
 		$metadataXML->addChild('Shares', '0');
 		$metadataXML->addChild('Likes', '0');
 		$metadataXML->addChild('Ratings', '0');
@@ -447,6 +447,30 @@ class WPDKAObject {
 				$results = $response->MCM()->Results();
 				return new \WPChaosObject($results[0]);
 			}
+		}
+	}
+	
+	protected static $legacy_views = array();
+	protected static $legacy_views_file = 'views.csv';
+	
+	public static function restore_views($guid) {
+		if(count(self::$legacy_views) == 0) {
+			$legacy_views_file = realpath(__DIR__ . DIRECTORY_SEPARATOR . self::$legacy_views_file);
+			if($legacy_views_file) {
+				$legacy_views = file_get_contents($legacy_views_file);
+				$legacy_views = explode("\n", $legacy_views);
+				foreach($legacy_views as $row) {
+					$row = explode(',', $row);
+					if($row[0]) {
+						self::$legacy_views[$row[0]] = intval($row[1]);
+					}
+				}
+			}
+		}
+		if(array_key_exists($guid, self::$legacy_views)) {
+			return self::$legacy_views[$guid];
+		} else {
+			return 0;
 		}
 	}
 
