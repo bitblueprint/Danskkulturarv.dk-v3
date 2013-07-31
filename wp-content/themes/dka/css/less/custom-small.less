@@ -86,7 +86,7 @@ and other resources.
       margin-top: 2px;
       border: none;
       a {
-        
+        margin-bottom: 0!important;
         color: @white;
 
         &:hover {
@@ -144,6 +144,11 @@ position: absolute!important;
 
 #menu-top-navigation {
   width: 100% !important;
+}
+
+.dropdown-menu:before,
+.dropdown-menu:after {
+  display:none !important;
 }
 
 footer {
