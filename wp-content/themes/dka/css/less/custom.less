@@ -99,8 +99,9 @@ hr {
   padding: 0 40px;
 
   .navbar-toggle {
-    color: @orange;
+    background-color: @grayLight;
     margin-right: 30px;
+    border: none;
   }
 
   // Top logo
@@ -110,14 +111,35 @@ hr {
     margin-left: 0px;
   }
 
-  .menu-item a {
-    background-color: none;
-  }
+}
 
-  .menu-item {
-    margin-bottom: 10px;
-  }
+.dropdown-header {
+  color: @grayDark;
+  padding: 10px 0 4px 0;
+}
 
+li.menu-item a {
+  color: @white !important;
+  padding: 0!important;
+  margin-bottom: 6px !important;
+  font-weight: 400 !important;
+}
+
+a.dropdown-toggle {
+  color: @white !important;
+  padding: 6px !important;
+}
+
+a.dropdown-toggle:hover {
+  background-color: @blue!important;
+}
+
+a.dropdown-toggle:active {
+  background-color: none!important;
+}
+
+.navbar-inverse {
+  background-color: @gray;
 }
 
 .navbar-responsive-collapse {
