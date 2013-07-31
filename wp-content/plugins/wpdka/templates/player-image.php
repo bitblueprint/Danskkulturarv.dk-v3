@@ -17,5 +17,3 @@
 <?php ;endforeach; ?>
 	</ul>
 </div>
-  
-
