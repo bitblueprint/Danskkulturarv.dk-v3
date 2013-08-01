@@ -4199,6 +4199,12 @@ a.dropdown-toggle:active {
   margin-top: 0;
   width: 100%;
 }
+.container.search .btn-advanced-search i {
+  margin: 0 2px;
+}
+.container.search .btn-advanced-search i.icon-caret-down {
+  color: #aaaaaa;
+}
 .container.search .btn-advanced-search:hover {
   color: #ffffff;
   background-color: #2f94fd;

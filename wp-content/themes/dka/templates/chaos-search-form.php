@@ -28,8 +28,8 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 	</div>
 	</div>
 	<div class="col-lg-4 col-2 btn-advanced-search-container">
-		<button class="btn btn-large btn-block btn-advanced-search collapsed blue visible-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container">Præciser søgning <i class="icon-angle-down pull-right">&nbsp;&nbsp;</i></button>
-		<button class="btn btn-large btn-block btn-advanced-search collapsed blue hidden-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i><i class="icon-angle-down pull-right"></i></button>
+		<button class="btn btn-large btn-block btn-advanced-search collapsed blue visible-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i> Præciser søgning <i class="icon-caret-down"></i></button>
+		<button class="btn btn-large btn-block btn-advanced-search collapsed blue hidden-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i><i class="icon-caret-down"></i></button>
 	</div>
 	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">
 
