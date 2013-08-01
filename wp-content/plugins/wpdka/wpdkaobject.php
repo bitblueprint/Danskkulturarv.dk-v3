@@ -166,7 +166,7 @@ class WPDKAObject {
 			if($tags == null) {
 				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
 			} else {
-				$value .= '<span class="tag">'.implode("</span> <span>", $tags).'</span>'."\n";
+				$value .= '<span class="tag">'.implode('</span> <span class="tag">', $tags).'</span>'."\n";
 			}
 			return $value;
 		}, 10, 2);
