@@ -8,7 +8,7 @@
 <div class="flexslider">
 	<ul class="slides">
 <?php foreach(WPChaosClient::get_object()->Files as $file) :
-	if($file->FormatType != 'Image' || $file->FormatID == 10) continue;
+	if($file->FormatType != 'Image' || $file->FormatCategory != 'Image Source') continue;
 	$title = esc_attr('Billede '.$file->Filename.' til '.WPChaosClient::get_object()->title);
 ?>
 		<li>
