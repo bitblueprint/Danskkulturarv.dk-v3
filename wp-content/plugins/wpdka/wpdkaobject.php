@@ -161,12 +161,12 @@ class WPDKAObject {
 			$tags = $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
-				'#'
+				null
 			);
-			var_dump($tags);
+			return $tags;
 		}, 10, 2);
 
-		//object->organization
+		//object->organization_raw
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
@@ -182,6 +182,17 @@ class WPDKAObject {
 
 			if(isset($organizations[$organization]))
 				$organization = $organizations[$organization]['title'];
+
+			return $value . $organization;
+		}, 10, 2);
+
+		//object->organization_link
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_link', function($value, \WPCHAOSObject $object) {
+			$organizations = WPDKASearch::get_organizations();
+			$organization = $object->organization_raw;
+
+			if(isset($organizations[$organization]))
+				$organization = get_permalink($organizations[$organization]['id']);
 
 			return $value . $organization;
 		}, 10, 2);

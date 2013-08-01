@@ -106,7 +106,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		preg_match_all(self::PATTERN_TEMPLATE,$markup,$matches);
 		foreach($matches[1] as $template) {
 			if(!in_array($template,$templates)) {
-				echo '<div class="error"><p>Template "chaos-object-'.$template.'.php" not found for CHAOS Object Multi Attributes Widget</p></div>';	
+				echo '<div class="error"><p>Template "'.WPChaosObjectMultiWidget::TEMPLATE_PREFIX.$template.'.php" not found for CHAOS Object Multi Attributes Widget</p></div>';	
 			}
 		}
 

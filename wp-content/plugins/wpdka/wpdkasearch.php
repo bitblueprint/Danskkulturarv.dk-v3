@@ -184,7 +184,8 @@ class WPDKASearch {
 			foreach($posts->posts as $post) {
 				self::$organizations[$post->chaos_organization] = array(
 					'title' => $post->post_title,
-					'slug' => $post->post_name
+					'slug' => $post->post_name,
+					'id' => $post->ID
 				);
 			} 
 		}	
