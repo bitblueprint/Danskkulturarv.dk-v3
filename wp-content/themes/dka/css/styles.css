@@ -5378,6 +5378,8 @@ footer .copyright a {
   }
   .dropdown-menu {
     position: absolute!important;
+    z-index: 99999;
+    left: -14px !important;
   }
   #menu-top-navigation {
     width: 100% !important;
@@ -5415,6 +5417,9 @@ footer .copyright a {
   }
   #advanced-search-container .filter-organizations .btn.filter-btn-single:nth-child(odd) {
     margin-right: 4%;
+  }
+  .dropdown-menu {
+    left: 0 !important;
   }
 }
 @media only screen and (min-width: 1200px) {
