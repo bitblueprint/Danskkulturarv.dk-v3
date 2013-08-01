@@ -28,7 +28,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 					<div class="duration">1:30:22</div>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
-				<strong class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></strong>
+				<strong class="strong orange organization"><?php echo WPChaosClient::get_object()->organization; ?></strong>
 				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?></p>
 				<hr>
 				<div class="media-type-container">

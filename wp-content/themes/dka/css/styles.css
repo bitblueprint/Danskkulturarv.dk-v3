@@ -4295,6 +4295,9 @@ a.dropdown-toggle:active {
   margin-bottom: 0;
   margin-top: 0;
 }
+.search-object strong.strong.orange.organization:after {
+  content: "\0000a0";
+}
 .search-object .media-type-container {
   height: 20px;
   color: #555555;
