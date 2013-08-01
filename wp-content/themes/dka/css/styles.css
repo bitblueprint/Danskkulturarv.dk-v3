@@ -5329,6 +5329,7 @@ footer .copyright a {
     border: none;
   }
   .navbar .nav .open > .dropdown-menu a {
+    margin-bottom: 0!important;
     color: #ffffff;
   }
   .navbar .nav .open > .dropdown-menu a:hover {
@@ -5374,6 +5375,10 @@ footer .copyright a {
   }
   #menu-top-navigation {
     width: 100% !important;
+  }
+  .dropdown-menu:before,
+  .dropdown-menu:after {
+    display: none !important;
   }
   footer .bloginfo-footer {
     margin: 20px 0;
