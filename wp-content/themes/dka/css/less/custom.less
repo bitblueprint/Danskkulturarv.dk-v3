@@ -467,7 +467,7 @@ article.container .single-material {
   margin: 8px 0;
 }
 
-.nav.info li.social {
+.nav.info .social {
   height: 20px;
   a {
     margin-right: 8px;
@@ -477,6 +477,30 @@ article.container .single-material {
   }
   a:hover {
     background: none;
+  }
+}
+
+.nav.info {
+  span  {
+    margin-right: 3px;
+    padding: 4px 8px;
+    background: @grayBorder;
+    border-radius: 3px;
+    line-height: 29px;
+    white-space: nowrap;
+  }
+  span:hover {
+    background: @blue;
+    color: @white;
+    cursor: pointer;
+  }
+  span.no-tag {
+    padding: 0;
+    background: none;
+    color: @grayLight;
+  }
+  span.no-tag:hover {
+    cursor: default;
   }
 }
 
