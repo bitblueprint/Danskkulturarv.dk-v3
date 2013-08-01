@@ -156,6 +156,16 @@ class WPDKAObject {
 			}
 		}, 20, 2);
 
+		//object->tags
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
+			$tags = $object->metadata(
+				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
+				'#'
+			);
+			var_dump($tags);
+		}, 10, 2);
+
 		//object->organization
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
@@ -277,7 +287,7 @@ class WPDKAObject {
 		}, 10, 2);
 
 		//object->tags
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, $object) {
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
 		}, 10, 2);
 

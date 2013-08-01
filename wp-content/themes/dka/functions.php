@@ -288,6 +288,20 @@ function dka_custom_excerpt($new_length = 20) {
   return $output;
 }
 
+// function shareThis($args = array()) {
+// 	// Grab args or defaults
+// 	$args = wp_parse_args($args, array(
+// 		'description' => "",
+// 		'link' => self::get_search_var(self::QUERY_KEY_PAGE, 'intval')-1,
+// 		'thumbnail' => get_option("wpchaos-searchsize"),
+// 		'sort' => null,
+// 		'accesspoint' => null
+// 	));
+// 		extract($args, EXTR_SKIP);
+
+// 	echo '<div class="">';
+//}
+
 /*function dka_sanitize_title($title, $raw_title, $context) {
 
 	$replacements = array(
