@@ -12,7 +12,7 @@
 	$title = esc_attr('Billede '.$file->Filename.' til '.WPChaosClient::get_object()->title);
 ?>
 		<li>
-			<img src="<?php echo $file->URL; ?>" title="<?php echo $title; ?>" alt="<?php echo $title; ?>">
+			<img src="<?php echo htmlspecialchars($file->URL); ?>" title="<?php echo $title; ?>" alt="<?php echo $title; ?>">
 		</li>
 <?php ;endforeach; ?>
 	</ul>

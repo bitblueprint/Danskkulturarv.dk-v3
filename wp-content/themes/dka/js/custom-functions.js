@@ -19,6 +19,7 @@
 			this.addCheckboxListener();
 			this.addToggleAllListener();
 			this.addFlexSliders();
+			this.socialSharePopup();
 
 		},
 
@@ -82,6 +83,24 @@
 			$('.flexslider').flexslider({
 				animation: "slide",
 				touch: true
+			});
+		},
+
+		/**
+		 * Open window in popup instead of new
+		 * @return {void} 
+		 */
+		socialSharePopup: function() {
+			$(".social-share").click( function(e) {
+				console.log("hej");
+				window.open(
+					$(this).attr('href'),
+					'',
+					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height=400, width=600'
+				);
+
+				e.preventDefault();
+				return false;
 			});
 		}
 

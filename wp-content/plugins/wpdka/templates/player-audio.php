@@ -11,6 +11,6 @@
 	if($file->FormatType != 'Audio') continue;
 	$ext = substr($file->URL, strrpos($file->URL, ".")+1);
 ?>
-	<source src="<?php echo $file->URL; ?>" type="audio/<?php echo $ext; ?>" />
+	<source src="<?php echo htmlspecialchars($file->URL); ?>" type="audio/<?php echo $ext; ?>" />
 <?php endforeach; ?>
 </audio>

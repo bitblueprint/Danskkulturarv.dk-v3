@@ -12,6 +12,6 @@
 	if($file->FormatType != 'Video') continue;
 	$ext = substr($file->URL, strrpos($file->URL, ".")+1);
 ?>
-	<source src="<?php echo $file->URL; ?>" type="video/<?php echo $ext; ?>" />
+	<source src="<?php echo htmlspecialchars($file->URL); ?>" type="video/<?php echo $ext; ?>" />
 <?php endforeach; ?>
 </video>
