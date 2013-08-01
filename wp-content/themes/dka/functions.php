@@ -31,9 +31,6 @@ function dka_scripts_styles() {
 
 	wp_enqueue_style( 'dka-style', get_template_directory_uri() . '/css/styles.css' );
 
-	wp_enqueue_style( 'mediaelementplayer', get_template_directory_uri() . '/css/mediaelementplayer.css' );
-	wp_enqueue_style( 'flexslider', get_template_directory_uri() . '/css/flexslider.css' );
-
 	wp_dequeue_script('jquery');
 	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/js/jquery-1.10.1.min.js', array(), '1.10.1', true );
 
