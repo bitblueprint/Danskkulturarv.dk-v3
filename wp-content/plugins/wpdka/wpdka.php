@@ -43,12 +43,13 @@ class WPDKA {
 	 */
 	public function __construct() {
 		if(self::check_chaosclient()) {
-
 			$this->load_dependencies();
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 			
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
+			
+			add_action('wp_dashboard_setup', array(&$this, 'add_dashboard_widget') );
 
 		}
 
@@ -56,6 +57,7 @@ class WPDKA {
 	
 	public static function install() {
 		if(self::check_chaosclient()) {
+			self::load_dependencies();
 			WPChaosSearch::flush_rewrite_rules_soon();
 		}
 	}
@@ -256,6 +258,32 @@ class WPDKA {
 		die();
 	}
 	
+	public function add_dashboard_widget() {
+		wp_add_dashboard_widget('wpdka_admin_widget', 'Dansk Kulturarv', array(&$this, 'display_widget_content'));
+	}
+	
+	public function display_widget_content() {
+		echo '<h4>'. __("Fakta om websitet").'</h4>';
+		$facetFields = array('DKA-Crowd-Views_int', 'DKA-Crowd-Likes_int', 'DKA-Crowd-Shares_int');
+
+		echo "<p>";
+		printf(__("Totale antal materialer: %s"), do_shortcode('[chaos-total-count query=""]'));
+		echo "</p>";
+		
+		$sum = WPChaosClient::summed_index_search($facetFields);
+		echo "<p>";
+		printf(__("Totale antal materiale visninger: %s"), $sum['DKA-Crowd-Views_int']);
+		echo "</p>";
+		
+		echo "<p>";
+		printf(__("Totale antal materiale likes: %s"), $sum['DKA-Crowd-Likes_int']);
+		echo "</p>";
+		
+		echo "<p>";
+		printf(__("Totale antal materiale delinger: %s"), $sum['DKA-Crowd-Shares_int']);
+		echo "</p>";
+	}
+	
 	/**
 	 * Check if dependent plugins are active
 	 * 
@@ -285,10 +313,11 @@ class WPDKA {
 	 * Load files and libraries
 	 * @return void 
 	 */
-	private function load_dependencies() {
-		require('wpdkaobject.php');
-		require('wpdkasearch.php');
-		require('widgets/player.php');
+	protected static function load_dependencies() {
+		require_once('wpdkaobject.php');
+		require_once('wpdkasearch.php');
+		require_once('wpdkasitemap.php');
+		require_once('widgets/player.php');
 	}
 
 }
