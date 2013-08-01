@@ -4367,6 +4367,10 @@ a.dropdown-toggle:active {
 .video-js {
   width: 100%!important;
 }
+.icon-picture-sound:after {
+  content: "\F03E\0000a0\0000a0\F028";
+  font-family: FontAwesome;
+}
 .blue {
   color: #2f94fd;
 }
