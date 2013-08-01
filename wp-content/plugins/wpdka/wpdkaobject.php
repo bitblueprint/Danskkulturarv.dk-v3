@@ -38,6 +38,9 @@ class WPDKAObject {
 		$this->define_single_object_page();
 
 		add_filter('widgets_init',array(&$this,'register_widgets'));
+		
+		// Restrict chaos query to this object type.
+		WPChaosClient::instance()->addGlobalConstraint('ObjectTypeID:' . self::OBJECT_TYPE_ID);
 	}
 
 	const TYPE_VIDEO = 'video';

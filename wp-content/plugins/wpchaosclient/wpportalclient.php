@@ -33,6 +33,13 @@ class WPPortalClient extends PortalClient {
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
 		}
 		
+		if(array_key_exists('query', $parameters) && $parameters['query'] != "") {
+			$query = array('(' . $parameters['query'] . ')');
+		} else {
+			$query = array();
+		}
+		$parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
+		
 		$response = parent::CallService($path, $method, $parameters, $requiresSession);
 
 		do_action('wpportalclient-service-call-returned', array(
@@ -114,6 +121,11 @@ class WPPortalClient extends PortalClient {
 		parent::SetSessionGUID(null, false);
 		update_option(self::WP_CHAOS_CLIENT_SESSION_GUID_KEY, null);
 		return $this->SessionGUID();
+	}
+	
+	protected $global_constraints = array();
+	public function addGlobalConstraint($constraint) {
+		$this->global_constraints[] = '(' . $constraint . ')';
 	}
 
 }
