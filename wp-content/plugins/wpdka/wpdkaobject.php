@@ -197,9 +197,9 @@ class WPDKAObject {
 			$organization = $object->organization_raw;
 
 			if(isset($organizations[$organization]))
-				$organization = get_permalink($organizations[$organization]['id']);
+				$value .= get_permalink($organizations[$organization]['id']);
 
-			return $value . $organization;
+			return $value;
 		}, 10, 2);
 
 		//object->description
@@ -275,6 +275,14 @@ class WPDKAObject {
 			} else {
 				return $result . '?guid=' . $object->GUID . $value;
 			}
+		}, 10, 2);
+
+		//object->externalurl
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
+			return $value . $object->metadata(
+				array(WPDKAObject::DKA2_SCHEMA_GUID),
+				array('/dka2:DKA/dka2:ExternalURL/text()')
+			);
 		}, 10, 2);
 
 		//object->views

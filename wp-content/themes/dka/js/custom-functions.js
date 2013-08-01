@@ -86,19 +86,22 @@
 			});
 		},
 
+		/**
+		 * Open window in popup instead of new
+		 * @return {void} 
+		 */
 		socialSharePopup: function() {
 			$(".social-share").click( function(e) {
 				console.log("hej");
 				window.open(
 					$(this).attr('href'),
 					'',
-					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height=600, width=600'
+					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height=400, width=600'
 				);
 
 				e.preventDefault();
 				return false;
 			});
-			//javascript:return false;"
 		}
 
 	}

@@ -6,10 +6,15 @@
 ?>
 <h1><?php echo WPChaosClient::get_object()->title; ?></h1>
 <i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i>&nbsp;
-<strong class="organization">	
+<strong class="organization">
+<?php if(WPChaosClient::get_object()->organization_link) : ?>
 	<a class="strong orange" href="<?php echo WPChaosClient::get_object()->organization_link; ?>" title="<?php echo esc_attr(WPChaosClient::get_object()->organization); ?>">
 		<?php echo WPChaosClient::get_object()->organization; ?>
 	</a>
+<?php else : ?>
+	<span class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></span>
+<?php endif; ?>
+	
 </strong>&nbsp;&nbsp;
 <i class="icon-calendar"></i>&nbsp;
 <span class="date"><?php echo WPChaosClient::get_object()->published; ?></span>
