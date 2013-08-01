@@ -4414,7 +4414,7 @@ article.container .single-material {
 .nav.info .social a:hover {
   background: none;
 }
-.nav.info span {
+.nav.info span.tag {
   margin-right: 3px;
   padding: 4px 8px;
   background: #eeeded;
@@ -4422,7 +4422,7 @@ article.container .single-material {
   line-height: 29px;
   white-space: nowrap;
 }
-.nav.info span:hover {
+.nav.info span.tag:hover {
   background: #2f94fd;
   color: #ffffff;
   cursor: pointer;
@@ -4431,9 +4431,6 @@ article.container .single-material {
   padding: 0;
   background: none;
   color: #646464;
-}
-.nav.info span.no-tag:hover {
-  cursor: default;
 }
 .type-page {
   padding: 20px 20px 20px 20px;
