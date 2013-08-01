@@ -38,8 +38,7 @@ class WPDKASitemap {
 			$pageSize = intval($wp_query->query_vars['sitemapPageSize']);
 			$pageIndex = intval($wp_query->query_vars['sitemapPageIndex']);
 
-			// TODO: Consider sorting on the objects creation date ascending.
-			$objects = WPChaosObject::parseResponse(WPChaosClient::instance()->Object()->Get("", "GUID+asc", null, $pageIndex, $pageSize, true));
+			$objects = WPChaosObject::parseResponse(WPChaosClient::instance()->Object()->Get("", "DateCreated+asc", null, $pageIndex, $pageSize, true));
 			
 			$xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
 			foreach($objects as $object) {
