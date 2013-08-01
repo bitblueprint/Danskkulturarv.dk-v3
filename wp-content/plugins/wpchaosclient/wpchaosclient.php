@@ -69,6 +69,8 @@ class WPChaosClient {
 		add_action('template_redirect', array(&$this,'get_object_page'));
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
 		
+		add_action('init', array(&$this, 'add_shortcodes'));
+		
 		add_action('chaos-settings-updated', function() {
 			WPChaosClient::instance()->resetSession();
 		});
@@ -226,6 +228,17 @@ class WPChaosClient {
 
 		 register_widget( 'WPChaosObjectAttrWidget' );
 		 register_widget( 'WPChaosObjectMultiWidget' );
+	}
+	
+	public function total_count_shortcode($atts) {
+		extract( shortcode_atts( array(
+			'query' => ''
+		), $atts ) );
+		return WPChaosClient::instance()->Object()->Get($query, null, null, 0, 0)->MCM()->TotalCount();
+	}
+	
+	public function add_shortcodes($atts) {
+		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
 	}
 
 	/**
@@ -418,6 +431,40 @@ class WPChaosClient {
 			require(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
 		}
 		locate_template('footer.php', true);
+	}
+	
+	public static function generate_facet_query($fields) {
+		$result = array();
+		foreach($fields as $field) {
+			$result[] = "field:$field";
+		}
+		return implode("+AND+", $result);
+	}
+	
+	public static function index_search(array $facetFields, $query = "") {
+		$result = array();
+		$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query($facetFields), $query);
+		foreach($facetsResponse->Index()->Results() as $facetResult) {
+			foreach($facetResult->FacetFieldsResult as $fieldResult) {
+				$result[$fieldResult->Value] = array();
+				foreach($fieldResult->Facets as $facet) {
+					$result[$fieldResult->Value][$facet->Value] = $facet->Count;
+				}
+			}
+		}
+		return $result;
+	}
+	
+	public static function summed_index_search(array $facetFields, $query = "") {
+		$searchResult = self::index_search($facetFields, $query);
+		$result = array();
+		foreach($searchResult as $facetField => $facet) {
+			$result[$facetField] = 0;
+			foreach($facet as $views => $count) {
+				$result[$facetField] += $views * $count;
+			}
+		}
+		return $result;
 	}
 
 	/**
