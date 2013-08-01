@@ -4424,7 +4424,7 @@ article.container .single-material {
   background: #eeeded;
   border-radius: 3px;
   line-height: 29px;
-  white-space: nowrap;
+  word-wrap: break-word;
 }
 .nav.info span.tag:hover {
   background: #2f94fd;
