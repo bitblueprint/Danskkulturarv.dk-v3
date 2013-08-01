@@ -163,7 +163,12 @@ class WPDKAObject {
 				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
 				null
 			);
-			return $tags;
+			if($tags == null) {
+				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
+			} else {
+				$value .= '<span class="tag">'.implode("</span><span>", $tags).'</span>'."\n";
+			}
+			return $value;
 		}, 10, 2);
 
 		//object->organization_raw

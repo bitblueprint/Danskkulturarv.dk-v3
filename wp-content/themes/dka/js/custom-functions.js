@@ -19,6 +19,7 @@
 			this.addCheckboxListener();
 			this.addToggleAllListener();
 			this.addFlexSliders();
+			this.socialSharePopup();
 
 		},
 
@@ -83,6 +84,21 @@
 				animation: "slide",
 				touch: true
 			});
+		},
+
+		socialSharePopup: function() {
+			$(".social-share").click( function(e) {
+				console.log("hej");
+				window.open(
+					$(this).attr('href'),
+					'',
+					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height=600, width=600'
+				);
+
+				e.preventDefault();
+				return false;
+			});
+			//javascript:return false;"
 		}
 
 	}
