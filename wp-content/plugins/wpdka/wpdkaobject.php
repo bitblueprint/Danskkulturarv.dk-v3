@@ -166,7 +166,7 @@ class WPDKAObject {
 			if($tags == null) {
 				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
 			} else {
-				$value .= '<span class="tag">'.implode("</span><span>", $tags).'</span>'."\n";
+				$value .= '<span class="tag">'.implode("</span> <span>", $tags).'</span>'."\n";
 			}
 			return $value;
 		}, 10, 2);
@@ -249,7 +249,7 @@ class WPDKAObject {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
-					return $value . $file->URL;
+					return $value . htmlspecialchars($file->URL);
 				}
 			}
 			// Fallback
@@ -279,10 +279,10 @@ class WPDKAObject {
 
 		//object->externalurl
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
-			return $value . $object->metadata(
+			return $value . htmlspecialchars($object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:ExternalURL/text()')
-			);
+			));
 		}, 10, 2);
 
 		//object->views

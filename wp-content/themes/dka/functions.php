@@ -272,7 +272,7 @@ function dka_wp_head() {
 		$fields = array();
 		//Loop over each metadata attribute
 		foreach($metadata as $key => $value) {
-			$fields[] = $key.'="'.esc_attr($value).'"';
+			$fields[] = $key.'="'.esc_attr(strip_tags($value)).'"';
 		}
 		//Insert attributes in meta node and print
 		echo "<meta ".implode(" ", $fields).">\n";
