@@ -92,11 +92,14 @@
 		 */
 		socialSharePopup: function() {
 			$(".social-share").click( function(e) {
-				console.log("hej");
+				var width = 600;
+				var height = 400;
+				var left = (screen.width/2)-(width/2);
+				var top = (screen.height/2)-(height/2);
 				window.open(
 					$(this).attr('href'),
 					'',
-					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height=400, width=600'
+					'menubar=no, toolbar=no, resizable=yes, scrollbars=yes, height='+height+', width='+width+', top='+top+', left='+left+''
 				);
 
 				e.preventDefault();
