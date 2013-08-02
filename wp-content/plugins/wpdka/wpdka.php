@@ -240,9 +240,7 @@ class WPDKA {
 		
 		// Ask chaos for all interesting objects.
 		$query = apply_filters('wpchaos-solr-query', '', array());
-		//$response = WPChaosClient::instance()->Object()->Get($query, "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
-		$result['pageIndex'] = 0;
-		$response = WPChaosClient::instance()->Object()->Get('00000000-0000-0000-0000-000000080016', "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
+		$response = WPChaosClient::instance()->Object()->Get($query, "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
 		
 		$result['totalCount'] = $response->MCM()->TotalCount();
 		
