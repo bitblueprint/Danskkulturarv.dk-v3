@@ -456,7 +456,8 @@ class WPDKAObject {
 		
 		// If not - lets generate another one.
 		$title = $object->title;
-		$slug_base = sanitize_title_with_dashes($title);
+		// We need to urldecode, as special chars are encoded to octets.
+		$slug_base = urldecode(sanitize_title_with_dashes($title));
 		// Is it free without a postfix?
 		if(self::isSlugFree($slug_base)) {
 			return $slug_base;
