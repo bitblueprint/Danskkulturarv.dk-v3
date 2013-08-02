@@ -27,6 +27,16 @@ class WPPortalClient extends PortalClient {
 		// Make sure that the constructor is called without the session getting autocreated.
 		parent::__construct($servicePath, $clientGUID, false);
 	}
+	
+	/**
+	 * This field holds the accumulated response time in seconds.
+	 * @var integer
+	 */
+	protected $accumulatedResponseTime = 0;
+	
+	public function getAccumulatedResponseTime() {
+		return $this->accumulatedResponseTime;
+	}
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
 		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) && get_option('wpchaos-accesspoint-guid')) {
@@ -40,7 +50,9 @@ class WPPortalClient extends PortalClient {
 		}
 		$parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
 		
+		$beforeCall = microtime(true);
 		$response = parent::CallService($path, $method, $parameters, $requiresSession);
+		$this->accumulatedResponseTime += microtime(true) - $beforeCall;
 
 		do_action('wpportalclient-service-call-returned', array(
 			'path' => $path,
