@@ -241,6 +241,7 @@ class WPDKA {
 		// Ask chaos for all interesting objects.
 		$query = apply_filters('wpchaos-solr-query', '', array());
 		$response = WPChaosClient::instance()->Object()->Get($query, "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
+		
 		$result['totalCount'] = $response->MCM()->TotalCount();
 		
 		$objects = WPChaosObject::parseResponse($response);

@@ -317,7 +317,22 @@ class WPDKAObject {
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
 		}, 10, 2);
+		
+		// Add filter to turn URLs into links.
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'rights', function($value, $object) {
+			return WPDKAObject::replace_url_with_link($value);
+		}, 11, 2);
 
+	}
+	
+	/**
+	 * Turns a URLs in a text string into links.
+	 * @see http://stackoverflow.com/questions/206059/php-validation-regex-for-url
+	 * @param string $text Text string to replace in.
+	 * @return string
+	 */
+	public static function replace_url_with_link($text) {
+		return preg_replace("#((http|https|ftp)://(\S*?\.\S*?))(\s|\;|\)|\]|\[|\{|\}|,|\"|'|:|\<|$|\.\s)#i", '<a href="$1" target="_blank">$3</a>$4', $text);
 	}
 	
 	public function define_single_object_page() {
@@ -425,9 +440,64 @@ class WPDKAObject {
 	
 	/**
 	 * Generate a slug from a chaos object.
+	 * Using a bisection algorithm, first determining an upper bound and then bisecting until the next free postfix is found.
 	 * @param \CHAOS\Portal\Client\Data\Object $object The object to generate the slug from.
 	 * @return string The slug generated - prepended with a nummeric postfix to prevent douplicates.
 	 */
+	public static function generateSlug(\WPChaosObject $object) {
+		// Check if the object is reachable on its exsisting slug.
+		if($object->slug) {
+			$exsistingSlugObjects = self::getObjectFromSlug($object->slug, true);
+			if(count($exsistingSlugObjects) == 1 && $exsistingSlugObjects[0]->GUID == $object->GUID) {
+				// There is only a single object with this slug, and its the same object.
+				return $object->slug;
+			}
+		}
+		
+		// If not - lets generate another one.
+		$title = $object->title;
+		$slug_base = sanitize_title_with_dashes($title);
+		// Is it free without a postfix?
+		if(self::isSlugFree($slug_base)) {
+			return $slug_base;
+		}
+		
+		$postfix = null;
+		$lower_postfix = 1;
+		$upper_postfix = 1;
+		// Find an upper-bound for the postfix - exponentially.
+		while(self::isSlugFree("$slug_base-$upper_postfix") === false) {
+			$upper_postfix *= 2;
+		}
+		
+		while($upper_postfix - $lower_postfix > 1) {
+			$middle_postfix = floor(($upper_postfix-$lower_postfix)/2) + $lower_postfix;
+			$slug_candidate = "$slug_base-$middle_postfix";
+			if(self::isSlugFree($slug_candidate)) {
+				$upper_postfix = $middle_postfix;
+			} else {
+				$lower_postfix = $middle_postfix;
+			}
+		}
+		// Return the slug of the upper_postfix.
+		return "$slug_base-$upper_postfix";
+	}
+	
+	/**
+	 * Tests if a slug is free.
+	 * @param string $slug_candidate
+	 * @return boolean True if no objects are associated with the slug, false otherwise.
+	 */
+	public static function isSlugFree($slug_candidate) {
+		$objects = self::getObjectFromSlug($slug_candidate, true);
+		if(count($objects) == 0) {
+			// This slug appears to be free.
+			return true;
+		} else {
+			return false;
+		} 
+	}
+	/*
 	public static function generateSlug(\WPChaosObject $object) {
 		$title = $object->title;
 		
@@ -455,6 +525,7 @@ class WPDKAObject {
 		
 		return $slug;
 	}
+	*/
 	
 	/**
 	 * Gets an object from the CHAOS Service from an alphanummeric, lowercase slug.
