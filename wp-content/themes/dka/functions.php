@@ -308,10 +308,10 @@ function dka_social_share($args = array()) {
 	));
 	extract($args, EXTR_SKIP);
 
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="http://www.facebook.com/sharer.php?u='.$link.'" title="Del på Facebook"><i class="icon-facebook-sign"></i></a>';
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="http://twitter.com/home?status='.$link.'" title="Del på Twitter"><i class="icon-twitter"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://www.facebook.com/sharer.php?u='.$link.'" title="Del på Facebook"><i class="icon-facebook-sign"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://twitter.com/home?status='.$link.'+%23kulturarv" title="Del på Twitter"><i class="icon-twitter"></i></a>';
 	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://plus.google.com/share?url='.$link.'" title="Del på Google Plus"><i class="icon-google-plus-sign"></i></a>';
-	echo '<a target="_blank" rel="nofollow" href="mailto:?subject=Dansk Kulturarv&body='.$link.'" title="Send som mail"><i class="icon-envelope"></i></a>';
+	echo '<a target="_blank" rel="nofollow" href="mailto:?subject=Dansk Kulturarv&amp;body='.$link.'" title="Send som mail"><i class="icon-envelope"></i></a>';
 
 }
 
