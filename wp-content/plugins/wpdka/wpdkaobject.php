@@ -166,7 +166,10 @@ class WPDKAObject {
 			if($tags == null) {
 				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
 			} else {
-				$value .= '<span class="tag">'.implode('</span> <span class="tag">', $tags).'</span>'."\n";
+				foreach($tags as $tag) {
+					$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
+					$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
+				}
 			}
 			return $value;
 		}, 10, 2);
