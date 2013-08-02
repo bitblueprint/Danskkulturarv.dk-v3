@@ -41,17 +41,17 @@ function dka_scripts_styles() {
 
 	$bootstrap_scripts = array(
 		'transition',
-		'alert',
+		//'alert',
 		'button',
-		'carousel',
+		//'carousel',
 		'collapse',
 		'dropdown',
-		'modal',
-		'scrollspy',
-		'tab',
-		'tooltip',
-		'popover',
-		'affix'
+		//'modal',
+		//'scrollspy',
+		//'tab',
+		//'tooltip',
+		//'popover',
+		//'affix'
 	);
 	foreach($bootstrap_scripts as $bootscript) {
 		wp_enqueue_script($bootscript, get_template_directory_uri() . '/js/bootstrap/'.$bootscript.'.js', array(), '3.0.0', true );
