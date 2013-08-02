@@ -239,9 +239,12 @@ function dka_wp_head() {
 	}
 
 	if(WPChaosClient::get_object()) {
+
+		$description = dka_word_limit(strip_tags(WPChaosClient::get_object()->description));
+
 		$metadatas['description'] = array(
 			'name' => 'description',
-			'content' => WPChaosClient::get_object()->description
+			'content' => $description
 		);
 		$metadatas['og:title'] = array(
 			'property' => 'og:title',
@@ -249,7 +252,7 @@ function dka_wp_head() {
 		);
 		$metadatas['og:description'] = array(
 			'property' => 'og:description',
-			'content' => WPChaosClient::get_object()->description
+			'content' => $description
 		);
 		$metadatas['og:type'] = array(
 			'property' => 'og:type',
@@ -287,6 +290,15 @@ function dka_custom_excerpt($new_length = 20) {
   $output = get_the_excerpt();
   return $output;
 }
+
+function dka_word_limit($string, $length = 20, $ellipsis = "[...]") {
+
+	$words = explode(' ', $string);
+	if (count($words) > $length)
+		$string = implode(' ', array_slice($words, 0, $length)) . $ellipsis;
+	return $string;
+}
+
 
 function dka_social_share($args = array()) {
 	// Grab args or defaults
