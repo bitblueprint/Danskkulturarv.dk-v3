@@ -21,7 +21,7 @@
         'container'  => false,
         'menu_class' => 'nav-footer',
         'fallback_cb' => false,
-        'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s<a href="#" class="social"><i class="icon-facebook-sign"></i></a><a href="#" class="social"><i class="icon-twitter"></i></a></ul>'
+        'items_wrap' => '<ul id="%1$s" class="%2$s">%3$s<a href="https://www.facebook.com/danskkulturarv" class="social" title="'.esc_attr(get_bloginfo( 'name' )).' på Facebook"><i class="icon-facebook-sign"></i></a><a href="https://twitter.com/danskkulturarv" class="social" title="'.esc_attr(get_bloginfo( 'name' )).' på Twitter"><i class="icon-twitter"></i></a></ul>'
         )
     );
 ?>
