@@ -4345,6 +4345,33 @@ a.dropdown-toggle:active {
   margin-top: 14px;
   line-height: 20px;
 }
+.search-result-listing {
+  margin-right: 20px;
+}
+.search-result-listing button {
+  background-color: #ffffff;
+  border: 1px solid #eeeded;
+  font-size: 14px;
+  padding: 5px 10px;
+  color: #2f94fd;
+  margin-top: 7px;
+}
+.search-result-listing button.active {
+  background-color: #eeeded;
+  color: #aaaaaa;
+  border-color: #eeeded;
+}
+.search-result-listing button:hover {
+  background-color: #2f94fd;
+  color: #ffffff;
+  border-color: #eeeded;
+}
+.sortby-dropdown {
+  padding-top: 14px;
+}
+a.sortby-link:hover {
+  text-decoration: none;
+}
 .pagination {
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
