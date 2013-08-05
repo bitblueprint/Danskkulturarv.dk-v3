@@ -11,6 +11,7 @@
 <head prefix="og: http://ogp.me/ns#">
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=9" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<meta name="apple-mobile-web-app-capable" content="yes"/>
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
