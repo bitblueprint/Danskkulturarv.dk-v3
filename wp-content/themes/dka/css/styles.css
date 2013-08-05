@@ -4428,6 +4428,7 @@ article.container .single-material {
   border-radius: 3px;
   word-wrap: break-word;
   color: #222222;
+  margin-bottom: 6px;
 }
 .nav.info a.tag:hover {
   background: #2f94fd;
