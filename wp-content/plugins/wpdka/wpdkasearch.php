@@ -104,6 +104,9 @@ class WPDKASearch {
 			if(array_key_exists(WPChaosSearch::QUERY_KEY_FREETEXT, $query_vars)) {
 				// For each known metadata schema, loop and add freetext search on this.
 				$freetext = $query_vars[WPChaosSearch::QUERY_KEY_FREETEXT];
+				if(empty($freetext)) {
+					$freetext = ' ';
+				}
 				$freetext = WPChaosClient::escapeSolrValue($freetext);
 				$searches = array();
 				foreach(WPDKAObject::$ALL_SCHEMA_GUIDS as $schemaGUID) {

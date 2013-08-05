@@ -52,7 +52,7 @@ class WPChaosSearch {
 
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
-			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
+			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null);
 			WPChaosSearch::register_search_query_variable(8, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+', true, null, null);
 			//WPChaosSearch::register_search_query_variable(9, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+', false, null, ' ');
 			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
@@ -157,6 +157,9 @@ class WPChaosSearch {
 				//echo $variable['key']. ": '$value'\n";
 				$variables[$variable['key']] = $value;
 			}
+			if($variable['default_value'] !== null && empty($variables[$variable['key']])) {
+				$variables[$variable['key']] = $variable['default_value'];
+			}
 		}
 		return $variables;
 	}
@@ -171,11 +174,16 @@ class WPChaosSearch {
 		$query_vars = self::get_search_vars($urldecode);
 		if(array_key_exists($query_key, $query_vars)) {
 			if($escape !== false) {
-				if(function_exists($escape)) {
-					return $escape($query_vars[$query_key]);
-				} else {
-					throw new InvalidArgumentException('The $escape argument must be false or a 1-argument function.');
+				$escape = explode(',', $escape);
+				$result = $query_vars[$query_key];
+				foreach($escape as $e) {
+					if(function_exists($e)) {
+						$result = $e($result);
+					} else {
+						throw new InvalidArgumentException('The $escape argument must be false or a 1-argument function.');
+					}
 				}
+				return $result;
 			} else {
 				return $query_vars[$query_key];
 			}
