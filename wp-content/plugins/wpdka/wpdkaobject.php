@@ -163,14 +163,21 @@ class WPDKAObject {
 				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
 				null
 			);
-			if($tags == null) {
-				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
-			} else {
-				foreach($tags as $tag) {
-					$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
-					$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
+			//If there are no tags, null is returned above, we need an array
+			$tags = ($tags?:array());
+			foreach($tags as $key => &$tag) {
+				//Remove tag if empty
+				if(!$tag) {
+					unset($tags[$key]);
+					continue;
 				}
+				$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
+				$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
 			}
+			if(empty($tags)) {
+				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
+			}
+			
 			return $value;
 		}, 10, 2);
 
@@ -219,8 +226,17 @@ class WPDKAObject {
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:FirstPublishedDate/text()', '/DKA/FirstPublishedDate/text()')
 			);
-			//Format date according to WordPress
-			$time = date_i18n(get_option('date_format'),strtotime($time));
+			
+			if($time) {
+				$time = strtotime($time);
+				//If january 1st, only print year, else get format from WordPress
+				if(date("d-m",$time) == "01-01") {
+					$time = __('Året ','dka').date_i18n('Y',$time);
+				} else {
+					$time = date_i18n(get_option('date_format'),$time);
+				}
+			}
+			
 			return $value . $time;
 		}, 10, 2);
 

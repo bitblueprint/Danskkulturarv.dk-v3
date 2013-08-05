@@ -29,10 +29,14 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
 				<strong class="strong orange organization"><?php echo WPChaosClient::get_object()->organization; ?></strong>
-				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?></p>
+				
+				<p class="date">
+				<?php if(WPChaosClient::get_object()->published) : ?>
+				<i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?>
+				<?php endif; ?></p>
 				<hr>
 				<div class="media-type-container">
-					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> 132</i>
+					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> <?php echo WPChaosClient::get_object()->views; ?></i>
 				</div>
 			</a>
 		</div>

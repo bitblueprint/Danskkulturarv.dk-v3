@@ -14,10 +14,11 @@
 <?php else : ?>
 	<span class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></span>
 <?php endif; ?>
-	
-</strong>&nbsp;&nbsp;
-<i class="icon-calendar"></i>&nbsp;
+</strong>
+<?php if(WPChaosClient::get_object()->published) : ?>
+&nbsp;&nbsp;<i class="icon-calendar"></i>&nbsp;	
 <span class="date"><?php echo WPChaosClient::get_object()->published; ?></span>
+<?php endif; ?>
 <hr>
 <div class="description">
 	<p><strong>Beskrivelse</strong></p>
