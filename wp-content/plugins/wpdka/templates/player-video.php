@@ -12,7 +12,7 @@
 	$streamer = $file->Streamer ? ' data-streamer="'.$file->Streamer.'"' : null;
 	if($file->FormatType != 'Video') continue;
 	if($streamer) {
-		//$file->URL = substr($file->URL, strlen($file->Streamer));
+		$file->URL = $file->Streamer . 'flv:' . substr($file->URL, strlen($file->Streamer));
 	}
 
 	//if rtmp streaming is used, this is the mime type
