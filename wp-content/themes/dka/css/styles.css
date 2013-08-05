@@ -4421,7 +4421,7 @@ article.container .single-material {
 .nav.info .social a:hover {
   background: none;
 }
-.nav.info span.tag {
+.nav.info a.tag {
   margin-right: 3px;
   padding: 4px 8px;
   background: #eeeded;
@@ -4429,12 +4429,12 @@ article.container .single-material {
   line-height: 29px;
   word-wrap: break-word;
 }
-.nav.info span.tag:hover {
+.nav.info a.tag:hover {
   background: #2f94fd;
   color: #ffffff;
   cursor: pointer;
 }
-.nav.info span.no-tag {
+.nav.info a.no-tag {
   padding: 0;
   background: none;
   color: #646464;
