@@ -31,8 +31,10 @@ function dka_scripts_styles() {
 
 	wp_enqueue_style( 'dka-style', get_template_directory_uri() . '/css/styles.css' );
 
-	wp_dequeue_script('jquery');
-	wp_enqueue_script( 'jquery', get_template_directory_uri() . '/js/jquery-1.10.1.min.js', array(), '1.10.1', true );
+	//Use Google CDN instead
+	wp_deregister_script('jquery');
+	wp_register_script('jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js', false, '1.10.2', true);
+	wp_enqueue_script('jquery');
 
 	wp_enqueue_script( 'mediaelementplayer', get_template_directory_uri() . '/js/mediaelement-and-player.min.js', array(), '4.1', true );
 	wp_enqueue_script( 'flexslider', get_template_directory_uri() . '/js/jquery.flexslider-min.js', array('jquery'), '2.1', true );
@@ -41,17 +43,17 @@ function dka_scripts_styles() {
 
 	$bootstrap_scripts = array(
 		'transition',
-		'alert',
+		//'alert',
 		'button',
-		'carousel',
+		//'carousel',
 		'collapse',
 		'dropdown',
-		'modal',
-		'scrollspy',
-		'tab',
-		'tooltip',
-		'popover',
-		'affix'
+		//'modal',
+		//'scrollspy',
+		//'tab',
+		//'tooltip',
+		//'popover',
+		//'affix'
 	);
 	foreach($bootstrap_scripts as $bootscript) {
 		wp_enqueue_script($bootscript, get_template_directory_uri() . '/js/bootstrap/'.$bootscript.'.js', array(), '3.0.0', true );
@@ -239,9 +241,12 @@ function dka_wp_head() {
 	}
 
 	if(WPChaosClient::get_object()) {
+
+		$description = dka_word_limit(strip_tags(WPChaosClient::get_object()->description));
+
 		$metadatas['description'] = array(
 			'name' => 'description',
-			'content' => WPChaosClient::get_object()->description
+			'content' => $description
 		);
 		$metadatas['og:title'] = array(
 			'property' => 'og:title',
@@ -249,7 +254,7 @@ function dka_wp_head() {
 		);
 		$metadatas['og:description'] = array(
 			'property' => 'og:description',
-			'content' => WPChaosClient::get_object()->description
+			'content' => $description
 		);
 		$metadatas['og:type'] = array(
 			'property' => 'og:type',
@@ -288,6 +293,15 @@ function dka_custom_excerpt($new_length = 20) {
   return $output;
 }
 
+function dka_word_limit($string, $length = 20, $ellipsis = "[...]") {
+
+	$words = explode(' ', $string);
+	if (count($words) > $length)
+		$string = implode(' ', array_slice($words, 0, $length)) . $ellipsis;
+	return $string;
+}
+
+
 function dka_social_share($args = array()) {
 	// Grab args or defaults
 	$args = wp_parse_args($args, array(
@@ -296,10 +310,10 @@ function dka_social_share($args = array()) {
 	));
 	extract($args, EXTR_SKIP);
 
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="http://www.facebook.com/sharer.php?u='.$link.'" title="Del på Facebook"><i class="icon-facebook-sign"></i></a>';
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="http://twitter.com/home?status='.$link.'" title="Del på Twitter"><i class="icon-twitter"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://www.facebook.com/sharer.php?u='.$link.'" title="Del på Facebook"><i class="icon-facebook-sign"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://twitter.com/home?status='.$link.'+%23kulturarv" title="Del på Twitter"><i class="icon-twitter"></i></a>';
 	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://plus.google.com/share?url='.$link.'" title="Del på Google Plus"><i class="icon-google-plus-sign"></i></a>';
-	echo '<a target="_blank" rel="nofollow" href="mailto:&subject=Dansk Kulturarv&body='.$link.'" title="Send som mail"><i class="icon-envelope"></i></a>';
+	echo '<a target="_blank" rel="nofollow" href="mailto:?subject=Dansk Kulturarv&amp;body='.$link.'" title="Send som mail"><i class="icon-envelope"></i></a>';
 
 }
 

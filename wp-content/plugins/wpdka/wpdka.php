@@ -224,6 +224,9 @@ class WPDKA {
 		$result = array();
 		$result['messages'] = array();
 		
+		$timeBefore = microtime(true);
+		$responseTimeBefore = WPChaosClient::instance()->getAccumulatedResponseTime();
+		
 		if(!array_key_exists('pageSize', $_POST)) {
 			status_header(500);
 			echo "pageSize must be specified.";
@@ -238,6 +241,7 @@ class WPDKA {
 		// Ask chaos for all interesting objects.
 		$query = apply_filters('wpchaos-solr-query', '', array());
 		$response = WPChaosClient::instance()->Object()->Get($query, "GUID+asc", null, $result['pageIndex'], $result['pageSize'], true);
+		
 		$result['totalCount'] = $response->MCM()->TotalCount();
 		
 		$objects = WPChaosObject::parseResponse($response);
@@ -249,6 +253,11 @@ class WPDKA {
 			// Make sure the object is reachable on its slug - if not, reset its metadata.
 			// $result['messages'][] = "";
 		}
+		
+		$responseTimeAfter = WPChaosClient::instance()->getAccumulatedResponseTime();
+		$timeAfter = microtime(true);
+		
+		$result['messages'][] = round($responseTimeAfter - $responseTimeBefore, 2) . ' of ' . round($timeAfter - $timeBefore, 2) .' seconds spent in CHAOS land.';
 
 		update_option(self::RESET_CROWD_METADATA_PAGE_INDEX_OPTION, $result['pageIndex']);
 		update_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION, $result['pageSize']);
