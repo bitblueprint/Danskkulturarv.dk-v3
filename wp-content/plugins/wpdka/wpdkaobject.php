@@ -27,7 +27,8 @@ class WPDKAObject {
 	);
 	
 	public static $KNOWN_STREAMERS = array(
-		'rtmp://vod-bonanza.gss.dr.dk/bonanza/'
+		'rtmp://vod-bonanza.gss.dr.dk/bonanza/',
+		'http://om.gss.dr.dk/MediaCache/_definst_/mp4:'
 	);
 
 	/**
@@ -407,12 +408,7 @@ class WPDKAObject {
 		// Make this change on the metadata instead.
 		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
 			$originalObject = $object->getObject();
-			foreach($originalObject->Files as &$file) {
-				foreach(WPDKAObject::$KNOWN_STREAMERS as $streamer) {
-					if(strstr($file->URL, $streamer) == 0) {
-						$file->Streamer = $streamer;
-					}
-				}
+			foreach($originalObject->Files as $file) {
 				foreach(WPDKAObject::$DERIVED_FILES as $regexp => $transformation) {
 					$matches = null;
 					if($file->Token == "RTMP Streaming" && preg_match($regexp, $file->URL, $matches)) {
@@ -420,11 +416,22 @@ class WPDKAObject {
 						eval('$url = "'.$transformation.'";');
 						$originalObject->Files[] = (object) array_merge((array) $file, array(
 							'URL' => $url,
-							'Token' => 'HLS Streaming'
+							'Token' => 'HLS Streaming',
+							'Streamer' => $matches['streamer']
 						));
 					}
 				}
 			}
+			foreach($originalObject->Files as &$file) {
+				$file->Streamer = null;
+				foreach(WPDKAObject::$KNOWN_STREAMERS as $streamer) {
+					if(strstr($file->URL, $streamer) !== false) {
+						$file->Streamer = $streamer;
+						break;
+					}
+				}
+			}
+			return $object;
 		}, 10, 1);
 	}
 	
