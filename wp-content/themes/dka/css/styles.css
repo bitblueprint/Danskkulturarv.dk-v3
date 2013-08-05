@@ -4133,6 +4133,13 @@ hr {
   color: #333333;
   padding: 10px 0 4px 0;
 }
+.menu-item li,
+.menu-item {
+  display: inline-block !important;
+}
+[id*='menu-item-'].menu-item {
+  display: inline-block !important;
+}
 li.menu-item a {
   color: #ffffff !important;
   padding: 0!important;
