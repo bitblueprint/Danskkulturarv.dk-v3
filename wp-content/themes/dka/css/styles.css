@@ -4423,11 +4423,11 @@ article.container .single-material {
 }
 .nav.info a.tag {
   margin-right: 3px;
-  padding: 4px 8px;
+  padding: 4px 10px;
   background: #eeeded;
   border-radius: 3px;
-  line-height: 29px;
   word-wrap: break-word;
+  color: #222222;
 }
 .nav.info a.tag:hover {
   background: #2f94fd;
