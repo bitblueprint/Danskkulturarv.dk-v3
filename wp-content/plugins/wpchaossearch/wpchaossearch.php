@@ -20,6 +20,8 @@ class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
 	const QUERY_KEY_PAGE = 'searchPage';
+	const QUERY_KEY_VIEW = 'view';
+	const QUERY_KEY_SORT = 'sortering';
 	
 	const QUERY_PREFIX_CHAR = '/';
 	
@@ -51,6 +53,8 @@ class WPChaosSearch {
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
 			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null, ' ');
+			WPChaosSearch::register_search_query_variable(8, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+', true, null, null);
+			//WPChaosSearch::register_search_query_variable(9, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+', false, null, ' ');
 			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
 			
 			// Rewrite tags and rules should always be added.
@@ -213,14 +217,15 @@ class WPChaosSearch {
 			'query' => "",
 			'pageindex' => self::get_search_var(self::QUERY_KEY_PAGE, 'intval')-1,
 			'pagesize' => get_option("wpchaos-searchsize"),
-			'sort' => null,
+			'sort' => self::get_search_var(self::QUERY_KEY_SORT),
 			'accesspoint' => null
 		));
 		extract($args, EXTR_SKIP);	
 
 		$pagesize = ($pagesize?:20);
 		$pageindex = ($pageindex >= 0?$pageindex:0);
-		
+		$sort = ($sort ?: null);
+
 		$query = apply_filters('wpchaos-solr-query', $query, self::get_search_vars());
 		
 		self::set_search_results(WPChaosClient::instance()->Object()->Get(

@@ -55,5 +55,4 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 	</div>
 </article>
 
-</article>
 <?php get_footer(); ?>
