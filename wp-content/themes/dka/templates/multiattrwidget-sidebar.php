@@ -10,7 +10,7 @@
 		<div><i class="icon-external-link"></i> <a target="_blank" href="<?php echo WPChaosClient::get_object()->externalurl; ?>" title="Læs mere hos <?php echo WPChaosClient::get_object()->organization; ?>">Læs mere hos <?php echo WPChaosClient::get_object()->organization; ?></a></div>
 <?php endif; ?>
 		<hr>
-		<div><?php echo WPChaosClient::get_object()->rights; ?></div>
+		<div class="rights-container"><?php echo WPChaosClient::get_object()->rights; ?></div>
 		<hr>
 		<div class="social"><?php dka_social_share(array("link"=>WPChaosClient::get_object()->url)); ?></div>
 		<hr>
