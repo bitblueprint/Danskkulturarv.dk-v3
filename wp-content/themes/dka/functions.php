@@ -64,9 +64,16 @@ function dka_scripts_styles() {
 add_action( 'wp_enqueue_scripts', 'dka_scripts_styles' );
 
 function dka_footer_scripts() {
-	echo '<script type="text/javascript">
-    jQuery("video, audio").mediaelementplayer();
-</script>';
+	echo <<<HTML
+<script type="text/javascript">
+jQuery("video, audio").each(function() {
+	var streamer = $("source[data-streamer]", this).data('streamer');
+	$(this).mediaelementplayer({
+		flashStreamer: streamer
+	});
+});
+</script>
+HTML;
 }
 add_action('wp_footer','dka_footer_scripts',99);
 

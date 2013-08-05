@@ -21,6 +21,14 @@ class WPDKAObject {
 	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string';
 	
 	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
+	
+	public static $DERIVED_FILES = array(
+		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
+	);
+	
+	public static $KNOWN_STREAMERS = array(
+		'rtmp://vod-bonanza.gss.dr.dk/bonanza/'
+	);
 
 	/**
 	 * Construct
@@ -33,7 +41,7 @@ class WPDKAObject {
 		$this->define_attribute_filters();
 		
 		// Define a filter for object creation.
-		// $this->define_object_construction_filters();
+		$this->define_object_construction_filters();
 		
 		$this->define_single_object_page();
 
@@ -388,13 +396,37 @@ class WPDKAObject {
 		});
 	}
 	
-	/*
+	
 	public function define_object_construction_filters() {
+		/*
 		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
 			WPDKAObject::ensure_crowd_metadata($object);
 		}, 10, 1);
+		*/
+		// Hack: Adding a HLS version of videos from DR
+		// Make this change on the metadata instead.
+		add_action(WPChaosObject::CHAOS_OBJECT_CONSTRUCTION_ACTION, function(WPChaosObject $object) {
+			$originalObject = $object->getObject();
+			foreach($originalObject->Files as &$file) {
+				foreach(WPDKAObject::$KNOWN_STREAMERS as $streamer) {
+					if(strstr($file->URL, $streamer) == 0) {
+						$file->Streamer = $streamer;
+					}
+				}
+				foreach(WPDKAObject::$DERIVED_FILES as $regexp => $transformation) {
+					$matches = null;
+					if($file->Token == "RTMP Streaming" && preg_match($regexp, $file->URL, $matches)) {
+						// Perform the transformation.
+						eval('$url = "'.$transformation.'";');
+						$originalObject->Files[] = (object) array_merge((array) $file, array(
+							'URL' => $url,
+							'Token' => 'HLS Streaming'
+						));
+					}
+				}
+			}
+		}, 10, 1);
 	}
-	*/
 	
 	public static function ensure_crowd_metadata(\WPChaosObject $object, $ensureObjectIsReachableFromSlug = false) {
 		// Is this the admin force resetting from URL?
