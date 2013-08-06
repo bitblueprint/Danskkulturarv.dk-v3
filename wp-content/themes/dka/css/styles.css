@@ -5451,8 +5451,7 @@ html[xmlns] .slides {
 /* Control Nav */
 .flex-control-nav {
   width: 100%;
-  position: absolute;
-  bottom: -40px;
+  margin-top: 8px;
   text-align: center;
 }
 .flex-control-nav li {
@@ -5669,6 +5668,7 @@ html[xmlns] .slides {
     clear: all !important;
     float: none !important;
     display: list-item !important;
+    padding: 2px;
   }
   .navbar-responsive-collapse ul.dropdown-menu {
     position: static;
