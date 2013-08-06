@@ -4501,6 +4501,20 @@ article.container .single-material {
 .description {
   margin-bottom: 20px;
 }
+div.colofon {
+  width: 100%;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+div.colofon dt {
+  margin-left: 0;
+  clear: left;
+  width: 40%;
+}
+div.colofon dt,
+div.colofon dd {
+  float: left;
+}
 /* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
