@@ -20,6 +20,7 @@
 			this.addToggleAllListener();
 			this.addFlexSliders();
 			this.socialSharePopup();
+			this.addMediaElement();
 
 		},
 
@@ -104,6 +105,21 @@
 
 				e.preventDefault();
 				return false;
+			});
+		},
+
+		/**
+		 * Add MediaElement.js support on video and audio
+		 * @return {void}
+		 */
+		addMediaElement: function() {
+			$("video, audio").each(function() {
+				var options = [];
+				var streamer = $("source[data-streamer]", this).data('streamer');
+				if(streamer) {
+					options["flashStreamer"] = streamer;
+				}
+				$(this).mediaelementplayer(options);
 			});
 		}
 
