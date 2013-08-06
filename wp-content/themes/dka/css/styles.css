@@ -4117,11 +4117,11 @@ hr {
 }
 */
 .navbar {
-  padding: 0 40px;
+  padding: 0 20px;
 }
 .navbar .navbar-toggle {
   background-color: #646464;
-  margin-right: 30px;
+  margin-right: 10px;
   border: none;
 }
 .navbar .navbar-brand {
@@ -4140,12 +4140,6 @@ hr {
 [id*='menu-item-'].menu-item {
   display: inline-block !important;
 }
-li.menu-item a {
-  color: #ffffff !important;
-  padding: 0!important;
-  margin-bottom: 6px !important;
-  font-weight: 400 !important;
-}
 a.dropdown-toggle {
   color: #ffffff !important;
   padding: 6px !important;
@@ -4161,6 +4155,24 @@ a.dropdown-toggle:active {
 }
 .navbar-responsive-collapse {
   clear: none;
+}
+.navbar-responsive-collapse li {
+  width: 100%;
+}
+.navbar-responsive-collapse li.menu-item a,
+.navbar-responsive-collapse li.menu-item .dropdown-toggle {
+  color: #ffffff;
+  padding: 0 !important;
+  margin-bottom: 8px;
+}
+.navbar-responsive-collapse ul.dropdown-menu {
+  position: static;
+  padding: 0;
+  background-color: #555555 !important;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border: none;
 }
 #menu-top-navigation {
   margin-bottom: 0;
@@ -4506,8 +4518,6 @@ footer {
 footer {
   background-color: #f6f6f6;
   border-top: 1px solid #aaaaaa;
-  margin-left: -20px;
-  margin-right: -20px;
 }
 footer .bloginfo-footer {
   font-size: 14px;
@@ -5640,6 +5650,29 @@ html[xmlns] .slides {
   .dropdown-menu:before,
   .dropdown-menu:after {
     display: none !important;
+  }
+  .navbar-responsive-collapse {
+    clear: none;
+  }
+  .navbar-responsive-collapse li {
+    width: auto;
+  }
+  .navbar-responsive-collapse li.menu-item a,
+  .navbar-responsive-collapse li.menu-item .dropdown-toggle {
+    color: #ffffff;
+    padding: 6px !important;
+    margin-bottom: 0;
+    clear: all;
+    display: list-item !important;
+  }
+  .navbar-responsive-collapse .dropdown-menu li.menu-item {
+    clear: all !important;
+    float: none !important;
+    display: list-item !important;
+  }
+  .navbar-responsive-collapse ul.dropdown-menu {
+    position: static;
+    padding: 0;
   }
   footer .bloginfo-footer {
     margin: 20px 0;

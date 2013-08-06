@@ -42,9 +42,9 @@ and other resources.
 
 
 
-  .navbar-responsive-collapse {
-  	float: right;
-  }
+ .navbar-responsive-collapse {
+  float: right;
+}
 
   // Navigation
   .nav {
@@ -151,6 +151,33 @@ li.menu-item {
 .dropdown-menu:before,
 .dropdown-menu:after {
   display:none !important;
+}
+
+.navbar-responsive-collapse {
+  clear: none;
+
+    li {
+      width: auto;
+    }
+
+    li.menu-item a, li.menu-item .dropdown-toggle  {
+      color: @white;
+      padding: 6px !important;
+      margin-bottom: 0;
+      clear: all;
+      display: list-item !important;
+    }
+
+    .dropdown-menu li.menu-item {
+      clear: all !important;
+      float: none !important;
+      display: list-item !important;
+    }
+
+    ul.dropdown-menu {
+      position: static;
+      padding: 0;
+    }
 }
 
 footer {

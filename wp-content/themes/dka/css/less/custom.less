@@ -97,11 +97,11 @@ hr {
 
 .navbar {
 
-  padding: 0 40px;
+  padding: 0 20px;
 
   .navbar-toggle {
     background-color: @grayLight;
-    margin-right: 30px;
+    margin-right: 10px;
     border: none;
   }
 
@@ -127,13 +127,6 @@ hr {
   display: inline-block !important;
 }
 
-li.menu-item a {
-  color: @white !important;
-  padding: 0!important;
-  margin-bottom: 6px !important;
-  font-weight: 400 !important;
-}
-
 a.dropdown-toggle {
   color: @white !important;
   padding: 6px !important;
@@ -153,6 +146,27 @@ a.dropdown-toggle:active {
 
 .navbar-responsive-collapse {
   clear: none;
+
+    li {
+      width: 100%;
+    }
+
+    li.menu-item a, li.menu-item .dropdown-toggle  {
+      color: @white;
+      padding: 0 !important;
+      margin-bottom: 8px;
+
+    }
+
+    ul.dropdown-menu {
+      position: static;
+      padding: 0;
+      background-color: @gray !important;
+      -moz-box-shadow:    none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      border: none;
+    }
 }
 
 #menu-top-navigation {
@@ -593,8 +607,6 @@ footer {
 footer {
   background-color: #f6f6f6;
   border-top: 1px solid @grayLightest;
-  margin-left: -20px;
-  margin-right: -20px;
   //padding-top: 15px;
 
   .bloginfo-footer {
