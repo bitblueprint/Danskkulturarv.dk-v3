@@ -21,6 +21,10 @@
 <?php endif; ?>
 <hr>
 <div class="description">
-	<p><strong>Beskrivelse</strong></p>
+	<h2><strong>Beskrivelse</strong></h2>
 	<?php echo WPChaosClient::get_object()->description; ?>
+</div>
+<div class="colofon">
+	<h2><strong>Kolofon</strong></h2>
+	<?php echo WPChaosClient::get_object()->creator; ?>
 </div>

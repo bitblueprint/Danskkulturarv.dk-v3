@@ -190,6 +190,26 @@ class WPDKAObject {
 			return $value;
 		}, 10, 2);
 
+		//object->creator
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'creator', function($value, \WPCHAOSObject $object) {
+			$creators = $object->metadata(
+				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+				array('/dka2:DKA/dka2:Creators/dka2:Creator','/DKA/Creator/Person'),
+				null
+			);
+			if(!empty($creators)) {
+				$value .= "<dl>\n";
+				foreach($creators as $creator) {
+					$value .= "<dt>".__($creator['Role'],'dka')."</dt>\n";
+					$value .= "<dd>".$creator['Name']."</dd>\n";
+				}
+				$value .= "</dl>\n";
+			} else {
+				$value .= "<p>Ikke opgivet</p>\n";
+			}
+			return $value;
+		}, 10, 2);
+
 		//object->organization_raw
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
