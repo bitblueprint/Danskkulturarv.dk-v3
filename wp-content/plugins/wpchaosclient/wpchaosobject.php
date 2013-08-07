@@ -69,6 +69,10 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		}
 	}
 	
+	public function clear_cache($name) {
+		unset($this->variable_cache[$name]);
+	}
+	
 	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response) {
 		$result = array();
 		foreach($response->MCM()->Results() as $object) {

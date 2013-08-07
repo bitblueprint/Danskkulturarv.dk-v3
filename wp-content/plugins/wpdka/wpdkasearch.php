@@ -110,7 +110,7 @@ class WPDKASearch {
 				$freetext = WPChaosClient::escapeSolrValue($freetext);
 				$searches = array();
 				foreach(WPDKAObject::$ALL_SCHEMA_GUIDS as $schemaGUID) {
-					$searches[] = sprintf("(m%s_%s_all:(%s))", $schemaGUID, WPDKAObject::FREETEXT_LANGUAGE, $freetext);
+					$searches[] = sprintf("(m%s_%s_all:(%s))", $schemaGUID, WPDKAObject::METADATA_LANGUAGE, $freetext);
 				}
 				$query[] = '(' . implode("+OR+", $searches) . ')';
 			}
