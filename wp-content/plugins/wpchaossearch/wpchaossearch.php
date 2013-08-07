@@ -19,11 +19,12 @@ Author URI:
 class WPChaosSearch {
 
 	const QUERY_KEY_FREETEXT = 'text';
-	const QUERY_KEY_PAGE = 'searchPage';
-	const QUERY_KEY_VIEW = 'view';
-	const QUERY_KEY_SORT = 'sortering';
+	const QUERY_KEY_PAGE = 'side';
+	const QUERY_KEY_VIEW = 'som';
+	const QUERY_KEY_SORT = 'sorteret-efter';
 	
-	const QUERY_PREFIX_CHAR = '/';
+	const QUERY_PREFIX_CHAR = '-';
+	const QUERY_POST_SEPERATOR = '-';
 	
 	const FLUSH_REWRITE_RULES_OPTION_KEY = 'wpchaos-flush-rewrite-rules';
 
@@ -52,10 +53,10 @@ class WPChaosSearch {
 
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
-			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+', false, null);
-			WPChaosSearch::register_search_query_variable(8, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+', true, null, null);
-			//WPChaosSearch::register_search_query_variable(9, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+', false, null, ' ');
-			WPChaosSearch::register_search_query_variable(10, WPChaosSearch::QUERY_KEY_PAGE, '\d+');
+			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+?', false, null, null, '/');
+			WPChaosSearch::register_search_query_variable(4, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+?', true, '-');
+			WPChaosSearch::register_search_query_variable(5, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+?', true);
+			WPChaosSearch::register_search_query_variable(6, WPChaosSearch::QUERY_KEY_PAGE, '\d+?', true);
 			
 			// Rewrite tags and rules should always be added.
 			add_action('init', array('WPChaosSearch', 'handle_rewrite_rules'));
@@ -291,13 +292,14 @@ class WPChaosSearch {
 	
 	public static $search_query_variables = array();
 	
-	public static function register_search_query_variable($position, $key, $regexp, $prefix_key = false, $multivalue_seperator = null, $default_value = null) {
+	public static function register_search_query_variable($position, $key, $regexp, $prefix_key = false, $multivalue_seperator = null, $default_value = null, $post_seperator = self::QUERY_POST_SEPERATOR) {
 		self::$search_query_variables[$position] = array(
 			'key' => $key,
 			'regexp' => $regexp,
 			'prefix-key' => $prefix_key,
 			'multivalue-seperator' => $multivalue_seperator,
-			'default_value' => $default_value
+			'default_value' => $default_value,
+			'post-seperator' => $post_seperator
 		);
 		ksort(self::$search_query_variables);
 	}
@@ -324,16 +326,16 @@ class WPChaosSearch {
 			$searchPageID = intval(get_option('wpchaos-searchpage'));
 			$searchPageName = get_page_uri($searchPageID);
 			
-			$regex = $searchPageName;
+			$regex = $searchPageName . '/';
 			foreach(self::$search_query_variables as $variable) {
 				// An optional non-capturing group wrapped around the $regexp.
 				if($variable['prefix-key'] == true) {
-					$regex .= sprintf('(?:/%s(%s))?', $variable['key'].self::QUERY_PREFIX_CHAR, $variable['regexp']);
+					$regex .= sprintf('(?:%s(%s)%s)?', $variable['key'].self::QUERY_PREFIX_CHAR, $variable['regexp'], $variable['post-seperator'] . '?');
 				} else {
-					$regex .= sprintf('(?:/(%s))?', $variable['regexp']);
+					$regex .= sprintf('(?:(%s)%s)?', $variable['regexp'], $variable['post-seperator'] . '?');
 				}
 			}
-			$regex .= '/?$';
+			$regex .= '$';
 			
 			$redirect = "index.php?pagename=$searchPageName";
 			$v = 1;
@@ -361,6 +363,7 @@ class WPChaosSearch {
 		$variables = array_merge(self::get_search_vars(), $variables);
 		// Start with the search page uri.
 		$result = get_page_uri(get_option('wpchaos-searchpage')) . '/';
+		$last_post_seperator = '';
 		foreach(self::$search_query_variables as $variable) {
 			if(!array_key_exists($variable['key'], $variables)) {
 				$variables[$variable['key']] = "";
@@ -375,12 +378,17 @@ class WPChaosSearch {
 				}
 				$value = urlencode($value);
 				if($variable['prefix-key']) {
-					$result .= $variable['key'] . self::QUERY_PREFIX_CHAR . $value . '/';
+					$result .= $variable['key'] . self::QUERY_PREFIX_CHAR . $value . $variable['post-seperator'];
 				} else {
-					$result .= $value . '/';
+					$result .= $value . $variable['post-seperator'];
 				}
+				$last_post_seperator = $variable['post-seperator'];
 			}
 		}
+		if(substr($result, -1) == $last_post_seperator) {
+			$result = substr($result, 0, strlen($result)-1);
+		}
+		// Fixing postfix issues, removing the last post-seperator.
 		return site_url($result);
 	}
 	

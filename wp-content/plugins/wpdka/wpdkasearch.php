@@ -11,8 +11,8 @@
  */
 class WPDKASearch {
 	
-	const QUERY_KEY_TYPE = 'type';
-	const QUERY_KEY_ORGANIZATION = 'organisation';
+	const QUERY_KEY_TYPE = 'med';
+	const QUERY_KEY_ORGANIZATION = 'fra';
 
 	/**
 	 * List of organizations from the WordPress site
@@ -27,8 +27,8 @@ class WPDKASearch {
 
 		add_action('template_redirect',array(&$this,'set_search_title'),0);
 
-		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_TYPE, '[\w+]+', true, ' ');
-		WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w+]+', true, ' ');
+		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w-]+?', true, '-');
+		WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_TYPE, '[\w-]+?', true, '-');
 		
 		// Define the free-text search filter.
 		$this->define_search_filters();

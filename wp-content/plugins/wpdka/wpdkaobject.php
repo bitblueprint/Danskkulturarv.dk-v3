@@ -28,7 +28,7 @@ class WPDKAObject {
 	
 	public static $KNOWN_STREAMERS = array(
 		'rtmp://vod-bonanza.gss.dr.dk/bonanza/',
-		'http://om.gss.dr.dk/MediaCache/_definst_/mp4:'
+		'http://om.gss.dr.dk/MediaCache/_definst_/'
 	);
 
 	/**
@@ -53,9 +53,9 @@ class WPDKAObject {
 	}
 
 	const TYPE_VIDEO = 'video';
-	const TYPE_AUDIO = 'audio';
-	const TYPE_IMAGE = 'image';
-	const TYPE_IMAGE_AUDIO = 'image-audio';
+	const TYPE_AUDIO = 'lyd';
+	const TYPE_IMAGE = 'billede';
+	const TYPE_IMAGE_AUDIO = 'billede-lyd';
 	const TYPE_UNKNOWN = 'unknown';
 	
 	/**
