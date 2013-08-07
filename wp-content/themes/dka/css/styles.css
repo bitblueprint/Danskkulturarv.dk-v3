@@ -4131,6 +4131,14 @@ hr {
 }
 .navbar .navbar-brand img {
   height: 18px;
+  float: left !important;
+}
+.navbar ul.nav.navbar-nav {
+  background-color: #2f94fd !important;
+  float: right !important;
+  text-align: right;
+  overflow: hidden !important;
+  float: left !important;
 }
 .dropdown-header {
   color: #333333;
@@ -4159,15 +4167,16 @@ a.dropdown-toggle:active {
 .navbar-responsive-collapse {
   clear: none;
   width: auto;
-}
-.navbar-responsive-collapse li {
-  width: 100%;
+  overflow: hidden !important;
+  float: left !important;
 }
 .navbar-responsive-collapse li.menu-item a,
 .navbar-responsive-collapse li.menu-item .dropdown-toggle {
   color: #ffffff;
   padding: 0 !important;
   margin-bottom: 8px;
+  float: right !important;
+  text-align: right !important;
 }
 .navbar-responsive-collapse ul.dropdown-menu {
   position: static;
@@ -4335,6 +4344,9 @@ a.dropdown-toggle:active {
 .search-object strong.strong.orange.organization:after {
   content: "\0000a0";
 }
+.search-object p.date:after {
+  content: "\0000a0";
+}
 .search-object .media-type-container {
   height: 20px;
   color: #555555;
@@ -4359,6 +4371,7 @@ ul.row.listview li {
   clear: left;
   padding-top: 5px;
   padding-bottom: 5px;
+  list-style-type: none;
 }
 ul.row.listview li hr {
   display: none;
@@ -4413,6 +4426,10 @@ ul.row.listview .thumb {
 .thumbnails {
   margin: 0;
   padding: 0;
+}
+.thumbnails li {
+  margin-bottom: 20px;
+  list-style-type: none;
 }
 .thumbnails div {
   margin-bottom: 20px;

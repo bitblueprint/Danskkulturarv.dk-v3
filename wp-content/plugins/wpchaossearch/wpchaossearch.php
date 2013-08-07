@@ -233,8 +233,8 @@ class WPChaosSearch {
 
 		$pagesize = ($pagesize?:20);
 		$pageindex = ($pageindex >= 0?$pageindex:0);
-		$sort = ($sort ?: null);
 
+		$sort = apply_filters('wpchaos-solr-sort', $sort, self::get_search_vars());
 		$query = apply_filters('wpchaos-solr-query', $query, self::get_search_vars());
 		
 		self::set_search_results(WPChaosClient::instance()->Object()->Get(

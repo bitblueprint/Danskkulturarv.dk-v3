@@ -20,6 +20,24 @@ class WPDKASearch {
 	 */
 	public static $organizations = array();
 
+	public static $sorts = array(
+		null => array(
+			'title' => 'Relevans',
+			'link' => null,
+			'chaos-value' => null
+		),
+		'titel' => array(
+			'title' => 'Titel',
+			'link' => 'titel',
+			'chaos-value' => 'DKA2-Title_string'
+		),
+		'visninger' => array(
+			'title' => 'Visninger',
+			'link' => 'visninger',
+			'chaos-value' => 'DKA-Crowd-Views_int+desc'
+		),
+	);
+
 	/**
 	 * Construct
 	 */
@@ -32,6 +50,7 @@ class WPDKASearch {
 		
 		// Define the free-text search filter.
 		$this->define_search_filters();
+		add_filter('wpchaos-solr-sort',array(&$this,'map_chaos_sorting'),10,2);
 		
 	}
 
@@ -52,27 +71,32 @@ class WPDKASearch {
 				// Fetch titles from the organizations searched in
 				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION)) {
 					$organizations = WPDKASearch::get_organizations();
+					$temp = array();
 					foreach($organizations as $organization) {
 						if(in_array($organization['slug'],WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION))) {
 							$temp[] = $organization['title'];
 						}
 					}
 
-					$extra_description .= ' De fremsøgte materialer er fra '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
-					unset($temp);
+					if($temp) {
+						$extra_description .= ' De fremsøgte materialer er fra '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+					}
 					
+					unset($temp);
 				}
 				
 				//Fetch the titles from the formats searched in
 				if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE)) {
-
+					$temp = array();
 					foreach(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE) as $format) {
 						if(isset(WPDKAObject::$format_types[$format])) {
 							$temp[] = strtolower(WPDKAObject::$format_types[$format]['title']);
 						}
 					}
-
-					$extra_description .= ' Formatet er '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+					if($temp) {
+						$extra_description .= ' Formatet er '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+					}
+					
 					unset($temp);
 					
 				}
@@ -131,7 +155,9 @@ class WPDKASearch {
 				$types = $query_vars[WPDKASearch::QUERY_KEY_TYPE];
 				$searches = array();
 				foreach($types as $type) {
-					$searches[] = "(FormatTypeName:$type)";
+					if(isset(WPDKAObject::$format_types[$type])) {
+						$searches[] = "(FormatTypeName:".WPDKAObject::$format_types[$type]['chaos-value'].")";
+					}
 				}
 				if(count($searches) > 0) {
 					$query[] = '(' . implode("+OR+", $searches) . ')';
@@ -168,6 +194,10 @@ class WPDKASearch {
 				
 			return implode("+AND+", $query);
 		}, 11, 2);
+	}
+
+	public function map_chaos_sorting($sort,$query_vars) {
+		return (isset(WPDKASearch::$sorts[$sort]) ? WPDKASearch::$sorts[$sort]['chaos-value'] : null);
 	}
 
 	/**

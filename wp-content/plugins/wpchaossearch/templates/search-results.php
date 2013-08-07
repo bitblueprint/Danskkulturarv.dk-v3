@@ -7,21 +7,22 @@
 <?php get_header();
 
 $current_view = (WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_VIEW) ? 'listview' : 'thumbnails');
+$current_sort = isset(WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]) ? WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]['title'] : WPDKASearch::$sorts[null]['title'];
 
 $views = array(
-		array(
-			'title' => 'Vis som liste',
-			'view' => 'listview',
-			'class' => 'icon-th-list',
-			'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => 'liste'))
-		),
-		array(
-			'title' => 'Vis som galleri',
-			'view' => 'thumbnails',
-			'class' => 'icon-th',
-			'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => null))
-		),
-	);
+	array(
+		'title' => 'Vis som liste',
+		'view' => 'listview',
+		'class' => 'icon-th-list',
+		'link' => 'liste'
+	),
+	array(
+		'title' => 'Vis som galleri',
+		'view' => 'thumbnails',
+		'class' => 'icon-th',
+		'link' => null
+	),
+);
 
 ?>
 <article class="container search-results">
@@ -31,18 +32,18 @@ $views = array(
 		</div>
 		<div class="col-4 col-sm-2">	
 			<div class="dropdown sortby-dropdown pull-right">
-				  <a class="sortby-link" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">Sorter: <strong class="blue">relevans</strong>&nbsp;<i class="icon-caret-down"></i></a>
+				  <a class="sortby-link" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">Sorter: <strong class="blue"><?php echo $current_sort; ?></strong>&nbsp;<i class="icon-caret-down"></i></a>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-				    <li><a tabindex="-1" href="#">Relevans</a></li>
-				    <li><a tabindex="-1" href="#">Alfabetisk</a></li>
-				    <li><a tabindex="-1" href="#">Visninger</a></li>
+<?php foreach(WPDKASearch::$sorts as $sort) : ?>
+					<li><a tabindex="-1" href="<?php echo WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_SORT => $sort['link'])); ?>" title="<?php echo $sort['title']; ?>"><?php echo $sort['title']; ?></a></li>
+<?php endforeach; ?>
 				  </ul>
 			</div>
 		</div>
 		<div class="col-3 col-sm-2">
 			<div class="search-result-listing btn-group">
 <?php foreach($views as $view) :
-		echo '<a href="'.$view['link'].'" title="'.$view['title'].'"><button type="button" class="btn btn-default'.($view['view'] == $current_view ? ' active' : '').'"><i class="'.$view['class'].'"></i></button></a>';
+		echo '<a href="'.WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => $view['link'])).'" title="'.$view['title'].'"><button type="button" class="btn btn-default'.($view['view'] == $current_view ? ' active' : '').'"><i class="'.$view['class'].'"></i></button></a>';
 endforeach; ?>
 			</div>
 		</div>
