@@ -15,8 +15,9 @@ class WPDKAObject {
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
 	const DKA_CROWD_SCHEMA_GUID = 'a37167e0-e13b-4d29-8a41-b0ffbaa1fe5f';
-	const DKA_CROWD_LANGUAGE = 'da';
+	const METADATA_LANGUAGE = 'da';
 	const FREETEXT_LANGUAGE = 'da';
+	const SESSION_PREFIX = __CLASS__;
 	
 	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string';
 	
@@ -402,6 +403,19 @@ class WPDKAObject {
 			}
 		});
 		
+		// Increment the views counter
+		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
+			// TODO: Restrict on session data.
+			if(!session_id()){
+				session_start();
+			}
+			$viewed_session_name = WPDKAObject::SESSION_PREFIX . '_viewed_' . $object->GUID;
+			if(!array_key_exists($viewed_session_name, $_SESSION)) {
+				WPDKAObject::increment_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()', $object, array('views'));
+				$_SESSION[$viewed_session_name] = "viewed";
+			}
+		});
+		
 		// Make sure objects are identified if they are there.
 		add_filter(WPChaosClient::GENERATE_SINGLE_OBJECT_SOLR_QUERY, function($query) {
 			if(is_string($query)) {
@@ -510,7 +524,7 @@ class WPDKAObject {
 		$metadataXML->addChild('Slug', $slug);
 		$metadataXML->addChild('Tags');
 		
-		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::DKA_CROWD_LANGUAGE, $revisionID);
+		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::METADATA_LANGUAGE, $revisionID);
 		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
 		}
@@ -662,6 +676,22 @@ class WPDKAObject {
 			return self::$legacy_views[$guid];
 		} else {
 			return 0;
+		}
+	}
+	
+	public static function increment_metadata_field($metadata_schema_guid, $xpath, WPChaosObject $object, $fields_invalidated = array()) {
+		$metadata = $object->get_metadata($metadata_schema_guid);
+		$element = $metadata->xpath($xpath);
+		if($element !== false && count($element) == 1) {
+			$DOMElement = dom_import_simplexml($element[0]);
+			$DOMElement->nodeValue = intval($DOMElement->nodeValue) + 1;
+			$revisionID = $object->get_metadata_revision_id($metadata_schema_guid);
+			$object->set_metadata(WPChaosClient::instance(), $metadata_schema_guid, $metadata, self::METADATA_LANGUAGE, $revisionID);
+			foreach($fields_invalidated as $field) {
+				$object->clear_cache($field);
+			}
+		} else {
+			throw new \RuntimeException("The element found using the provided xpath expression, wasn't exactly a single.");
 		}
 	}
 

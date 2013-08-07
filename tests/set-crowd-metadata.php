@@ -22,6 +22,8 @@ $metadataXML->addChild('Likes', '0');
 $metadataXML->addChild('Ratings', '0');
 $metadataXML->addChild('AccumulatedRate', '0');
 $slug = 'noget-godt-'.rand(1000, 9999);
+//$slug = 'konseilspræsident-c-th-zahle-paa-politikens-redaktion';
+//$slug = 'nakskov-skibsværft';
 $metadataXML->addChild('Slug', $slug);
 $metadataXML->addChild('Tags');
 
