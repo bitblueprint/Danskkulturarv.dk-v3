@@ -146,6 +146,7 @@ a.dropdown-toggle:active {
 
 .navbar-responsive-collapse {
   clear: none;
+  width: auto;
 
     li {
       width: 100%;
@@ -208,6 +209,15 @@ a.dropdown-toggle:active {
     padding: 0 18px;
     font-weight: 400;
     font-size: 14px;
+    -webkit-transition-delay: 0s;
+    -webkit-transition-duration: 0.25s;
+    -webkit-transition-property: all;
+    -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .btn-search:hover {
+    color: @white;
+    background: @gray;
   }
 
   .btn-advanced-search {
@@ -221,6 +231,10 @@ a.dropdown-toggle:active {
     vertical-align: top;
     margin-top: 0;
     width: 100%;
+    -webkit-transition-delay: 0s;
+    -webkit-transition-duration: 0.25s;
+    -webkit-transition-property: all;
+    -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .btn-advanced-search i {
