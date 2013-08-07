@@ -4,7 +4,26 @@
  * @version 1.0
  */
 ?>
-<?php get_header(); ?>
+<?php get_header();
+
+$current_view = (WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_VIEW) ? 'listview' : 'thumbnails');
+
+$views = array(
+		array(
+			'title' => 'Vis som liste',
+			'view' => 'listview',
+			'class' => 'icon-th-list',
+			'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => 'liste'))
+		),
+		array(
+			'title' => 'Vis som galleri',
+			'view' => 'thumbnails',
+			'class' => 'icon-th',
+			'link' => WPChaosSearch::generate_pretty_search_url()
+		),
+	);
+
+?>
 <article class="container search-results">
 	<div class="row search-results-top">
 		<div class="col-12 col-sm-4">
@@ -22,8 +41,9 @@
 		</div>
 		<div class="col-3 col-sm-2">
 			<div class="search-result-listing btn-group">
-				<button type="button" class="btn btn-default active"><i class="icon-th"></i></button>
-				<button type="button" class="btn btn-default"><i class="icon-th-list"></i></button>
+<?php foreach($views as $view) :
+		echo '<a href="'.$view['link'].'" title="'.$view['title'].'"><button type="button" class="btn btn-default'.($view['view'] == $current_view ? ' active' : '').'"><i class="'.$view['class'].'"></i></button></a>';
+endforeach; ?>
 			</div>
 		</div>
 		<div class="col-5 col-sm-4">
@@ -32,7 +52,7 @@
 			</ul>
 		</div>
 	</div>
-	<ul class="row thumbnails">
+	<ul class="row <?php echo $current_view; ?>">
 
 <?php
 foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
