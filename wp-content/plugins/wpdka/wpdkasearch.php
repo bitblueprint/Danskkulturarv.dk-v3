@@ -20,6 +20,24 @@ class WPDKASearch {
 	 */
 	public static $organizations = array();
 
+	public static $sorts = array(
+		null => array(
+			'title' => 'Relevans',
+			'link' => null,
+			'chaos-value' => null
+		),
+		'titel' => array(
+			'title' => 'Titel',
+			'link' => 'titel',
+			'chaos-value' => 'DKA2-Title_string'
+		),
+		'visninger' => array(
+			'title' => 'Visninger',
+			'link' => 'visninger',
+			'chaos-value' => 'DKA-Crowd-Views_int+desc'
+		),
+	);
+
 	/**
 	 * Construct
 	 */
@@ -32,6 +50,7 @@ class WPDKASearch {
 		
 		// Define the free-text search filter.
 		$this->define_search_filters();
+		add_filter('wpchaos-solr-sort',array(&$this,'map_chaos_sorting'),10,2);
 		
 	}
 
@@ -168,6 +187,12 @@ class WPDKASearch {
 				
 			return implode("+AND+", $query);
 		}, 11, 2);
+	}
+
+	public function map_chaos_sorting($sort,$query_vars) {
+		if(isset(WPDKASearch::$sorts[$sort]))
+			 $sort = WPDKASearch::$sorts[$sort]['chaos-value'];
+		return $sort;
 	}
 
 	/**
