@@ -116,6 +116,12 @@ hr {
     height: 18px;
   }
 
+  ul.nav.navbar-nav {
+    background-color: @blue !important;
+    float: right !important;
+    text-align: right;
+  }
+
 }
 
 .dropdown-header {
@@ -151,16 +157,18 @@ a.dropdown-toggle:active {
 .navbar-responsive-collapse {
   clear: none;
   width: auto;
+  width:50%;
 
     li {
-      width: 100%;
+      
     }
 
     li.menu-item a, li.menu-item .dropdown-toggle  {
       color: @white;
       padding: 0 !important;
       margin-bottom: 8px;
-
+      float: right !important;
+      text-align: right !important;
     }
 
     ul.dropdown-menu {
