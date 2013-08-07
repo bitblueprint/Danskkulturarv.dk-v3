@@ -4136,6 +4136,7 @@ hr {
   background-color: #2f94fd !important;
   float: right !important;
   text-align: right;
+  overflow: hidden !important;
 }
 .dropdown-header {
   color: #333333;
@@ -4164,7 +4165,7 @@ a.dropdown-toggle:active {
 .navbar-responsive-collapse {
   clear: none;
   width: auto;
-  width: 50%;
+  overflow: hidden !important;
 }
 .navbar-responsive-collapse li.menu-item a,
 .navbar-responsive-collapse li.menu-item .dropdown-toggle {
