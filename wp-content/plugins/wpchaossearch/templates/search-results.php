@@ -21,7 +21,10 @@
 			</div>
 		</div>
 		<div class="col-3 col-sm-2">
-			<div class="search-result-listing btn-group"><button type="button" class="btn btn-default active"><i class="icon-th"></i></button><button type="button" class="btn btn-default"><i class="icon-th-list"></i></button></div>
+			<div class="search-result-listing btn-group">
+				<button type="button" class="btn btn-default active"><i class="icon-th"></i></button>
+				<button type="button" class="btn btn-default"><i class="icon-th-list"></i></button>
+			</div>
 		</div>
 		<div class="col-5 col-sm-4">
 			<ul class="pagination pagination-large pull-right">

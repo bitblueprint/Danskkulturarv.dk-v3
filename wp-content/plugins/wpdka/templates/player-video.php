@@ -18,7 +18,6 @@
 
 	if($streamer && strpos($streamer, $ext.':') === false && $ext == 'flv') {
 		$file->URL = $streamer .$ext. ':' . substr($file->URL, strlen($file->Streamer));
-		$streamer = $streamer .$ext. ':';
 	}
 
 	// If rtmp streaming is used, this is the mime type
