@@ -280,13 +280,13 @@ function dka_wp_head() {
 
 add_action('wp_head','dka_wp_head',99);
 
-function dka_custom_excerpt($new_length = 20) {
+function dka_custom_excerpt($new_length = 30) {
   add_filter('excerpt_length', create_function('$new_length',"return $new_length;"), 999);
   $output = get_the_excerpt();
   return $output;
 }
 
-function dka_word_limit($string, $length = 20, $ellipsis = "[...]") {
+function dka_word_limit($string, $length = 30, $ellipsis = " [...]") {
 
 	$words = explode(' ', $string);
 	if (count($words) > $length)
