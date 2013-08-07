@@ -24,7 +24,7 @@ class WPChaosSearch {
 	const QUERY_KEY_SORT = 'sorteret-efter';
 	
 	const QUERY_PREFIX_CHAR = '-';
-	const QUERY_POST_SEPERATOR = '-';
+	const QUERY_DEFAULT_POST_SEPERATOR = '-';
 	
 	const FLUSH_REWRITE_RULES_OPTION_KEY = 'wpchaos-flush-rewrite-rules';
 
@@ -53,7 +53,7 @@ class WPChaosSearch {
 
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
-			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+?', false, null, null, '/');
+			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]*?', false, null, '', '/');
 			WPChaosSearch::register_search_query_variable(4, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+?', true);
 			WPChaosSearch::register_search_query_variable(5, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+?', true);
 			WPChaosSearch::register_search_query_variable(6, WPChaosSearch::QUERY_KEY_PAGE, '\d+?', true);
@@ -292,7 +292,7 @@ class WPChaosSearch {
 	
 	public static $search_query_variables = array();
 	
-	public static function register_search_query_variable($position, $key, $regexp, $prefix_key = false, $multivalue_seperator = null, $default_value = null, $post_seperator = self::QUERY_POST_SEPERATOR) {
+	public static function register_search_query_variable($position, $key, $regexp, $prefix_key = false, $multivalue_seperator = null, $default_value = null, $post_seperator = self::QUERY_DEFAULT_POST_SEPERATOR) {
 		self::$search_query_variables[$position] = array(
 			'key' => $key,
 			'regexp' => $regexp,
@@ -330,9 +330,9 @@ class WPChaosSearch {
 			foreach(self::$search_query_variables as $variable) {
 				// An optional non-capturing group wrapped around the $regexp.
 				if($variable['prefix-key'] == true) {
-					$regex .= sprintf('(?:%s(%s)%s)?', $variable['key'].self::QUERY_PREFIX_CHAR, $variable['regexp'], $variable['post-seperator'] . '?');
+					$regex .= sprintf('(?:%s(%s)%s?)?', $variable['key'].self::QUERY_PREFIX_CHAR, $variable['regexp'], $variable['post-seperator']);
 				} else {
-					$regex .= sprintf('(?:(%s)%s)?', $variable['regexp'], $variable['post-seperator'] . '?');
+					$regex .= sprintf('(?:(%s)%s?)?', $variable['regexp'], $variable['post-seperator']);
 				}
 			}
 			$regex .= '$';
@@ -382,10 +382,10 @@ class WPChaosSearch {
 				} else {
 					$result .= $value . $variable['post-seperator'];
 				}
-				$last_post_seperator = $variable['post-seperator'];
 			}
+			$last_variable = $variable;
 		}
-		if(substr($result, -1) == $last_post_seperator) {
+		if(substr($result, -1) === $last_variable['post-seperator']) {
 			$result = substr($result, 0, strlen($result)-1);
 		}
 		// Fixing postfix issues, removing the last post-seperator.

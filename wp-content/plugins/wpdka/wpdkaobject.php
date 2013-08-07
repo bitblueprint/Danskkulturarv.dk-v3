@@ -74,14 +74,17 @@ class WPDKAObject {
 		WPDKAObject::TYPE_AUDIO => array(
 			'class' => 'icon-volume-up',
 			'title' => 'Lyd',
+			'chaos-value' => 'audio'
 			),
 		WPDKAObject::TYPE_IMAGE_AUDIO => array(
 			'class' => 'icon-picture-sound',
 			'title' => 'Billeder og lyd',
+			'chaos-value' => 'unknown'
 		),
 		WPDKAObject::TYPE_VIDEO => array(
 			'class' => 'icon-film',
 			'title' => 'Video',
+			'chaos-value' => 'video'
 		),
 		// This is not yet supported by the metadata.
 		//WPDKAObject::TYPE_UNKNOWN => array(
@@ -91,6 +94,7 @@ class WPDKAObject {
 		WPDKAObject::TYPE_IMAGE => array(
 			'class' => 'icon-picture',
 			'title' => 'Billeder',
+			'chaos-value' => 'image'
 		),
 	);
 
