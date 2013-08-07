@@ -73,6 +73,11 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		unset($this->variable_cache[$name]);
 	}
 	
+	/**
+	 * Takes an Object/Get response from the CHAOS service and wraps every object in a WPChaosObject.
+	 * @param \CHAOS\Portal\Client\Data\ServiceResult $response The CHAOS response on an Object/Get request.
+	 * @return WPChaosObject[] An array of WPChaosObjects.
+	 */
 	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response) {
 		$result = array();
 		foreach($response->MCM()->Results() as $object) {

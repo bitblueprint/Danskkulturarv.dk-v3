@@ -28,6 +28,7 @@ class WPDKA {
 	const RESET_CROWD_METADATA_START_BTN = 'Start Resetting Crowd Metadata';
 	const RESET_CROWD_METADATA_PAUSE_BTN = 'Pause';
 	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
+	const REMOVE_DUPLICATE_SLUGS_BTN = 'Remove duplicate slugs';
 	const RESET_CROWD_METADATA_AJAX = 'wp_dka_reset_crowd_metadata';
 	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
 	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
@@ -46,6 +47,7 @@ class WPDKA {
 			$this->load_dependencies();
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
+			add_action('admin_init', array(&$this, 'remove_duplicate_slugs'));
 			
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
 			
@@ -208,6 +210,12 @@ class WPDKA {
 			});
 		});
 		</script>
+		<form>
+		<?php $removed_duplicates = $this->remove_duplicate_slugs() ?>
+			<input type="hidden" name="page" value="<?php echo self::MENU_PAGE ?>" />
+			<input type="submit" name="action" value="<?php echo self::REMOVE_DUPLICATE_SLUGS_BTN ?>" class="button button-primary">
+			<?php echo $removed_duplicates !== null ? "Removed $removed_duplicates duplicate slugs." : "" ?>
+		</form>
 		<?php
 	}
 	
@@ -218,6 +226,28 @@ class WPDKA {
 			delete_option(self::RESET_CROWD_METADATA_PAGE_SIZE_OPTION);
 			wp_redirect(admin_url('admin.php?page='.self::MENU_PAGE));
 		}
+	}
+	
+	public function remove_duplicate_slugs() {
+		$chaos_slug_field = 'DKA-Crowd-Slug_string';
+		$action = array_key_exists('action', $_GET) ? $_GET['action'] : null;
+		$removed = 0;
+		if($action == self::REMOVE_DUPLICATE_SLUGS_BTN) {
+			$facets = WPChaosClient::index_search(array($chaos_slug_field));
+			foreach($facets[$chaos_slug_field] as $slug => $count) {
+				if($count > 1) {
+					// We need to reset something
+					$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
+					$objects = WPChaosObject::parseResponse($objectResponse);
+					foreach($objects as $object) {
+						$new_slug = WPDKAObject::reset_crowd_metadata($object);
+						$removed++;
+					}
+				}
+			}
+			return $removed;
+		}
+		return null;
 	}
 	
 	public function ajax_reset_crowd_metadata () {
