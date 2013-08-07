@@ -4335,6 +4335,9 @@ a.dropdown-toggle:active {
 .search-object strong.strong.orange.organization:after {
   content: "\0000a0";
 }
+.search-object p.date:after {
+  content: "\0000a0";
+}
 .search-object .media-type-container {
   height: 20px;
   color: #555555;
@@ -4359,6 +4362,7 @@ ul.row.listview li {
   clear: left;
   padding-top: 5px;
   padding-bottom: 5px;
+  list-style-type: none;
 }
 ul.row.listview li hr {
   display: none;
@@ -4413,6 +4417,10 @@ ul.row.listview .thumb {
 .thumbnails {
   margin: 0;
   padding: 0;
+}
+.thumbnails li {
+  margin-bottom: 20px;
+  list-style-type: none;
 }
 .thumbnails div {
   margin-bottom: 20px;
