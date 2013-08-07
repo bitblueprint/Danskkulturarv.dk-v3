@@ -38,6 +38,6 @@
 	$streamer = $streamer ? ' data-streamer="'.$streamer.'"' : null;
 	*/
 ?>
-	<source src="<?php echo htmlspecialchars($file->URL); ?>" type="video/<?php echo $ext; ?>"<?php echo $streamer; ?> />
+	<source src="<?php echo htmlspecialchars($file->URL); ?>" type="video/<?php echo $ext; ?>"/>
 <?php endforeach; ?>
 </video>
