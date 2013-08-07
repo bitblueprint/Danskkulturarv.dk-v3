@@ -4131,12 +4131,14 @@ hr {
 }
 .navbar .navbar-brand img {
   height: 18px;
+  float: left !important;
 }
 .navbar ul.nav.navbar-nav {
   background-color: #2f94fd !important;
   float: right !important;
   text-align: right;
   overflow: hidden !important;
+  float: left !important;
 }
 .dropdown-header {
   color: #333333;
@@ -4166,6 +4168,7 @@ a.dropdown-toggle:active {
   clear: none;
   width: auto;
   overflow: hidden !important;
+  float: left !important;
 }
 .navbar-responsive-collapse li.menu-item a,
 .navbar-responsive-collapse li.menu-item .dropdown-toggle {
