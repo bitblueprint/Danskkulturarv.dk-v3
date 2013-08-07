@@ -22,6 +22,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 	<div class="col-lg-8 col-10">
 		<div class="input-group">
 			<input type="hidden" name="<?php echo WPChaosSearch::QUERY_KEY_VIEW; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_VIEW, 'esc_attr'); ?>">
+			<input type="hidden" name="<?php echo WPChaosSearch::QUERY_KEY_SORT; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT, 'esc_attr'); ?>">
 			<input class="form-control" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_attr,trim'); ?>" placeholder="<?php echo $freetext_placeholder; ?>" />
 			<span class="input-group-btn">
 				<button type="submit" class="btn btn-search btn-large" id="searchsubmit">Søg</button>
@@ -29,8 +30,10 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 	</div>
 	</div>
 	<div class="col-lg-4 col-2 btn-advanced-search-container">
-		<button class="btn btn-large btn-block btn-advanced-search collapsed blue visible-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i> Præciser søgning <i class="icon-caret-down"></i></button>
-		<button class="btn btn-large btn-block btn-advanced-search collapsed blue hidden-lg dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container"><i class="icon-cogs"></i><i class="icon-caret-down"></i></button>
+		<button class="btn btn-large btn-block btn-advanced-search collapsed blue dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container">
+			<span class="visible-lg"><i class="icon-cogs"></i> Præciser søgning <i class="icon-caret-down"></i></span>
+			<span class="hidden-lg"><i class="icon-cogs"></i> <i class="icon-caret-down"></i></span>
+		</button>
 	</div>
 	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">
 
