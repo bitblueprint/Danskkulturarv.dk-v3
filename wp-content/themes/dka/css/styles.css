@@ -4131,23 +4131,10 @@ hr {
 }
 .navbar .navbar-brand img {
   height: 18px;
-  float: left !important;
-}
-.navbar ul.nav.navbar-nav {
-  text-align: right;
-  overflow: hidden !important;
-  float: right !important;
 }
 .dropdown-header {
   color: #333333;
   padding: 10px 0 4px 0;
-}
-.menu-item li,
-.menu-item {
-  display: inline-block !important;
-}
-[id*='menu-item-'].menu-item {
-  display: inline-block !important;
 }
 a.dropdown-toggle {
   color: #ffffff !important;
@@ -4162,32 +4149,20 @@ a.dropdown-toggle:active {
 .navbar-inverse {
   background-color: #555555;
 }
-.navbar-responsive-collapse {
-  clear: none;
-  width: auto;
-  overflow: hidden !important;
-  float: right !important;
-}
-.navbar-responsive-collapse li.menu-item a,
-.navbar-responsive-collapse li.menu-item .dropdown-toggle {
-  color: #ffffff;
-  padding: 0 !important;
-  margin-bottom: 8px;
-  float: right !important;
-  text-align: right !important;
-}
 .navbar-responsive-collapse ul.dropdown-menu {
   position: static;
   padding: 0;
-  background-color: #555555 !important;
+  background-color: #555555;
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none;
   border: none;
   margin-left: 20px;
+  width: 100%;
 }
-#menu-top-navigation {
-  margin-bottom: 0;
+.navbar-responsive-collapse li a {
+  float: left;
+  width: 100%;
 }
 .container.search {
   padding: 70px 20px 20px 0;
@@ -5647,131 +5622,29 @@ html[xmlns] .slides {
     font-size: 12px;
     min-width: 160px;
   }
-  .navbar .navbar-inner {
-    background-image: none;
-    background-color: #555555;
-  }
-  .navbar .navbar-brand {
-    padding: 25px 20px 0 0;
-    max-width: 1200px;
-    padding-left: -15px;
-  }
   .navbar .navbar-brand img {
     height: 27px;
   }
-  .navbar .navbar-responsive-collapse {
+  #menu-top-navigation {
     float: right;
   }
-  .navbar .nav {
-    padding: 20px 0;
-  }
-  .navbar .nav > li + li {
-    margin-left: 15px;
-  }
-  .navbar .nav > li > a {
-    padding: 5px 10px;
-    color: #ffffff;
-    background-color: #646464;
-    border-radius: 3px;
-    -webkit-transition: 0.25s;
-    transition: 0.25s;
-    /*
-        .caret {
-          border-top-color: @white!important;
-          border-bottom-color: @white!important;
-        }
-        */
-  
-  }
-  .navbar .nav > li > a:hover {
-    background-color: #888888;
-  }
-  .navbar .nav > li.current-menu-item > a {
-    background-color: #333333 !important;
-  }
-  .navbar .nav .open > .dropdown-menu {
-    background-color: #888888;
-    border-radius: 3px;
-    margin-top: 2px;
-    border: none;
-  }
-  .navbar .nav .open > .dropdown-menu a {
-    margin-bottom: 0!important;
-    color: #ffffff;
-  }
-  .navbar .nav .open > .dropdown-menu a:hover {
-    background-color: #555555;
-  }
-  .navbar .nav .dropdown-menu li > a:hover,
-  .navbar .nav .dropdown-menu li > a:focus,
-  .navbar .nav .dropdown-submenu:hover > a {
-    background-image: none;
-    background-color: #333333;
-  }
-  .navbar .nav .dropdown-menu li.current-menu-item > a {
-    background-image: none;
-    background-color: #333333;
-  }
-  footer {
-    margin-left: 0;
-    margin-right: 0;
-  }
-  li.menu-item a {
+  #menu-top-navigation li.menu-item a {
     padding: 4px 10px !important;
-  }
-  .menu-item li {
-    float: left !important;
-    clear: all !important;
-    width: auto;
-    list-style: none;
-    width: 100%;
-  }
-  .dropdown-header {
-    padding: 10px 0 4px 10px;
+    border-radius: 3px;
   }
   li.menu-item a:hover {
     background-color: #2f94fd !important;
   }
-  li.menu-item {
-    float: left !important;
-    display: inline-block !important;
-    clear: all;
-  }
-  .dropdown-menu {
-    position: absolute!important;
-    z-index: 99999;
-    left: -14px !important;
-  }
-  #menu-top-navigation {
-    width: 100% !important;
-  }
-  .dropdown-menu:before,
-  .dropdown-menu:after {
-    display: none !important;
-  }
-  .navbar-responsive-collapse {
-    clear: none;
+  .navbar-responsive-collapse ul.dropdown-menu {
+    position: absolute;
+    margin-left: 0;
   }
   .navbar-responsive-collapse li {
-    width: auto;
+    display: box;
   }
-  .navbar-responsive-collapse li.menu-item a,
-  .navbar-responsive-collapse li.menu-item .dropdown-toggle {
-    color: #ffffff;
-    padding: 6px !important;
-    margin-bottom: 0;
-    display: inline-block !important;
-  }
-  .navbar-responsive-collapse .dropdown-menu li.menu-item {
-    clear: all !important;
-    float: none !important;
-    display: list-item !important;
-    padding: 2px;
-  }
-  .navbar-responsive-collapse ul.dropdown-menu {
-    position: static;
-    padding: 0;
+  footer {
     margin-left: 0;
+    margin-right: 0;
   }
   footer .bloginfo-footer {
     margin: 20px 0;
