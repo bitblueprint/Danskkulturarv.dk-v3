@@ -19,7 +19,7 @@ $views = array(
 			'title' => 'Vis som galleri',
 			'view' => 'thumbnails',
 			'class' => 'icon-th',
-			'link' => WPChaosSearch::generate_pretty_search_url()
+			'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => null))
 		),
 	);
 
