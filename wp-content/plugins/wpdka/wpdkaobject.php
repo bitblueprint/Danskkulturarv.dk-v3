@@ -24,7 +24,7 @@ class WPDKAObject {
 	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
 	
 	public static $DERIVED_FILES = array(
-		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
+		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/mp4:bonanza/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
 	);
 	
 	public static $KNOWN_STREAMERS = array(
@@ -448,6 +448,8 @@ class WPDKAObject {
 			$originalObject = $object->getObject();
 			foreach($originalObject->Files as $file) {
 				foreach(WPDKAObject::$DERIVED_FILES as $regexp => $transformation) {
+					//		  http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/02-03-2008/25781_720x540x1400K.mp4/Playlist.m3u8
+					// FIXME: http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/2012/6/14/49531_720x540x1400k.mp4/Playlist.m3u8
 					$matches = null;
 					if($file->Token == "RTMP Streaming" && preg_match($regexp, $file->URL, $matches)) {
 						// Perform the transformation.
@@ -458,6 +460,8 @@ class WPDKAObject {
 							'Streamer' => $matches['streamer']
 						));
 					}
+					var_dump($originalObject->Files);
+					exit;
 				}
 			}
 			foreach($originalObject->Files as &$file) {

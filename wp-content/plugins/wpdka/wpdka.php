@@ -223,6 +223,7 @@ class WPDKA {
 			var removed_duplicate_slugs_count = 0;
 			$("#remove-duplicate-slugs-start-button").click(function() {
 				remove_duplicate_slugs({});
+				$(this).attr('disabled', true);
 			});
 		});
 		</script>
