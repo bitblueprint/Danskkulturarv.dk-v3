@@ -460,8 +460,6 @@ class WPDKAObject {
 							'Streamer' => $matches['streamer']
 						));
 					}
-					var_dump($originalObject->Files);
-					exit;
 				}
 			}
 			foreach($originalObject->Files as &$file) {
