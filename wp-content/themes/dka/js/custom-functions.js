@@ -114,7 +114,11 @@
 		 */
 		addMediaElement: function() {
 			$("video, audio").each(function() {
-				var options = [];
+				var options = {
+					iPadUseNativeControls: true,
+					iPhoneUseNativeControls: true, 
+				    AndroidUseNativeControls: true,
+				};
 				var streamer = $("source[data-streamer]", this).data('streamer');
 				if(streamer) {
 					options["flashStreamer"] = streamer;
