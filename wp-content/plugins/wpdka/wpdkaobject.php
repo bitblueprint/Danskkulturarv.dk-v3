@@ -28,7 +28,7 @@ class WPDKAObject {
 	
 	public static $KNOWN_STREAMERS = array(
 		'rtmp://vod-bonanza.gss.dr.dk/bonanza/',
-		'http://om.gss.dr.dk/MediaCache/_definst_/mp4:'
+		'http://om.gss.dr.dk/MediaCache/_definst_/'
 	);
 
 	/**
@@ -53,9 +53,9 @@ class WPDKAObject {
 	}
 
 	const TYPE_VIDEO = 'video';
-	const TYPE_AUDIO = 'audio';
-	const TYPE_IMAGE = 'image';
-	const TYPE_IMAGE_AUDIO = 'image-audio';
+	const TYPE_AUDIO = 'lyd';
+	const TYPE_IMAGE = 'billede';
+	const TYPE_IMAGE_AUDIO = 'billede-lyd';
 	const TYPE_UNKNOWN = 'unknown';
 	
 	/**
@@ -74,14 +74,17 @@ class WPDKAObject {
 		WPDKAObject::TYPE_AUDIO => array(
 			'class' => 'icon-volume-up',
 			'title' => 'Lyd',
+			'chaos-value' => 'audio'
 			),
 		WPDKAObject::TYPE_IMAGE_AUDIO => array(
 			'class' => 'icon-picture-sound',
 			'title' => 'Billeder og lyd',
+			'chaos-value' => 'unknown'
 		),
 		WPDKAObject::TYPE_VIDEO => array(
 			'class' => 'icon-film',
 			'title' => 'Video',
+			'chaos-value' => 'video'
 		),
 		// This is not yet supported by the metadata.
 		//WPDKAObject::TYPE_UNKNOWN => array(
@@ -91,6 +94,7 @@ class WPDKAObject {
 		WPDKAObject::TYPE_IMAGE => array(
 			'class' => 'icon-picture',
 			'title' => 'Billeder',
+			'chaos-value' => 'image'
 		),
 	);
 
