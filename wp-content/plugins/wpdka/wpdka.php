@@ -30,6 +30,7 @@ class WPDKA {
 	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
 	const REMOVE_DUPLICATE_SLUGS_BTN = 'Remove duplicate slugs';
 	const RESET_CROWD_METADATA_AJAX = 'wp_dka_reset_crowd_metadata';
+	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wp_dka_remove_duplicate_slugs';
 	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
 	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
 
@@ -47,9 +48,9 @@ class WPDKA {
 			$this->load_dependencies();
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
-			add_action('admin_init', array(&$this, 'remove_duplicate_slugs'));
 			
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
+			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
 			
 			add_action('wp_dashboard_setup', array(&$this, 'add_dashboard_widget') );
 
@@ -194,6 +195,17 @@ class WPDKA {
 					reset_crowd_metadata(data);
 				}, 'json');
 			}
+
+			function remove_duplicate_slugs(data) {
+				data['action'] = "<?php echo WPDKA::REMOVE_DUPLICATE_SLUGS_AJAX ?>";
+				$.post(ajaxurl, data, function(response) {
+					removed_duplicate_slugs_count += response.removed;
+					$("#remove-duplicate-slugs-status").text('Removed '+removed_duplicate_slugs_count+' duplicate slugs, so far.');
+					if(response.removed > 0) {
+						remove_duplicate_slugs(data);
+					}
+				}, 'json');
+			}
 			
 			$("#reset-crowd-metadata-start-button").click(function() {
 				var data = { pageSize: pageSize, pageIndex: pageIndex };
@@ -208,14 +220,13 @@ class WPDKA {
 			$("#reset-crowd-metadata-stop-button").click(function() {
 				location.href = location.search + "&action=stop";
 			});
+			var removed_duplicate_slugs_count = 0;
+			$("#remove-duplicate-slugs-start-button").click(function() {
+				remove_duplicate_slugs({});
+			});
 		});
 		</script>
-		<form>
-		<?php $removed_duplicates = $this->remove_duplicate_slugs() ?>
-			<input type="hidden" name="page" value="<?php echo self::MENU_PAGE ?>" />
-			<input type="submit" name="action" value="<?php echo self::REMOVE_DUPLICATE_SLUGS_BTN ?>" class="button button-primary">
-			<?php echo $removed_duplicates !== null ? "Removed $removed_duplicates duplicate slugs." : "" ?>
-		</form>
+		<button class="button button-primary" id="remove-duplicate-slugs-start-button"><?php echo self::REMOVE_DUPLICATE_SLUGS_BTN ?></button> <span id="remove-duplicate-slugs-status" />
 		<?php
 	}
 	
@@ -228,26 +239,29 @@ class WPDKA {
 		}
 	}
 	
-	public function remove_duplicate_slugs() {
+	const DUPLICATE_SLUGS_REMOVED_PR_REQUEST = 5;
+	
+	public function ajax_remove_duplicate_slugs() {
+		$result = array('removed' => 0);
 		$chaos_slug_field = 'DKA-Crowd-Slug_string';
 		$action = array_key_exists('action', $_GET) ? $_GET['action'] : null;
-		$removed = 0;
-		if($action == self::REMOVE_DUPLICATE_SLUGS_BTN) {
-			$facets = WPChaosClient::index_search(array($chaos_slug_field));
-			foreach($facets[$chaos_slug_field] as $slug => $count) {
-				if($count > 1) {
-					// We need to reset something
-					$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
-					$objects = WPChaosObject::parseResponse($objectResponse);
-					foreach($objects as $object) {
-						$new_slug = WPDKAObject::reset_crowd_metadata($object);
-						$removed++;
-					}
+		$facets = WPChaosClient::index_search(array($chaos_slug_field));
+		foreach($facets[$chaos_slug_field] as $slug => $count) {
+			if($count > 1) {
+				// We need to reset something
+				$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
+				$objects = WPChaosObject::parseResponse($objectResponse);
+				foreach($objects as $object) {
+					$new_slug = WPDKAObject::reset_crowd_metadata($object);
+					$result['removed']++;
+				}
+				if($result['removed'] >= self::DUPLICATE_SLUGS_REMOVED_PR_REQUEST) {
+					break;
 				}
 			}
-			return $removed;
 		}
-		return null;
+		echo json_encode($result);
+		die();
 	}
 	
 	public function ajax_reset_crowd_metadata () {
