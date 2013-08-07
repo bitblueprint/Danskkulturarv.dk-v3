@@ -29,15 +29,24 @@
 			$file->URL = $streamer . $extension . ':' . $filename;
 		}
 	}
-
+	
+	
 	// If rtmp streaming is used, this is the mime type
 	if($file->Token == "RTMP Streaming") {
-		$ext = "rtmp";
+		$mimetype = "video/rtmp";
+	} elseif($file->Token == "HLS Streaming") {
+		$mimetype = null;
+	} else {
+		$mimetype = "video/$ext";
+	}
+	
+	if($mimetype) {
+		$mimetype = ' type="' . $mimetype . '"';
 	}
 	/*
 	$streamer = $streamer ? ' data-streamer="'.$streamer.'"' : null;
 	*/
 ?>
-	<source src="<?php echo htmlspecialchars($file->URL); ?>" type="video/<?php echo $ext; ?>"/>
+	<source src="<?php echo htmlspecialchars($file->URL); ?>"<?php echo $mimetype; ?> />
 <?php endforeach; ?>
 </video>
