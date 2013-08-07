@@ -449,16 +449,19 @@ class WPDKAObject {
 			foreach($originalObject->Files as $file) {
 				foreach(WPDKAObject::$DERIVED_FILES as $regexp => $transformation) {
 					//		  http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/02-03-2008/25781_720x540x1400K.mp4/Playlist.m3u8
+					//		  http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/2008/3/2/25781_720x540x1400K.mp4/Playlist.m3u8
 					// FIXME: http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/2012/6/14/49531_720x540x1400k.mp4/Playlist.m3u8
 					$matches = null;
 					if($file->Token == "RTMP Streaming" && preg_match($regexp, $file->URL, $matches)) {
 						// Perform the transformation.
 						eval('$url = "'.$transformation.'";');
-						$originalObject->Files[] = (object) array_merge((array) $file, array(
+						$newFile = (object) array_merge((array) $file, array(
 							'URL' => $url,
 							'Token' => 'HLS Streaming',
 							'Streamer' => $matches['streamer']
 						));
+						// $originalObject->Files[] = $newFile;
+						array_unshift($originalObject->Files, $newFile);
 					}
 				}
 			}
