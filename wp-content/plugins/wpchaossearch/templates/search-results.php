@@ -7,6 +7,7 @@
 <?php get_header();
 
 $current_view = (WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_VIEW) ? 'listview' : 'thumbnails');
+$current_sort = isset(WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]) ? WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]['title'] : '';
 
 $views = array(
 	array(
@@ -31,7 +32,7 @@ $views = array(
 		</div>
 		<div class="col-4 col-sm-2">	
 			<div class="dropdown sortby-dropdown pull-right">
-				  <a class="sortby-link" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">Sorter: <strong class="blue">relevans</strong>&nbsp;<i class="icon-caret-down"></i></a>
+				  <a class="sortby-link" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#">Sorter: <strong class="blue"><?php echo $current_sort; ?></strong>&nbsp;<i class="icon-caret-down"></i></a>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 <?php foreach(WPDKASearch::$sorts as $sort) : ?>
 					<li><a tabindex="-1" href="<?php echo WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_SORT => $sort['link'])); ?>" title="<?php echo $sort['title']; ?>"><?php echo $sort['title']; ?></a></li>
