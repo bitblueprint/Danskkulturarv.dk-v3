@@ -386,7 +386,7 @@ class WPChaosSearch {
 			$last_variable = $variable;
 		}
 		if(substr($result, -1) === $last_variable['post-seperator']) {
-			$result = substr($result, 0, strlen($result)-1);
+			$result = substr($result, 0, strlen($result)-1)."/";
 		}
 		// Fixing postfix issues, removing the last post-seperator.
 		return site_url($result);
