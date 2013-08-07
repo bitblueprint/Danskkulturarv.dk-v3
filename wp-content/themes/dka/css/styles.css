@@ -4343,6 +4343,49 @@ a.dropdown-toggle:active {
 .search-object .media-type-container .icon-eye-open {
   margin-left: 8px;
 }
+ul.row.listview {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+ul.row.listview li.search-object {
+  border-bottom: #eeeded;
+}
+ul.row.listview li.search-object:hover {
+  background-color: #888888;
+}
+ul.row.listview li {
+  width: 100%;
+  clear: left;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+ul.row.listview li hr {
+  display: none;
+}
+ul.row.listview li .thumbnail {
+  border: none;
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+ul.row.listview li h2.title {
+  background-color: none !important;
+}
+ul.row.listview li .organization {
+  float: left;
+  margin-right: 6px;
+  position: relative;
+}
+ul.row.listview li .date {
+  float: left;
+  margin-right: 10px;
+  position: relative;
+}
+ul.row.listview li .media-type-container {
+  float: left;
+}
+ul.row.listview .thumb {
+  display: none;
+}
 .search-results {
   border-left: 1px solid #eeeded;
   border-right: 1px solid #eeeded;

@@ -382,6 +382,64 @@ a.dropdown-toggle:active {
   }
 }
 
+// List view
+
+ul.row.listview {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+    li.search-object {
+      border-bottom: @grayBorder;
+    }
+
+    li.search-object:hover {
+      background-color: @grayLighter;
+    }
+
+  li {
+    width: 100%;
+    clear: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    hr {
+      display: none;
+    }
+
+    .thumbnail {
+      border: none;
+      background-color: rgba(0,0,0,0) !important;
+    }
+
+    h2.title {
+      background-color: none !important;
+    }
+
+    .organization {
+      float: left;
+      margin-right: 6px;
+      position: relative;
+    }
+
+    .date {
+      float: left;
+      margin-right: 10px;
+      position: relative;
+    }
+
+    .media-type-container {
+      float: left;
+    }
+
+  }
+
+  .thumb {
+    display: none;
+  }
+
+}
+
 //gray border
 .search-results {
   border-left: 1px solid @grayBorder;
