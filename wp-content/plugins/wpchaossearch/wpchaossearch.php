@@ -54,7 +54,7 @@ class WPChaosSearch {
 			add_filter('wpchaos-config', array(&$this, 'settings'));
 
 			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]+?', false, null, null, '/');
-			WPChaosSearch::register_search_query_variable(4, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+?', true, '-');
+			WPChaosSearch::register_search_query_variable(4, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+?', true);
 			WPChaosSearch::register_search_query_variable(5, WPChaosSearch::QUERY_KEY_SORT, '[^/&]+?', true);
 			WPChaosSearch::register_search_query_variable(6, WPChaosSearch::QUERY_KEY_PAGE, '\d+?', true);
 			
