@@ -5663,10 +5663,9 @@ html[xmlns] .slides {
     float: right;
   }
   #menu-top-navigation li.menu-item {
-    margin-right: 10px;
+    margin-right: 10px !important;
   }
   #menu-top-navigation li.menu-item a {
-    padding: 4px 10px !important;
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -5693,6 +5692,7 @@ html[xmlns] .slides {
   }
   .navbar-responsive-collapse a.dropdown-menu-item {
     color: #ffffff !important;
+    padding: 4px 10px !important;
   }
   footer {
     margin-left: 0;
