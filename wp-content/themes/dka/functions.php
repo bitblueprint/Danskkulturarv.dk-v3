@@ -280,6 +280,24 @@ function dka_wp_head() {
 	
 }
 
+function dka_gemius_tracking() {
+	echo <<<HTML
+	<!-- (C)2000-2013 Gemius SA - gemiusAudience / danskkulturarv.dk / Main Page -->
+	<script type="text/javascript">
+	<!--//--><![CDATA[//><!--
+	var pp_gemius_identifier = 'zIg70.vylD2c3AOnUAlzzZbxXtcUzeL2JV319kvG4RL.w7';
+	// lines below shouldn't be edited
+	function gemius_pending(i) { window[i] = window[i] || function() {var x = window[i+'_pdata'] = window[i+'_pdata'] || []; x[x.length]=arguments;};};
+	gemius_pending('gemius_hit'); gemius_pending('gemius_event'); gemius_pending('pp_gemius_hit'); gemius_pending('pp_gemius_event');
+	(function(d,t) {try {var gt=d.createElement(t),s=d.getElementsByTagName(t)[0]; gt.setAttribute('async','async'); gt.setAttribute('defer','defer');
+	 gt.src='http://gadk.hit.gemius.pl/xgemius.js'; s.parentNode.insertBefore(gt,s);} catch (e) {}})(document,'script');
+	//--><!]]>
+	</script>
+HTML;
+	
+}
+
+add_action('wp_head','dka_gemius_tracking',98);
 add_action('wp_head','dka_wp_head',99);
 
 function dka_custom_excerpt($new_length = 30) {
