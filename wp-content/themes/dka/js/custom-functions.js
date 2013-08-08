@@ -21,7 +21,6 @@
 			this.addFlexSliders();
 			this.socialSharePopup();
 			//this.addMediaElement();
-			this.initJWPlayer();
 
 		},
 
@@ -129,16 +128,6 @@
 			});
 		}
 		*/
-		
-		/**
-		 * Setting up the main-jwplayer.
-		 * @return {void}
-		 */
-		initJWPlayer: function() {
-			$("#main-jwplayer").each(function () {
-				jwplayer(this).setup(jwplayerOptions);
-			})
-		}
 
 	}
 

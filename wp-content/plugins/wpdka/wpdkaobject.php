@@ -466,11 +466,27 @@ class WPDKAObject {
 				}
 			}
 			foreach($originalObject->Files as &$file) {
+				// We're not interested in anything but a video.
+				if($file->FormatType != 'Video') continue;
+				
 				$file->Streamer = null;
 				foreach(WPDKAObject::$KNOWN_STREAMERS as $streamer) {
 					if(strstr($file->URL, $streamer) !== false) {
 						$file->Streamer = $streamer;
-						break;
+						
+						// Check if the file URL contains the (flv|mp4|mp3): part, just after the streamers URL.
+						$matches = array();
+						$streamer_regexp_escaped = $streamer;
+						$streamer_regexp_escaped = str_replace('.', '\.', $streamer_regexp_escaped);
+						if(preg_match("~^$streamer_regexp_escaped(((?:flv|mp4|mp3):)?.*?.([\w]+))$~", $file->URL, $matches) > 0) {
+							$filename = $matches[1];
+							$rtmpPathSeperator = $matches[2];
+							$extension = $matches[3];
+							if(empty($rtmpPathSeperator)) {
+								// No RTMP seperator found, using the extension.
+								$file->URL = $streamer . $extension . ':' . $filename;
+							}
+						}
 					}
 				}
 			}

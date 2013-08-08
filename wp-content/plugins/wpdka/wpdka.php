@@ -48,6 +48,8 @@ class WPDKA {
 			$this->load_dependencies();
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
+
+			add_filter('wpchaos-config', array(&$this, 'settings'));
 			
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
 			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
@@ -69,6 +71,33 @@ class WPDKA {
 		if(self::check_chaosclient()) {
 			WPChaosSearch::flush_rewrite_rules_soon();
 		}
+	}
+
+	/**
+	 * CHAOS settings for this module
+	 * 
+	 * @param  array $settings Other CHAOS settings
+	 * @return array           Merged CHAOS settings
+	 */
+	public function settings($settings) {
+
+
+		$new_settings = array(array(
+			/*Sections*/
+			'name'		=> 'JW Player',
+			'title'		=> 'JW Player Settings',
+			'fields'	=> array(
+				/*Section fields*/
+				array(
+					'name' => 'wpdka-jwplayer-api-key',
+					'title' => 'JW Player API key',
+					'type' => 'text',
+					'val' => '',
+					'class' => 'regular-text'
+				)
+			)
+		));
+		return array_merge($settings,$new_settings);
 	}
 
 	/**
