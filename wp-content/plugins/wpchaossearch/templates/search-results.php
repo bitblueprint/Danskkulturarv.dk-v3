@@ -62,17 +62,15 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		<li class="search-object col-12 col-sm-6 col-lg-3">
 			<a class="thumbnail" href="<?php echo WPChaosClient::get_object()->url; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
 				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
-					<?php $caption = WPChaosClient::get_object()->caption; if($caption):?>
+<?php $caption = WPChaosClient::get_object()->caption; if($caption):?>
 					<div class="caption"><?php echo $caption ?></div>
-					<?php endif;?>
+<?php endif;?>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
 				<strong class="strong orange organization"><?php echo WPChaosClient::get_object()->organization; ?></strong>
-				
-				<p class="date">
-				<?php if(WPChaosClient::get_object()->published) : ?>
-				<i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?>
-				<?php endif; ?></p>
+<?php if(WPChaosClient::get_object()->published) : ?>
+				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?>s</p>
+<?php endif; ?>
 				<hr>
 				<div class="media-type-container">
 					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> <?php echo WPChaosClient::get_object()->views; ?></i>
