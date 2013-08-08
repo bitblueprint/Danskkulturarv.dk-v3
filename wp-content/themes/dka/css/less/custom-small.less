@@ -25,20 +25,35 @@ and other resources.
 }
 
 //header
+
+.nav {    
+  padding: 20px 0;
+}
+
 .navbar {
 
   .navbar-brand img {
     height: 27px;
   }
 
+  .navbar-brand {
+    padding: 24px 20px 0 0;
+  }
+
+
 }
 
 #menu-top-navigation {
   float: right;
 
+  li.menu-item {
+    margin-right: 10px;
+  }
+
   li.menu-item a {
     padding: 4px 10px !important;
     border-radius: @border-radius-small;
+    background-color: @grayLight;
   }
 
 }
@@ -52,11 +67,28 @@ li.menu-item a:hover {
     ul.dropdown-menu {
       position: absolute;
       margin-left: 0;
+      width: auto;
+      padding: 10px;
+
+      li a {
+        background-color: inherit !important;
+        width: 100% !important;
+      }
+
+      li.dropdown-header {
+        margin-left: 10px;
+      }
+
     }
 
     li {
       display: box;
     }
+
+    a.dropdown-menu-item {
+      color: @white !important;
+    }
+
 }
 
 

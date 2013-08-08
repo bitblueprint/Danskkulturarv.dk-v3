@@ -157,7 +157,27 @@ a.dropdown-toggle:active {
     li a {
       float: left;
       width: 100%;
+      color: @white;
+      -webkit-transition-delay: 0s;
+      -webkit-transition-duration: 0.25s;
+      -webkit-transition-property: all;
+      -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
+
+    .dropdown-menu-item {
+      padding: 0 0 6px 0;
+    }
+
+    a.dropdown-menu-item  {
+      padding: 4px !important;
+      border-radius: @baseBorderRadius;
+      color: @white !important;
+    }
+
+    a.dropdown-menu-item:hover {
+      background-color: @blue !important;
+    }
+
 }
 
 // --------------------------------------------------
