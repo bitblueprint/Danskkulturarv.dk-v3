@@ -4175,6 +4175,8 @@ a.dropdown-toggle:active {
 .navbar-responsive-collapse a.dropdown-menu-item {
   padding: 4px !important;
   border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
   color: #ffffff !important;
 }
 .navbar-responsive-collapse a.dropdown-menu-item:hover {
@@ -4228,6 +4230,9 @@ a.dropdown-toggle:active {
   vertical-align: top;
   margin-top: 0;
   width: 100%;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
   -webkit-transition-delay: 0s;
   -webkit-transition-duration: 0.25s;
   -webkit-transition-property: all;
@@ -4264,6 +4269,8 @@ a.dropdown-toggle:active {
   padding: 0 8px;
   font-size: 12px;
   border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
   font-weight: 400;
   line-height: 20px;
   background-color: #eeeded;
@@ -4543,6 +4550,8 @@ article.container .single-material {
   padding: 4px 10px;
   background: #eeeded;
   border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
   word-wrap: break-word;
   color: #222222;
   margin-bottom: 6px;
@@ -5647,6 +5656,9 @@ html[xmlns] .slides {
   .navbar .navbar-brand {
     padding: 24px 20px 0 0;
   }
+  #menu-topmenu {
+    float: right;
+  }
   #menu-top-navigation {
     float: right;
   }
@@ -5656,6 +5668,8 @@ html[xmlns] .slides {
   #menu-top-navigation li.menu-item a {
     padding: 4px 10px !important;
     border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
     background-color: #646464;
   }
   li.menu-item a:hover {

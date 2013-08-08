@@ -170,7 +170,9 @@ a.dropdown-toggle:active {
 
     a.dropdown-menu-item  {
       padding: 4px !important;
-      border-radius: @baseBorderRadius;
+      border-radius: @border-radius-small;
+      -webkit-border-radius: @border-radius-small; 
+      -moz-border-radius: @border-radius-small; 
       color: @white !important;
     }
 
@@ -237,6 +239,9 @@ a.dropdown-toggle:active {
     vertical-align: top;
     margin-top: 0;
     width: 100%;
+    border-radius: @border-radius-small*2;
+    -webkit-border-radius: @border-radius-small*2; 
+    -moz-border-radius: @border-radius-small*2; 
     -webkit-transition-delay: 0s;
     -webkit-transition-duration: 0.25s;
     -webkit-transition-property: all;
@@ -281,6 +286,8 @@ a.dropdown-toggle:active {
     padding: 0 8px;
     font-size: 12px;
     border-radius: 10px;
+    -webkit-border-radius: 10px; 
+    -moz-border-radius: 10px; 
     font-weight: 400;
     line-height: 20px;
     background-color: @grayBorder;
@@ -645,7 +652,9 @@ article.container .single-material {
     margin-right: 3px;
     padding: 4px 10px;
     background: @grayBorder;
-    border-radius: 3px;
+    border-radius: @border-radius-small;
+    -webkit-border-radius: @border-radius-small; 
+    -moz-border-radius: @border-radius-small; 
     word-wrap: break-word;
     color: @grayDarker;
     margin-bottom: 6px;
