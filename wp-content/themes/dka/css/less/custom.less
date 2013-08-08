@@ -472,6 +472,10 @@ ul.row.listview {
   margin-right: 0;
 }
 
+.search-results-top, .search-results-top span{
+  line-height: 15px;
+}
+
 //top border for bottom pagination
 .search-results-top:nth-child(3) {
   border-top: 1px solid @grayBorder;
@@ -510,15 +514,11 @@ ul.row.listview {
   line-height: 20px;
 }
 
-.search-result-listing {
-  margin-right: 20px;
-}
-
 .search-result-listing a {
   background-color: @white;
   border: 1px solid @grayBorder;
-  font-size: 14px;
-  padding: 5px 10px;
+  font-size: 13px;
+  padding: 4px 8px;
   color: @blue;
   margin-top: 7px;
 }
@@ -537,6 +537,7 @@ ul.row.listview {
 
 .sortby-dropdown {
   padding-top: 14px;
+  float: left;
 }
 
 a.sortby-link:hover {
@@ -551,6 +552,11 @@ a.sortby-link:hover {
   -moz-box-shadow: none;
   box-shadow: none;
   height: 100%;
+}
+
+.pagination-div {
+  border-top: 1px solid @grayBorder;
+  margin-top: 10px;
 }
 
 .search-results-top .pagination a {

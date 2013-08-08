@@ -488,7 +488,7 @@ class WPChaosSearch {
 			'after' 			=> '</ul>',
 			'before_link' 		=> '<li class="%s">',
 			'after_link' 		=> '</li>',
-			'link_class' 		=> 'hidden-sm',
+			'link_class' 		=> '',
 			'class_disabled' 	=> 'disabled',
 			'class_active' 		=> 'active',
 			'count' 			=> 3,
