@@ -10,8 +10,7 @@
  * 
  * @property-read string $title 		Get title
  * @property-read string $organisation 	Get name of organisation
- * @property-read string $thumbnail_url Get url to thumbnail
- * @property-read string $thumbnail_caption Get caption to thumbnail
+ * @property-read string $thumbnail     Get url to thumbnail
  * @property-read string $type 			Get type
  * @property-read int 	 $views 		Get number of views
  * @property-read int 	 $likes 		Get number of likes
