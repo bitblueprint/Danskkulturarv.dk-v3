@@ -47,7 +47,7 @@ $options = array(
 		"title" => $object->title
 	)),
 	"autostart" => true,
-	"ga" => array()
+	"ga" => array(),
 );
 
 WPDKA::print_jwplayer($options);
