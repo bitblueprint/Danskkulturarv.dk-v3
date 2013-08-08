@@ -4546,6 +4546,7 @@ article.container .single-material {
 }
 .nav.info .social a:hover {
   background: none;
+  text-decoration: none;
 }
 .nav.info .rights-container a {
   display: inline;
@@ -4595,6 +4596,22 @@ div.colofon dt {
 div.colofon dt,
 div.colofon dd {
   float: left;
+}
+.front-page-content {
+  font-size: 22px;
+  font-weight: 700;
+}
+.front-page-content strong {
+  font-size: 32px;
+  font-weight: 700;
+}
+.front-page-content a {
+  color: #2f94fd;
+  text-decoration: none;
+}
+.front-page-content a:hover {
+  color: #555555;
+  text-decoration: none;
 }
 /* Wrapper for page content to push down footer */
 #wrap {
