@@ -367,8 +367,29 @@ class WPDKAObject {
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
 		}, 10, 2);
+
+		//object->caption
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'caption', function($value, $object) {
+			if($object->type == WPDKAObject::TYPE_IMAGE || $object->type == WPDKAObject::TYPE_IMAGE_AUDIO) {
+				$realImages = 0;
+				foreach(WPChaosClient::get_object()->Files as $file) {
+					if($file->FormatType == 'Image' && $file->FormatCategory == 'Image Source') {
+						$realImages++;
+					}
+				}
+				if($realImages == 0) {
+					return $value . __('Ingen billeder');
+				} elseif($realImages == 1) {
+					return $value . $realImages . __(' billede');
+				} else {
+					return $value . $realImages . __(' billeder');
+				}
+			} else {
+				return $value;
+			}
+		}, 10, 2);
 		
-		// Add filter to turn URLs into links.
+		//object->rights - Turn URLs into links.
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'rights', function($value, $object) {
 			return WPDKAObject::replace_url_with_link($value);
 		}, 11, 2);
