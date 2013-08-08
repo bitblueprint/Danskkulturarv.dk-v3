@@ -202,17 +202,17 @@ class WPDKAObject {
 				array('/dka2:DKA/dka2:Creators/dka2:Creator','/DKA/Creator/Person'),
 				null
 			);
-			if(!empty($creators)) {
-				$value .= "<dl>\n";
-				foreach($creators as $creator) {
-					$value .= "<dt>".__($creator['Role'],'dka')."</dt>\n";
-					$value .= "<dd>".$creator['Name']."</dd>\n";
-				}
-				$value .= "</dl>\n";
-			} else {
-				$value .= "<p>Ikke opgivet</p>\n";
-			}
-			return $value;
+			return $value . WPDKAObject::get_creator_attributes($creators);
+		}, 10, 2);
+
+		//object->contributor
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'contributor', function($value, \WPCHAOSObject $object) {
+			$contributors = $object->metadata(
+				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+				array('/dka2:DKA/dka2:Contributors/dka2:Contributor','/DKA/Contributor/Person'),
+				null
+			);
+			return $value . WPDKAObject::get_creator_attributes($contributors);
 		}, 10, 2);
 
 		//object->organization_raw
@@ -374,7 +374,22 @@ class WPDKAObject {
 		}, 11, 2);
 
 	}
-	
+
+	public static function get_creator_attributes($creators) {
+		$value = "";
+		if($creators) {
+			$value .= "<dl>\n";
+			foreach($creators as $creator) {
+				$value .= "<dt>".__($creator['Role'],'dka')."</dt>\n";
+				$value .= "<dd>".$creator['Name']."</dd>\n";
+			}
+			$value .= "</dl>\n";
+		} else {
+			$value .= "<p>Ikke opgivet</p>\n";
+		}
+		return $value;
+	}
+
 	/**
 	 * Turns a URLs in a text string into links.
 	 * @see http://stackoverflow.com/questions/206059/php-validation-regex-for-url
