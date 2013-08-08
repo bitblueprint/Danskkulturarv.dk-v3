@@ -5766,16 +5766,6 @@ html[xmlns] .slides {
   be seen on the Desktop. 
   
   -------------------------------------------------- */
-  #advanced-search-container .filter-organizations .btn.filter-btn-single {
-    width: 48%;
-    float: left;
-  }
-  #advanced-search-container .filter-organizations .btn.filter-btn-single:nth-child(odd) {
-    margin-right: 4%;
-  }
-  .dropdown-menu {
-    left: 0 !important;
-  }
   .front-page-content {
     font-size: 52px;
     line-height: 58px;
