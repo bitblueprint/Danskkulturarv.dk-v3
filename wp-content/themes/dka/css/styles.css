@@ -4440,7 +4440,7 @@ ul.row.listview .thumb {
 .search-result-listing {
   margin-right: 20px;
 }
-.search-result-listing button {
+.search-result-listing a {
   background-color: #ffffff;
   border: 1px solid #eeeded;
   font-size: 14px;
@@ -4448,12 +4448,12 @@ ul.row.listview .thumb {
   color: #2f94fd;
   margin-top: 7px;
 }
-.search-result-listing button.active {
+.search-result-listing a.active {
   background-color: #eeeded;
   color: #aaaaaa;
   border-color: #eeeded;
 }
-.search-result-listing button:hover {
+.search-result-listing a:hover {
   background-color: #2f94fd;
   color: #ffffff;
   border-color: #eeeded;
@@ -5669,7 +5669,6 @@ html[xmlns] .slides {
     border-radius: 3px;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
-    background-color: #646464;
   }
   li.menu-item a:hover {
     background-color: #2f94fd !important;
@@ -5693,6 +5692,7 @@ html[xmlns] .slides {
   .navbar-responsive-collapse a.dropdown-menu-item {
     color: #ffffff !important;
     padding: 4px 10px !important;
+    background-color: #646464 !important;
   }
   footer {
     margin-left: 0;
