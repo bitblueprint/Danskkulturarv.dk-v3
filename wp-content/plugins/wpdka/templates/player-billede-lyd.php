@@ -5,6 +5,6 @@
  */
 ?>
 <?php
-require(dirname(__FILE__)."/player-image.php");
-require(dirname(__FILE__)."/player-audio.php");
+require(dirname(__FILE__)."/player-billede.php");
+require(dirname(__FILE__)."/player-lyd.php");
 ?>

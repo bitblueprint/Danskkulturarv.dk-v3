@@ -62,7 +62,9 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 		<li class="search-object col-12 col-sm-6 col-lg-3">
 			<a class="thumbnail" href="<?php echo WPChaosClient::get_object()->url; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
 				<div class="thumb" style="background-image: url('<?php echo WPChaosClient::get_object()->thumbnail; ?>')">
-					<!--<div class="duration">1:30:22</div>-->
+					<?php $caption = WPChaosClient::get_object()->caption; if($caption):?>
+					<div class="caption"><?php echo $caption ?></div>
+					<?php endif;?>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
 				<strong class="strong orange organization"><?php echo WPChaosClient::get_object()->organization; ?></strong>
