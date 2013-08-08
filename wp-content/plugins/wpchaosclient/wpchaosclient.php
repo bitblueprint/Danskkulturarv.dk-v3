@@ -10,6 +10,7 @@ Description: Adds connectivity to CHAOS Portal and API to manipulate data from C
 Author: Joachim Jensen <joachim@opensourceshift.com>
 Version: 1.0
 Author URI: 
+Text-domain: wpchaosclient
 */
 
 class WPChaosClient {
@@ -62,6 +63,7 @@ class WPChaosClient {
 
 		$this->load_dependencies();
 
+		add_action('plugins_loaded',array(&$this,'load_textdomain'));
 		add_action('admin_menu', array(&$this,'create_submenu'));
 		add_action('admin_init', array(&$this,'register_settings'));
 		add_action('admin_init', array(&$this,'settings_updated'));
@@ -101,6 +103,10 @@ class WPChaosClient {
 				echo "</div>";
 			});
 		}
+	}
+
+	function load_textdomain() {
+		load_plugin_textdomain( 'wpchaosclient', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
 	}
 
 	/**
@@ -162,8 +168,8 @@ class WPChaosClient {
 	public function create_submenu() {
 		add_submenu_page(
 			'options-general.php',
-			'CHAOS Client',
-			'CHAOS',
+			__('CHAOS Client','wpchaosclient'),
+			__('CHAOS','wpchaosclient'),
 			'manage_options',
 			$this->menu_page,
 			array(&$this,'create_submenu_page')
@@ -180,9 +186,13 @@ class WPChaosClient {
 		try {
 			$sessionGUID = WPChaosClient::instance()->SessionGUID();
 			$lastSessionUpdate = get_option(WPPortalClient::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY);
-			printf('<div class="updated"><p><strong>&#x2713; Connection to CHAOS is established</strong> (session is %s last updated %s)</p></div>', $sessionGUID, date('r', $lastSessionUpdate));
+			echo '<div class="updated"><p><strong>&#x2713;';
+			_e('Connection to CHAOS is established','wpchaosclient');
+			echo '</strong> ';
+			printf(__('(session is %s last updated %s)','wpchaosclient'), $sessionGUID, date('r', $lastSessionUpdate));
+			echo '</p></div>';
 		} catch(Exception $e) {
-			echo '<div class="error"><p>Could not connect to CHAOS. Please check the details below.</p><p><small>'.$e->getMessage().'</small></p></div>';
+			echo '<div class="error"><p>'.__('Could not connect to CHAOS. Please check the details below.','wpchaosclient').'</p><p><small>'.$e->getMessage().'</small></p></div>';
 		}
 
 		echo '<form method="POST" action="options.php">'."\n";
@@ -201,7 +211,7 @@ class WPChaosClient {
 
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-featured',
-			'name' => 'CHAOS Object - Featured',
+			'name' => __('CHAOS Object - Featured','wpchaosclient'),
 			'before_widget' => '',
 			'after_widget' => '',
 			'before_title' => '<h2 class="widget-title">',
@@ -210,7 +220,7 @@ class WPChaosClient {
 
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-main',
-			'name' => 'CHAOS Object - Main',
+			'name' => __('CHAOS Object - Main','wpchaosclient'),
 			'before_widget' => '',
 			'after_widget' => '',
 			'before_title' => '<h3 class="widget-title">',
@@ -219,7 +229,7 @@ class WPChaosClient {
 
 		register_sidebar( array(
 			'id' => 'wpchaos-obj-sidebar',
-			'name' => 'CHAOS Object - Sidebar',
+			'name' => __('CHAOS Object - Sidebar','wpchaosclient'),
 			'before_widget' => '<li id="%1$s" class="widget %2$s">',
 			'after_widget' => '</li>',
 			'before_title' => '<h4 class="widget-title">',
@@ -346,7 +356,7 @@ class WPChaosClient {
 				echo '</select>';
 				break;
 			case 'password':
-				echo '<input name="'.$args['name'].'" type="password" value="'.$current_value.'" />';
+				echo '<input class="'.$class.'" name="'.$args['name'].'" type="password" value="'.$current_value.'" />';
 				break;
 			case 'text':
 			default:

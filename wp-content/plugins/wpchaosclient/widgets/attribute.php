@@ -14,21 +14,7 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 	 * Fields in widget. Defines keys for values
 	 * @var array
 	 */
-	private $fields = array(
-		array(
-			'title' => 'Attribute',
-			'name' => 'attribute',
-			'type' => 'select',
-			'list' => array(),
-			'val' => '',
-		),
-		array(
-			'title' => 'Markup',
-			'name' => 'markup',
-			'type' => 'textarea',
-			'val' => '%s',
-		)
-	);
+	private $fields;
 
 	/**
 	 * Constructor
@@ -37,10 +23,25 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 		
 		parent::__construct(
 			'chaos-object-attribute-widget',
-			'CHAOS Object Attribute',
-			array( 'description' => 'Style and display data from a CHAOS object' )
+			__('CHAOS Object Attribute','wpchaosclient'),
+			array( 'description' => __('Style and display data from a CHAOS object','wpchaosclient') )
 		);
 
+		$this->fields = array(
+			array(
+				'title' => __('Attribute','wpchaosclient'),
+				'name' => 'attribute',
+				'type' => 'select',
+				'list' => array(),
+				'val' => '',
+			),
+			array(
+				'title' => __('Markup','wpchaosclient'),
+				'name' => 'markup',
+				'type' => 'textarea',
+				'val' => '%s',
+			)
+		);
 	}
 
 	/**

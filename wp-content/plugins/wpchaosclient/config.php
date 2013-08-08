@@ -7,32 +7,32 @@ return array(
 	array(
 		/*Sections*/
 		'name'		=> 'default',
-		'title'		=> 'General Settings',
+		'title'		=> __('General Settings','wpchaosclient'),
 		'fields'	=> array(
 			/*Section fields*/
 			array(
 				'name' => 'wpchaos-servicepath',
-				'title' => 'Service Path',
+				'title' => __('Service Path','wpchaosclient'),
 				'type' => 'text'
 			),
 			array(
 				'name' => 'wpchaos-clientguid',
-				'title' => 'Client GUID',
+				'title' => __('Client GUID','wpchaosclient'),
 				'type' => 'text'
 			),
 			array(
 				'name' => 'wpchaos-accesspoint-guid',
-				'title' => 'Access Point GUID',
+				'title' => __('Access Point GUID','wpchaosclient'),
 				'type' => 'text'
 			),
 			array(
 				'name' => 'wpchaos-email',
-				'title' => 'E-mail used for authentication',
+				'title' => __('E-mail used for authentication','wpchaosclient'),
 				'type' => 'text'
 			),
 			array(
 				'name' => 'wpchaos-password',
-				'title' => 'Password',
+				'title' => __('Password','wpchaosclient'),
 				'type' => 'password'
 			)
 		)

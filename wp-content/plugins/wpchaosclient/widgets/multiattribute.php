@@ -14,14 +14,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 	 * Fields in widget. Defines keys for values
 	 * @var array
 	 */
-	private $fields = array(
-		array(
-			'title' => 'Markup',
-			'name' => 'markup',
-			'type' => 'textarea',
-			'val' => '',
-		)
-	);
+	private $fields;
 
 	/**
 	 * Regex pattern for attribute
@@ -45,8 +38,17 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		
 		parent::__construct(
 			'chaos-object-multi-widget',
-			'CHAOS Object Multi Attributes',
-			array( 'description' => 'Style and display several data from a CHAOS object' )
+			__('CHAOS Object Multi Attributes','wpchaosclient'),
+			array( 'description' => __('Style and display several data from a CHAOS object','wpchaosclient') )
+		);
+
+		$this->fields = array(
+			array(
+				'title' => __('Markup','wpchaosclient'),
+				'name' => 'markup',
+				'type' => 'textarea',
+				'val' => '',
+			)
 		);
 
 	}
@@ -106,7 +108,7 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 		preg_match_all(self::PATTERN_TEMPLATE,$markup,$matches);
 		foreach($matches[1] as $template) {
 			if(!in_array($template,$templates)) {
-				echo '<div class="error"><p>Template "'.WPChaosObjectMultiWidget::TEMPLATE_PREFIX.$template.'.php" not found for CHAOS Object Multi Attributes Widget</p></div>';	
+				printf('<div class="error"><p>'.__('Template "%s" not found for CHAOS Object Multi Attributes Widget','wpchaosclient').'</p></div>',WPChaosObjectMultiWidget::TEMPLATE_PREFIX.$template.'.php');	
 			}
 		}
 
@@ -136,20 +138,20 @@ class WPChaosObjectMultiWidget extends WP_Widget {
 			}
 			echo '</p>';
 		}
-		echo '<p>Allowed attributes:<br>';
+		echo '<p>'.__('Allowed attributes:','wpchaosclient').'<br>';
 		//List the attribute methods defined by WPChaosClient and wrap them with [].
 		if(count(WPChaosClient::get_chaos_attributes()) > 0) {
 			echo '['.implode('], [',array_keys(WPChaosClient::get_chaos_attributes())).']</p>';
 		} else {
-			echo 'None</p>';
+			echo __('None','wpchaosclient').'</p>';
 		}
 		
-		echo '<p>Found template files:<br>';
+		echo '<p>'.__('Found template files:','wpchaosclient').'<br>';
 		//List the templates files found in current theme and wrap them with {}.
 		if(count($templates) > 0) {
 			echo '{'. implode('}, {', $templates) .'}</p>';
 		} else {
-			echo 'None</p>';
+			echo __('None','wpchaosclient').'</p>';
 		}
 		
 	}
