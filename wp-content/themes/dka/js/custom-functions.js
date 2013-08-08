@@ -20,7 +20,8 @@
 			this.addToggleAllListener();
 			this.addFlexSliders();
 			this.socialSharePopup();
-			this.addMediaElement();
+			//this.addMediaElement();
+			this.initJWPlayer();
 
 		},
 
@@ -112,6 +113,7 @@
 		 * Add MediaElement.js support on video and audio
 		 * @return {void}
 		 */
+		/*
 		addMediaElement: function() {
 			$("video, audio").each(function() {
 				var options = {
@@ -125,6 +127,17 @@
 				}
 				$(this).mediaelementplayer(options);
 			});
+		}
+		*/
+		
+		/**
+		 * Setting up the main-jwplayer.
+		 * @return {void}
+		 */
+		initJWPlayer: function() {
+			$("#main-jwplayer").each(function () {
+				jwplayer(this).setup(jwplayerOptions);
+			})
 		}
 
 	}
