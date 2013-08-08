@@ -43,7 +43,7 @@ $views = array(
 		<div class="col-3 col-sm-2">
 			<div class="search-result-listing btn-group">
 <?php foreach($views as $view) :
-		echo '<a href="'.WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => $view['link'])).'" title="'.$view['title'].'"><button type="button" class="btn btn-default'.($view['view'] == $current_view ? ' active' : '').'"><i class="'.$view['class'].'"></i></button></a>';
+		echo '<a type="button" class="btn btn-default'.($view['view'] == $current_view ? ' active' : '').'" href="'.WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_VIEW => $view['link'])).'" title="'.$view['title'].'"><i class="'.$view['class'].'"></i></a>';
 endforeach; ?>
 			</div>
 		</div>

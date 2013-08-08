@@ -491,7 +491,7 @@ class WPChaosSearch {
 			'link_class' 		=> 'hidden-sm',
 			'class_disabled' 	=> 'disabled',
 			'class_active' 		=> 'active',
-			'count' 			=> 5,
+			'count' 			=> 3,
 			'previous' 			=> '&laquo;',
 			'next' 				=> '&raquo;',
 			'echo' 				=> true
