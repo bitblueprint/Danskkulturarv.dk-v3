@@ -401,7 +401,7 @@ class WPDKAObject {
 		if($creators) {
 			$value .= "<dl>\n";
 			foreach($creators as $creator) {
-				$value .= "<dt>".__($creator['Role'],'dka')."</dt>\n";
+				$value .= "<dt>".$creator['Role']."</dt>\n";
 				$value .= "<dd>".$creator['Name']."</dd>\n";
 			}
 			$value .= "</dl>\n";

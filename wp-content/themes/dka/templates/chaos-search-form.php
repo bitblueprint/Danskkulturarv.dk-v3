@@ -25,20 +25,20 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 			<input type="hidden" name="<?php echo WPChaosSearch::QUERY_KEY_SORT; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT, 'esc_attr'); ?>">
 			<input class="form-control" id="appendedInputButton" type="text" name="<?php echo WPChaosSearch::QUERY_KEY_FREETEXT; ?>" value="<?php echo WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_attr,trim'); ?>" placeholder="<?php echo $freetext_placeholder; ?>" />
 			<span class="input-group-btn">
-				<button type="submit" class="btn btn-search btn-large" id="searchsubmit">Søg</button>
+				<button type="submit" class="btn btn-search btn-large" id="searchsubmit"><?php _ex('Search','verb','dka'); ?></button>
 			</span>
 	</div>
 	</div>
 	<div class="col-lg-4 col-2 btn-advanced-search-container">
 		<button class="btn btn-large btn-block btn-advanced-search collapsed blue dropdown-toggle" type="button" data-toggle="collapse" href="#advanced-search-container">
-			<span class="visible-lg"><i class="icon-cogs"></i> Præciser søgning <i class="icon-caret-down"></i></span>
+			<span class="visible-lg"><i class="icon-cogs"></i> <?php _e('Refine search','dka'); ?> <i class="icon-caret-down"></i></span>
 			<span class="hidden-lg"><i class="icon-cogs"></i> <i class="icon-caret-down"></i></span>
 		</button>
 	</div>
 	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">
 
 		<div class="col-sm-3 col-12 filter-container filter-media-type">
-			<label class="btn filter-btn filter-btn-all">Alle Typer<i class="icon-ok"></i></label>
+			<label class="btn filter-btn filter-btn-all"><?php _e('All Formats','dka'); ?><i class="icon-ok"></i></label>
 			<hr class="hidden-sm">
 			<!-- Chage the inline CSS property style="opacity:0.5;" to display: none; when done debugging. -->
 <?php foreach(WPDKAObject::$format_types as $format_type => $args) : if($format_type == WPDKAObject::TYPE_IMAGE_AUDIO) continue; ?>
@@ -50,7 +50,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 		</div>
 
 		<div class="col-sm-6 col-12 filter-container filter-media-type filter-organizations">
-			<label class="btn filter-btn filter-btn-all">Alle Organisationer<i class="icon-ok"></i></label>
+			<label class="btn filter-btn filter-btn-all"><?php _e('All Organizations','dka'); ?><i class="icon-ok"></i></label>
 			<hr class="hidden-sm">
 <?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>
 			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">

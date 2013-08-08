@@ -1,0 +1,150 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dansk Kulturarv\n"
+"POT-Creation-Date: 2013-08-08 16:26+0100\n"
+"PO-Revision-Date: 2013-08-08 16:30+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../404.php:10
+msgid "Page not found"
+msgstr "Side ikke fundet"
+
+#: ../404.php:14
+msgid ""
+"The page you are looking for does not exist. Please recheck the entered "
+"address."
+msgstr ""
+
+#: ../footer.php:24
+#, php-format
+msgid "%s on Facebook"
+msgstr "%s på Facebook"
+
+#: ../footer.php:24
+#, php-format
+msgid "%s on Twitter"
+msgstr "%s på Twitter"
+
+#: ../front-page.php:13 ../page.php:16 ../single.php:16
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: ../front-page.php:14 ../page.php:17 ../single.php:17
+msgid "Pages:"
+msgstr ""
+
+#: ../functions.php:116 ../single.php:27
+msgid "Post navigation"
+msgstr ""
+
+#: ../functions.php:117
+msgid "<span class=\"meta-nav\">&larr;</span> Older posts"
+msgstr ""
+
+#: ../functions.php:118
+msgid "Newer posts <span class=\"meta-nav\">&rarr;</span>"
+msgstr ""
+
+#: ../functions.php:133 ../functions.php:136
+msgid ", "
+msgstr ""
+
+#: ../functions.php:147
+#, php-format
+msgid "View all posts by %s"
+msgstr ""
+
+#: ../functions.php:153
+#, php-format
+msgid ""
+"This entry was posted in %1$s and tagged %2$s on %3$s<span class=\"by-author"
+"\"> by %4$s</span>."
+msgstr ""
+
+#: ../functions.php:155
+#, php-format
+msgid ""
+"This entry was posted in %1$s on %3$s<span class=\"by-author\"> by %4$s</"
+"span>."
+msgstr ""
+
+#: ../functions.php:157
+#, php-format
+msgid "This entry was posted on %3$s<span class=\"by-author\"> by %4$s</span>."
+msgstr ""
+
+#: ../functions.php:191
+#, php-format
+msgid "Page %s"
+msgstr "Side %s"
+
+#: ../functions.php:329 ../functions.php:330 ../functions.php:331
+#, php-format
+msgid "Share on %s"
+msgstr "Del på %s"
+
+#: ../functions.php:332
+msgid "Send as e-mail"
+msgstr "Send som e-mail"
+
+#: ../index.php:17 ../page.php:12 ../single.php:12
+#, php-format
+msgid "Permalink to %s"
+msgstr ""
+
+#: ../single.php:28
+msgctxt "Previous post link"
+msgid "&larr;"
+msgstr ""
+
+#: ../single.php:29
+msgctxt "Next post link"
+msgid "&rarr;"
+msgstr ""
+
+#: ../templates/chaos-search-form.php:28
+msgctxt "verb"
+msgid "Search"
+msgstr "Søg"
+
+#: ../templates/chaos-search-form.php:34
+msgid "Refine search"
+msgstr "Præciser søgning"
+
+#: ../templates/chaos-search-form.php:41
+msgid "All Formats"
+msgstr "Alle Typer"
+
+#: ../templates/chaos-search-form.php:53
+msgid "All Organizations"
+msgstr "Alle Organisationer"
+
+#: ../templates/multiattrwidget-sidebar.php:8
+msgid "Views"
+msgstr "Visninger"
+
+#: ../templates/multiattrwidget-sidebar.php:10
+#, php-format
+msgid "Read more at %s"
+msgstr "Læs mere hos %s"
+
+#: ../templates/multiattrwidget-sidebar.php:18
+msgid "Tags"
+msgstr "Tags"
+
+#~ msgid "About %s"
+#~ msgstr "Om %s"

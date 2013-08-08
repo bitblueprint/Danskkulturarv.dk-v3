@@ -24,6 +24,9 @@ function dka_setup() {
 	//set_post_thumbnail_size( 624, 9999 ); // Unlimited height, soft crop
 	add_filter('wp_mail_from', function($old) { return get_bloginfo('admin_email'); });
 	add_filter('wp_mail_from_name', function($old) { return get_bloginfo('name'); });
+
+	load_theme_textdomain('dka', get_template_directory() . '/lang');
+
 }
 add_action( 'after_setup_theme', 'dka_setup' );
 
@@ -323,10 +326,10 @@ function dka_social_share($args = array()) {
 	));
 	extract($args, EXTR_SKIP);
 
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://www.facebook.com/sharer.php?u='.$link.'" title="Del på Facebook"><i class="icon-facebook-sign"></i></a>';
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://twitter.com/home?status='.$link.'+%23kulturarv" title="Del på Twitter"><i class="icon-twitter"></i></a>';
-	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://plus.google.com/share?url='.$link.'" title="Del på Google Plus"><i class="icon-google-plus-sign"></i></a>';
-	echo '<a target="_blank" rel="nofollow" href="mailto:?subject=Dansk Kulturarv&amp;body='.$link.'" title="Send som mail"><i class="icon-envelope"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://www.facebook.com/sharer.php?u='.$link.'" title="'.sprintf(__('Share on %s','dka'),'Facebook').'"><i class="icon-facebook-sign"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://twitter.com/home?status='.$link.'+%23kulturarv" title="'.sprintf(__('Share on %s','dka'),'Twitter').'"><i class="icon-twitter"></i></a>';
+	echo '<a class="social-share" target="_blank" rel="nofollow" href="https://plus.google.com/share?url='.$link.'" title="'.sprintf(__('Share on %s','dka'),'Google Plus').'"><i class="icon-google-plus-sign"></i></a>';
+	echo '<a target="_blank" rel="nofollow" href="mailto:?subject=Dansk Kulturarv&amp;body='.$link.'" title="'.__('Send as e-mail','dka').'"><i class="icon-envelope"></i></a>';
 
 }
 
