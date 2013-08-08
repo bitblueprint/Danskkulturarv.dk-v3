@@ -4303,6 +4303,9 @@ a.dropdown-toggle:active {
 #advanced-search-container .btn.filter-btn.filter-btn-all.active i.icon-ok {
   visibility: visible;
 }
+.search-object {
+  height: 255px;
+}
 .search-object .thumb {
   width: 100%;
   height: 145px;
