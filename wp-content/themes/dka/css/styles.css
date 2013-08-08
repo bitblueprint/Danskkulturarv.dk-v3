@@ -4409,6 +4409,10 @@ ul.row.listview .thumb {
   margin-left: 0;
   margin-right: 0;
 }
+.search-results-top,
+.search-results-top span {
+  line-height: 15px;
+}
 .search-results-top:nth-child(3) {
   border-top: 1px solid #eeeded;
 }
@@ -4437,14 +4441,11 @@ ul.row.listview .thumb {
   margin-top: 14px;
   line-height: 20px;
 }
-.search-result-listing {
-  margin-right: 20px;
-}
 .search-result-listing a {
   background-color: #ffffff;
   border: 1px solid #eeeded;
-  font-size: 14px;
-  padding: 5px 10px;
+  font-size: 13px;
+  padding: 4px 8px;
   color: #2f94fd;
   margin-top: 7px;
 }
@@ -4460,6 +4461,7 @@ ul.row.listview .thumb {
 }
 .sortby-dropdown {
   padding-top: 14px;
+  float: left;
 }
 a.sortby-link:hover {
   text-decoration: none;
@@ -4472,6 +4474,10 @@ a.sortby-link:hover {
   -moz-box-shadow: none;
   box-shadow: none;
   height: 100%;
+}
+.pagination-div {
+  border-top: 1px solid #eeeded;
+  margin-top: 10px;
 }
 .search-results-top .pagination a {
   border: none;
@@ -5662,9 +5668,6 @@ html[xmlns] .slides {
   #menu-top-navigation {
     float: right;
   }
-  #menu-top-navigation li.menu-item {
-    margin-right: 10px !important;
-  }
   #menu-top-navigation li.menu-item a {
     border-radius: 3px;
     -webkit-border-radius: 3px;
@@ -5672,6 +5675,9 @@ html[xmlns] .slides {
   }
   li.menu-item a:hover {
     background-color: #2f94fd !important;
+  }
+  .navbar-responsive-collapse li.menu-item {
+    margin-right: 10px !important;
   }
   .navbar-responsive-collapse ul.dropdown-menu {
     position: absolute;
@@ -5693,6 +5699,15 @@ html[xmlns] .slides {
     color: #ffffff !important;
     padding: 4px 10px !important;
     background-color: #646464 !important;
+  }
+  .search-result-listing a {
+    font-size: 14px;
+    padding: 5px 10px;
+    margin-top: 7px;
+  }
+  .pagination-div {
+    border-top: none;
+    margin-top: 0;
   }
   footer {
     margin-left: 0;

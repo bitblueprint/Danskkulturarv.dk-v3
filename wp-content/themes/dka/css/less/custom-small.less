@@ -50,14 +50,10 @@ and other resources.
 #menu-top-navigation {
   float: right;
 
-  li.menu-item {
-    margin-right: 10px !important;
-  }
-
   li.menu-item a {
     border-radius: @border-radius-small;
     -webkit-border-radius: @border-radius-small; 
-    -moz-border-radius: @border-radius-small; 
+    -moz-border-radius: @border-radius-small;
   }
 
 }
@@ -67,6 +63,10 @@ li.menu-item a:hover {
 }
 
 .navbar-responsive-collapse {
+
+    li.menu-item {
+    margin-right: 10px !important;
+      }
 
     ul.dropdown-menu {
       position: absolute;
@@ -97,6 +97,16 @@ li.menu-item a:hover {
 
 }
 
+.search-result-listing a {
+  font-size: 14px;
+  padding: 5px 10px;
+  margin-top: 7px;
+}
+
+.pagination-div {
+  border-top: none;
+  margin-top: 0;
+}
 
 footer {
   margin-left: 0;
