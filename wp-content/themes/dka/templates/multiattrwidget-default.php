@@ -28,3 +28,7 @@
 	<h2><strong>Kolofon</strong></h2>
 	<?php echo WPChaosClient::get_object()->creator; ?>
 </div>
+<div class="contributors">
+	<h2><strong>Medvirkende</strong></h2>
+	<?php echo WPChaosClient::get_object()->contributor; ?>
+</div>
