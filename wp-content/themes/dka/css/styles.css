@@ -4311,7 +4311,7 @@ a.dropdown-toggle:active {
   position: relative;
   margin-bottom: 0;
 }
-.search-object .thumb .duration {
+.search-object .thumb .caption {
   color: #ffffff;
   background-color: #000000;
   position: absolute;
