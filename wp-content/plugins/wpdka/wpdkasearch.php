@@ -26,11 +26,13 @@ class WPDKASearch {
 			'link' => null,
 			'chaos-value' => null
 		),
-		'titel' => array(
+		// FIXME: Uncomment when it becomes available in CHAOS.
+		/*'titel' => array(
 			'title' => 'Titel',
 			'link' => 'titel',
 			'chaos-value' => 'DKA2-Title_string'
 		),
+		*/
 		'visninger' => array(
 			'title' => 'Visninger',
 			'link' => 'visninger',
@@ -42,7 +44,7 @@ class WPDKASearch {
 	 * Construct
 	 */
 	public function __construct() {
-
+		
 		add_action('template_redirect',array(&$this,'set_search_title'),0);
 
 		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w-]+?', true, '-');

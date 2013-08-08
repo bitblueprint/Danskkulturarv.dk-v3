@@ -46,6 +46,7 @@ class WPDKA {
 	public function __construct() {
 		if(self::check_chaosclient()) {
 			$this->load_dependencies();
+			
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 
