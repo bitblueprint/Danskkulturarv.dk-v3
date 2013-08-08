@@ -367,6 +367,18 @@ class WPDKA {
 		echo "</p>";
 	}
 	
+	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
+		echo '<div id="'.$player_id.'"><p style="text-align:center;">Loading the player ...</p></div>';
+		echo '<script type="text/javascript">';
+		echo 'jwplayer.key="'. get_option('wpdka-jwplayer-api-key') .'";';
+		echo '$("#main-jwplayer").each(function() {';
+		echo '	jwplayer(this).setup(';
+		echo json_encode($options);
+		echo '	);';
+		echo '});';
+		echo '</script>';
+	}
+	
 	/**
 	 * Check if dependent plugins are active
 	 * 
