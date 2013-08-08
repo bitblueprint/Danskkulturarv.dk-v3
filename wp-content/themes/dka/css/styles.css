@@ -4303,7 +4303,16 @@ a.dropdown-toggle:active {
 #advanced-search-container .btn.filter-btn.filter-btn-all.active i.icon-ok {
   visibility: visible;
 }
+.listview .search-object {
+  height: auto;
+}
+.listview .search-object a.thumbnail {
+  height: auto;
+}
 .search-object {
+  height: 255px;
+}
+.search-object a.thumbnail {
   height: 255px;
 }
 .search-object .thumb {
@@ -4353,6 +4362,7 @@ a.dropdown-toggle:active {
 }
 .search-object .media-type-container .icon-eye-open {
   margin-left: 8px;
+  float: right;
 }
 ul.row.listview {
   margin: 0;
