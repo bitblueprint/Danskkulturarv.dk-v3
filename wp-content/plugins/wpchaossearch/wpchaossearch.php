@@ -47,12 +47,20 @@ class WPChaosSearch {
 
 			$this->load_dependencies();
 
+			if(is_admin()) {
+
+				add_action('admin_init', array(&$this, 'check_chaosclient'));
+				// Add rewrite rules when activating and when settings update.
+				add_action('chaos-settings-updated', array('WPChaosSearch', 'flush_rewrite_rules_soon'));
+
+				add_filter('wpchaos-config', array(&$this, 'settings'));
+
+
+			}
+
 			add_action('plugins_loaded',array(&$this,'load_textdomain'));
-			add_action('admin_init', array(&$this, 'check_chaosclient'));
 			add_action('widgets_init', array(&$this, 'register_widgets'));
 			add_action('template_redirect', array(&$this, 'get_search_page'));
-
-			add_filter('wpchaos-config', array(&$this, 'settings'));
 
 			WPChaosSearch::register_search_query_variable(1, WPChaosSearch::QUERY_KEY_FREETEXT, '[^/&]*?', false, null, '', '/');
 			WPChaosSearch::register_search_query_variable(4, WPChaosSearch::QUERY_KEY_VIEW, '[^/&]+?', true);
@@ -65,9 +73,6 @@ class WPChaosSearch {
 			// Add some custom rewrite rules.
 			// This is implemented as a PHP redirect instead.
 			// add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
-			
-			// Add rewrite rules when activating and when settings update.
-			add_action('chaos-settings-updated', array('WPChaosSearch', 'flush_rewrite_rules_soon'));
 			
 		}
 
@@ -203,12 +208,12 @@ class WPChaosSearch {
 	 * @return void 
 	 */
 	public function get_search_page() {
-		// TODO: Consider what this is doing here?
-		$this->search_query_prettify();
+		
 		//Include template for search results
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
+			//Change GET params to nice url
+			$this->search_query_prettify();
 			$this->generate_searchresults();
-
 
 			//Get current page number
 			$page = WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_PAGE)?:1;
@@ -335,10 +340,6 @@ class WPChaosSearch {
 		} else {
 			$page = "";
 		}	
-		
-		// echo "<pre>";
-		// print_r(WPChaosSearch::get_search_vars());
-		// echo "</pre>";	
 		
 		$include = locate_template('templates/chaos-search-form.php', false);
 		if($include == "") {

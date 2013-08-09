@@ -45,19 +45,23 @@ class WPDKA {
 	 */
 	public function __construct() {
 		if(self::check_chaosclient()) {
-			$this->load_dependencies();
-			
-			add_action('plugins_loaded',array(&$this,'load_textdomain'));
-			add_action('admin_menu', array(&$this, 'create_menu'));
-			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 
-			add_filter('wpchaos-config', array(&$this, 'settings'));
+			self::load_dependencies();
+
+			if(is_admin()) {
+
+				add_action('admin_menu', array(&$this, 'create_menu'));
+				add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
+				add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
+				add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
+				add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
+				add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
+				
+				add_filter('wpchaos-config', array(&$this, 'settings'));
+
+			}
 			
-			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
-			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
-			
-			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
-			add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
+			add_action('plugins_loaded',array(&$this,'load_textdomain'));	
 
 		}
 
