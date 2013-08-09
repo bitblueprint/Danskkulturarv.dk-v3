@@ -364,12 +364,6 @@ a.dropdown-toggle:active {
     position: relative;
     margin-bottom: 0;
 
-    .format-image
-      {
-        background: @grayBorder url('/img/format-image.png') center center !important;
-        background-image: none !important;
-      }
-
     .caption {
       color: @white;
       background-color: @black;
@@ -680,6 +674,15 @@ article.container .single-material {
 .nav.info .rights-container a {
   display: inline;
   text-wrap: unrestricted;
+}
+
+.nav.info .external-link-container a {
+  display: inline;
+  text-wrap: unrestricted;
+}
+
+.nav.info .external-link-container a:hover {
+  text-decoration: none;
 }
 
 .nav.info {
