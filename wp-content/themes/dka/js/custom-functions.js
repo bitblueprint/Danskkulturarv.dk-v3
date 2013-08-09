@@ -92,6 +92,18 @@
 		 * @return {void} 
 		 */
 		socialSharePopup: function() {
+			var objectGUID = $(".single-material[id]").each(function() {
+				var $this = $(this);
+				$.post(dka.ajax_url, {
+					action: "wpdka_social_counts",
+					object_guid: $this.attr('id')
+				}, function(response) {
+					$(".social-share[href*=facebook]", $this).attr('title', $(".social-share[href*=facebook]", $this).attr('title') + " ("+response.facebook_total_count+")");
+					$(".social-share[href*=twitter]", $this).attr('title', $(".social-share[href*=twitter]", $this).attr('title') + " ("+response.twitter_total_count+")");
+					$(".social-share[href*=google]", $this).attr('title', $(".social-share[href*=google]", $this).attr('title') + " ("+response.google_plus_total_count+")");
+				}, 'json');
+			});
+
 			$(".social-share").click( function(e) {
 				var width = 600;
 				var height = 400;

@@ -170,15 +170,20 @@ class WPDKAObject {
 			}
 		}, 20, 2);
 
-		//object->tags
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
+		//object->tags_array
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags_raw', function($value, \WPCHAOSObject $object) {
 			$tags = $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
 				null
 			);
 			//If there are no tags, null is returned above, we need an array
-			$tags = ($tags?:array());
+			return ($tags?:array());
+		}, 10, 2);
+
+		//object->tags
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
+			$tags = $object->tags_raw;
 			foreach($tags as $key => &$tag) {
 				//Remove tag if empty
 				if(!$tag) {
@@ -440,7 +445,7 @@ class WPDKAObject {
 			}
 			$viewed_session_name = WPDKAObject::SESSION_PREFIX . '_viewed_' . $object->GUID;
 			if(!array_key_exists($viewed_session_name, $_SESSION)) {
-				WPDKAObject::increment_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()', $object, array('views'));
+				$object->increment_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Views/text()', array('views'));
 				$_SESSION[$viewed_session_name] = "viewed";
 			}
 		});
@@ -528,7 +533,7 @@ class WPDKAObject {
 		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET) && current_user_can('edit_posts');
 		
 		if($forceReset || !$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
-			$slug = self::reset_crowd_metadata($object);
+			$slug = self::reset_crowd_metadata($object)->slug;
 		} else {
 			// If the metadata is present, we can extract the slug from there.
 			$slug = $object->slug;
@@ -566,7 +571,8 @@ class WPDKAObject {
 		$objectGUID = $object->GUID;
 		$metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkac:DKACrowd xmlns:dkac='http://www.danskkulturarv.dk/DKA-Crowd.xsd'></dkac:DKACrowd>");
 		$metadataXML->addChild('Views', WPDKAObject::restore_views($object->GUID));
-		$metadataXML->addChild('Shares', '0');
+		$shares = array_sum(self::fetch_social_counts($object));
+		$metadataXML->addChild('Shares', $shares);
 		$metadataXML->addChild('Likes', '0');
 		$metadataXML->addChild('Ratings', '0');
 		$metadataXML->addChild('AccumulatedRate', '0');
@@ -575,10 +581,13 @@ class WPDKAObject {
 		$metadataXML->addChild('Tags');
 		
 		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::METADATA_LANGUAGE, $revisionID);
+		
 		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
 		}
-		return $slug;
+		$object->clear_cache();
+		
+		return $object;
 	}
 	
 	/**
@@ -641,6 +650,83 @@ class WPDKAObject {
 			return false;
 		} 
 	}
+	
+	const FACEBOOK_STATS_URL = 'https://graph.facebook.com/fql';
+	
+	public static function get_facebook_stats($url) {
+		$fql_query = "SELECT total_count FROM link_stat WHERE url = '$url'";
+		$response = json_decode(file_get_contents(self::FACEBOOK_STATS_URL . '?q=' . urlencode($fql_query)));
+		return $response->data[0]->total_count;
+	}
+	
+	const TWITTER_STATS_URL = 'https://cdn.api.twitter.com/1/urls/count.json';
+	
+	public static function get_twitter_stats($url) {
+		$response = json_decode(file_get_contents(self::TWITTER_STATS_URL . '?url=' . urlencode($url)));
+		return $response->count;
+	}
+	
+	const GOOGLE_PLUS_STATS_URL = 'https://apis.google.com/u/0/_/+1/sharebutton';
+	
+	public static function get_google_plus_stats($url) {
+		$query = http_build_query(array( 'url' => $url ));
+		$url = self::GOOGLE_PLUS_STATS_URL . '?' . $query;
+		
+		$ch = curl_init();
+		curl_setopt_array($ch, array(
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HTTPHEADER => array( 'accept-language: en-GB,da;q=0.8,en-US;q=0.6' )
+		));
+		
+		$content = curl_exec($ch);
+		curl_close($ch);
+		
+		if($content === false) {
+			throw new \RuntimeException("Couldn't connect to the Google Plus API, it might have changed.");
+		}
+		
+		$count_matches = array();
+		if(preg_match('|id="aggregateCount".*?>([^<]+)<|', $content, $count_matches) == 1) {
+			if(strstr($count_matches[1], 'K') !== false) {
+				$multiplier = 1000;
+			} elseif(strstr($count_matches[1], 'M') !== false) {
+				$multiplier = 1000000;
+			} else {
+				$multiplier = 1;
+			}
+			return intval(floatval($count_matches[1]) * $multiplier);
+		} else {
+			throw new \RuntimeException("Couldn't find the aggregateCount to the Google Plus API, the markup might have changed, check: " . $base_url . $query);
+		}
+	}
+
+	public static function fetch_social_counts(\WPChaosObject $object, $update_metadata = false) {
+		$url = $object->url;
+		// What would the legacy url be?
+		$legacyURL = 'http://www.danskkulturarv.dk/chaos_post/' . $object->GUID;
+	
+		$facebook_total_count = self::get_facebook_stats($url);
+		$facebook_total_count += self::get_facebook_stats($legacyURL);
+	
+		$twitter_total_count = self::get_twitter_stats($url);
+		$twitter_total_count += self::get_twitter_stats($legacyURL);
+	
+		$google_plus_total_count = self::get_google_plus_stats($url);
+		$google_plus_total_count = self::get_google_plus_stats($legacyURL);
+	
+		if($update_metadata) {
+			// Update the metadata.
+			$object->set_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Shares/text()', $facebook_total_count + $twitter_total_count + $google_plus_total_count, array('shares'));
+		}
+	
+		return array(
+			'facebook_total_count' => $facebook_total_count,
+			'twitter_total_count' => $twitter_total_count,
+			'google_plus_total_count' => $google_plus_total_count
+		);
+	}
+	
 	/*
 	public static function generateSlug(\WPChaosObject $object) {
 		$title = $object->title;
@@ -726,22 +812,6 @@ class WPDKAObject {
 			return self::$legacy_views[$guid];
 		} else {
 			return 0;
-		}
-	}
-	
-	public static function increment_metadata_field($metadata_schema_guid, $xpath, WPChaosObject $object, $fields_invalidated = array()) {
-		$metadata = $object->get_metadata($metadata_schema_guid);
-		$element = $metadata->xpath($xpath);
-		if($element !== false && count($element) == 1) {
-			$DOMElement = dom_import_simplexml($element[0]);
-			$DOMElement->nodeValue = intval($DOMElement->nodeValue) + 1;
-			$revisionID = $object->get_metadata_revision_id($metadata_schema_guid);
-			$object->set_metadata(WPChaosClient::instance(), $metadata_schema_guid, $metadata, self::METADATA_LANGUAGE, $revisionID);
-			foreach($fields_invalidated as $field) {
-				$object->clear_cache($field);
-			}
-		} else {
-			throw new \RuntimeException("The element found using the provided xpath expression, wasn't exactly a single.");
 		}
 	}
 

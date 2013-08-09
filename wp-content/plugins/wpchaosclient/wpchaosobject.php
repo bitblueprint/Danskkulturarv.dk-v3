@@ -69,8 +69,12 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		}
 	}
 	
-	public function clear_cache($name) {
-		unset($this->variable_cache[$name]);
+	public function clear_cache($name = null) {
+		if($name) {
+			unset($this->variable_cache[$name]);
+		} else {
+			$this->variable_cache = array();
+		}
 	}
 	
 	/**
@@ -89,6 +93,38 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	// public function get_type() {
 	// 	var_dump($this->chaos_object->getObject()->Files);
 	// }
+
+	public function increment_metadata_field($metadata_schema_guid, $metadata_language, $xpath, $value, $fields_invalidated = array()) {
+		$metadata = $this->get_metadata($metadata_schema_guid);
+		$element = $metadata->xpath($xpath);
+		if($element !== false && count($element) == 1) {
+			$DOMElement = dom_import_simplexml($element[0]);
+			$DOMElement->nodeValue = intval($DOMElement->nodeValue) + 1;
+			$revisionID = $this->get_metadata_revision_id($metadata_schema_guid);
+			$this->set_metadata(WPChaosClient::instance(), $metadata_schema_guid, $metadata, $metadata_language, $revisionID);
+			foreach($fields_invalidated as $field) {
+				$this->clear_cache($field);
+			}
+		} else {
+			throw new \RuntimeException("The element found using the provided xpath expression, wasn't exactly a single.");
+		}
+	}
+	
+	public function set_metadata_field($metadata_schema_guid, $metadata_language, $xpath, $value, $fields_invalidated = array()) {
+		$metadata = $this->get_metadata($metadata_schema_guid);
+		$element = $metadata->xpath($xpath);
+		if($element !== false && count($element) == 1) {
+			$DOMElement = dom_import_simplexml($element[0]);
+			$DOMElement->nodeValue = $value;
+			$revisionID = $this->get_metadata_revision_id($metadata_schema_guid);
+			$this->set_metadata(WPChaosClient::instance(), $metadata_schema_guid, $metadata, $metadata_language, $revisionID);
+			foreach($fields_invalidated as $field) {
+				$this->clear_cache($field);
+			}
+		} else {
+			throw new \RuntimeException("The element found using the provided xpath expression, wasn't exactly a single.");
+		}
+	}
 
 }
 

@@ -29,8 +29,9 @@ class WPDKA {
 	const RESET_CROWD_METADATA_PAUSE_BTN = 'Pause';
 	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
 	const REMOVE_DUPLICATE_SLUGS_BTN = 'Remove duplicate slugs';
-	const RESET_CROWD_METADATA_AJAX = 'wp_dka_reset_crowd_metadata';
-	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wp_dka_remove_duplicate_slugs';
+	const RESET_CROWD_METADATA_AJAX = 'wpdka_reset_crowd_metadata';
+	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wpdka_remove_duplicate_slugs';
+	const SOCIAL_COUNTS_AJAX = 'wpdka_social_counts';
 	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
 	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
 
@@ -45,19 +46,28 @@ class WPDKA {
 	 */
 	public function __construct() {
 		if(self::check_chaosclient()) {
-			$this->load_dependencies();
-			
-			add_action('plugins_loaded',array(&$this,'load_textdomain'));
-			add_action('admin_menu', array(&$this, 'create_menu'));
-			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 
-			add_filter('wpchaos-config', array(&$this, 'settings'));
+			self::load_dependencies();
+
+			if(is_admin()) {
+
+				add_action('admin_menu', array(&$this, 'create_menu'));
+				add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
+				add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
+				add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
+				add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
+				add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
+				
+				add_filter('wpchaos-config', array(&$this, 'settings'));
+
+			}
 			
-			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
-			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
+			// Social stuff
+			add_action('wp_ajax_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
+			add_action('wp_ajax_nopriv_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
 			
 			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
-			add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
+			add_action('plugins_loaded',array(&$this,'load_textdomain'));
 
 		}
 
@@ -87,8 +97,6 @@ class WPDKA {
 	 * @return array           Merged CHAOS settings
 	 */
 	public function settings($settings) {
-
-
 		$new_settings = array(array(
 			/*Sections*/
 			'name'		=> 'jwplayer',
@@ -289,7 +297,7 @@ class WPDKA {
 				$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
 				$objects = WPChaosObject::parseResponse($objectResponse);
 				foreach($objects as $object) {
-					$new_slug = WPDKAObject::reset_crowd_metadata($object);
+					$new_slug = WPDKAObject::reset_crowd_metadata($object)->slug;
 					$result['removed']++;
 				}
 				if($result['removed'] >= self::DUPLICATE_SLUGS_REMOVED_PR_REQUEST) {
@@ -328,7 +336,7 @@ class WPDKA {
 		$objects = WPChaosObject::parseResponse($response);
 		// Process the objects
 		foreach($objects as $object) {
-			$slug = WPDKAObject::reset_crowd_metadata($object);
+			$slug = WPDKAObject::reset_crowd_metadata($object)->slug;
 			$result['messages'][] = $object->GUID .' is now reacheable with slug: '. $slug;
 			// Ensure its crowd metadata.
 			// Make sure the object is reachable on its slug - if not, reset its metadata.
@@ -347,12 +355,35 @@ class WPDKA {
 		echo json_encode($result);
 		die();
 	}
+	
+	public function ajax_social_counts() {
+		if(!array_key_exists('object_guid', $_POST)) {
+			status_header(500);
+			echo "Object GUID and URL must be specified.";
+			die();
+		}
+		
+		$objectGUID = strval($_POST['object_guid']);
+		
+		// Get the object from the CHAOS service.
+		$objects = WPChaosObject::parseResponse(WPChaosClient::instance()->Object()->Get($objectGUID, null, null, 0, 1, true));
+		
+		if(count($objects) != 1) {
+			status_header(500);
+			echo "Object didn't exist or too many objects returned from service.";
+			die();
+		}
+		
+		echo json_encode(WPDKAObject::fetch_social_counts($objects[0], true));
+		
+		die();
+	}
 
 	function add_chaos_material_counts() {
 	
 		$facetFields = array('DKA-Crowd-Views_int', 'DKA-Crowd-Likes_int', 'DKA-Crowd-Shares_int');
 
-		$num_posts = do_shortcode('[chaos-total-count query=""]');
+		$num_posts = WPChaosClient::instance()->Object()->Get('', null, null, 0, 0)->MCM()->TotalCount();
 		$num = number_format_i18n($num_posts);
 		$text = _n('CHAOS material', 'CHAOS materials', intval($num_posts),'wpdka');
 
@@ -400,7 +431,7 @@ class WPDKA {
 	} 
 	
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
-		echo '<div id="'.$player_id.'"><p style="text-align:center;">Loading the player ...</p></div>';
+		echo '<div id="'.$player_id.'"><p style="text-align:center;">'.__('Loading the player ...','wpdka').'</p></div>';
 		echo '<script type="text/javascript">';
 		echo 'jwplayer.key="'. get_option('wpdka-jwplayer-api-key') .'";';
 		echo '$("#main-jwplayer").each(function() {';

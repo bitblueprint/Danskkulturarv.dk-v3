@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosSearch\n"
-"POT-Creation-Date: 2013-08-09 12:03+0100\n"
-"PO-Revision-Date: 2013-08-09 12:03+0100\n"
+"POT-Creation-Date: 2013-08-09 15:42+0100\n"
+"PO-Revision-Date: 2013-08-09 15:42+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -19,43 +19,47 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../wpdka.php:94
+#: ../wpdka.php:95
 msgid "JW Player Settings"
 msgstr "JW Player indstillinger"
 
-#: ../wpdka.php:99
+#: ../wpdka.php:100
 msgid "JW Player API key"
 msgstr "JW Player API-nøgle"
 
-#: ../wpdka.php:356
+#: ../wpdka.php:357
 msgid "CHAOS material"
 msgid_plural "CHAOS materials"
 msgstr[0] "CHAOS materiale"
 msgstr[1] "CHAOS materialer"
 
-#: ../wpdka.php:367
+#: ../wpdka.php:368
 msgid "CHAOS material view"
 msgid_plural "CHAOS material views"
 msgstr[0] "CHAOS materialevisning"
 msgstr[1] "CHAOS materialevisninger"
 
-#: ../wpdka.php:376
+#: ../wpdka.php:377
 msgid "CHAOS material like"
 msgid_plural "CHAOS material likes"
 msgstr[0] "CHAOS materiale-like"
 msgstr[1] "CHAOS materiale-likes"
 
-#: ../wpdka.php:385
+#: ../wpdka.php:386
 msgid "CHAOS material share"
 msgid_plural "CHAOS material shares"
 msgstr[0] "CHAOS materialedeling"
 msgstr[1] "CHAOS materialedelinger"
 
-#: ../wpdka.php:423
+#: ../wpdka.php:403
+msgid "Loading the player ..."
+msgstr "Henter afspiller ..."
+
+#: ../wpdka.php:431
 msgid "WordPress DKA"
 msgstr "WordPress DKA"
 
-#: ../wpdka.php:423
+#: ../wpdka.php:431
 #, php-format
 msgid "needs %s to be activated."
 msgstr "kræver at %s er aktiveret."
@@ -76,37 +80,32 @@ msgstr "Ingen tags"
 msgid "Year "
 msgstr "Året "
 
-#: ../wpdkaobject.php:380
+#: ../wpdkaobject.php:379
 #, php-format
 msgid "%s image"
 msgid_plural "%s images"
 msgstr[0] "%s billede"
 msgstr[1] "%s billeder"
 
-#: ../wpdkaobject.php:403
+#: ../wpdkaobject.php:402
 msgid "Not provided"
 msgstr "Ikke opgivet"
 
-#: ../wpdkasearch.php:66 ../wpdkasearch.php:106
-#, php-format
-msgid "%s about %s"
-msgstr "%s om %s"
-
-#: ../wpdkasearch.php:84
+#: ../wpdkasearch.php:79
 #, php-format
 msgid " The material is from %s."
 msgstr " Det fremsøgte materiale er fra %s."
 
-#: ../wpdkasearch.php:84 ../wpdkasearch.php:99
+#: ../wpdkasearch.php:79 ../wpdkasearch.php:94
 msgid "and"
 msgstr "og"
 
-#: ../wpdkasearch.php:99
+#: ../wpdkasearch.php:94
 #, php-format
 msgid " The format is %s."
 msgstr " Formatet er %s."
 
-#: ../wpdkasearch.php:107
+#: ../wpdkasearch.php:102
 #, php-format
 msgid "%s contains %s materials about %s."
 msgstr "%s indeholder %s materialer om %s."
@@ -129,6 +128,9 @@ msgstr "DKA Objektafspiller"
 #: ../widgets/player.php:29
 msgid "Display a player according to the material format"
 msgstr "Vis en afspiller i henhold til materialeformatet"
+
+#~ msgid "%s about %s"
+#~ msgstr "%s om %s"
 
 #, fuzzy
 #~ msgid "Ingen tags"
