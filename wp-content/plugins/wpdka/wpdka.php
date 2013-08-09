@@ -352,7 +352,7 @@ class WPDKA {
 	
 		$facetFields = array('DKA-Crowd-Views_int', 'DKA-Crowd-Likes_int', 'DKA-Crowd-Shares_int');
 
-		$num_posts = do_shortcode('[chaos-total-count query=""]');
+		$num_posts = WPChaosClient::instance()->Object()->Get('', null, null, 0, 0)->MCM()->TotalCount();
 		$num = number_format_i18n($num_posts);
 		$text = _n('CHAOS material', 'CHAOS materials', intval($num_posts),'wpdka');
 
@@ -400,7 +400,7 @@ class WPDKA {
 	} 
 	
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
-		echo '<div id="'.$player_id.'"><p style="text-align:center;">Loading the player ...</p></div>';
+		echo '<div id="'.$player_id.'"><p style="text-align:center;">'.__('Loading the player ...','wpdka').'</p></div>';
 		echo '<script type="text/javascript">';
 		echo 'jwplayer.key="'. get_option('wpdka-jwplayer-api-key') .'";';
 		echo '$("#main-jwplayer").each(function() {';

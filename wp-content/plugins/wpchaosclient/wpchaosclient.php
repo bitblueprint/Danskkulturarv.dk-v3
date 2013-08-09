@@ -244,7 +244,7 @@ class WPChaosClient {
 		extract( shortcode_atts( array(
 			'query' => ''
 		), $atts ) );
-		return WPChaosClient::instance()->Object()->Get($query, null, null, 0, 0)->MCM()->TotalCount();
+		return number_format_i18n(WPChaosClient::instance()->Object()->Get($query, null, null, 0, 0)->MCM()->TotalCount());
 	}
 	
 	public function add_shortcodes($atts) {
