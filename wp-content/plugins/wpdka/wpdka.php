@@ -29,8 +29,9 @@ class WPDKA {
 	const RESET_CROWD_METADATA_PAUSE_BTN = 'Pause';
 	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
 	const REMOVE_DUPLICATE_SLUGS_BTN = 'Remove duplicate slugs';
-	const RESET_CROWD_METADATA_AJAX = 'wp_dka_reset_crowd_metadata';
-	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wp_dka_remove_duplicate_slugs';
+	const RESET_CROWD_METADATA_AJAX = 'wpdka_reset_crowd_metadata';
+	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wpdka_remove_duplicate_slugs';
+	const SOCIAL_COUNTS_AJAX = 'wpdka_social_counts';
 	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
 	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
 
@@ -55,6 +56,10 @@ class WPDKA {
 			
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
 			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
+			
+			// Social stuff
+			add_action('wp_ajax_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
+			add_action('wp_ajax_nopriv_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
 			
 			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
 
@@ -86,8 +91,6 @@ class WPDKA {
 	 * @return array           Merged CHAOS settings
 	 */
 	public function settings($settings) {
-
-
 		$new_settings = array(array(
 			/*Sections*/
 			'name'		=> 'jwplayer',
@@ -288,7 +291,7 @@ class WPDKA {
 				$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
 				$objects = WPChaosObject::parseResponse($objectResponse);
 				foreach($objects as $object) {
-					$new_slug = WPDKAObject::reset_crowd_metadata($object);
+					$new_slug = WPDKAObject::reset_crowd_metadata($object)->slug;
 					$result['removed']++;
 				}
 				if($result['removed'] >= self::DUPLICATE_SLUGS_REMOVED_PR_REQUEST) {
@@ -327,7 +330,7 @@ class WPDKA {
 		$objects = WPChaosObject::parseResponse($response);
 		// Process the objects
 		foreach($objects as $object) {
-			$slug = WPDKAObject::reset_crowd_metadata($object);
+			$slug = WPDKAObject::reset_crowd_metadata($object)->slug;
 			$result['messages'][] = $object->GUID .' is now reacheable with slug: '. $slug;
 			// Ensure its crowd metadata.
 			// Make sure the object is reachable on its slug - if not, reset its metadata.
@@ -344,6 +347,29 @@ class WPDKA {
 		
 		$result['nextPageIndex'] = $result['pageIndex'] + 1;
 		echo json_encode($result);
+		die();
+	}
+	
+	public function ajax_social_counts() {
+		if(!array_key_exists('object_guid', $_POST)) {
+			status_header(500);
+			echo "Object GUID and URL must be specified.";
+			die();
+		}
+		
+		$objectGUID = strval($_POST['object_guid']);
+		
+		// Get the object from the CHAOS service.
+		$objects = WPChaosObject::parseResponse(WPChaosClient::instance()->Object()->Get($objectGUID, null, null, 0, 1, true));
+		
+		if(count($objects) != 1) {
+			status_header(500);
+			echo "Object didn't exist or too many objects returned from service.";
+			die();
+		}
+		
+		echo json_encode(WPDKAObject::fetch_social_counts($objects[0], true));
+		
 		die();
 	}
 
