@@ -4328,6 +4328,18 @@ a.dropdown-toggle:active {
   position: relative;
   margin-bottom: 0;
 }
+.search-object .thumb .format-lyd {
+  background: #aaaaaa url('/img/format-lyd.png') center center;
+}
+.search-object .thumb .format-billede {
+  background: #aaaaaa url('/img/format-billede.png') center center;
+}
+.search-object .thumb .format-video {
+  background: #aaaaaa url('/img/format-video.png') center center;
+}
+.search-object .thumb .format-billede-lyd {
+  background: #aaaaaa url('/img/format-billede-lyd.png') center center;
+}
 .search-object .thumb .caption {
   color: #ffffff;
   background-color: #000000;
