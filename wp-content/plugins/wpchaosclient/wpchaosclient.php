@@ -105,7 +105,7 @@ class WPChaosClient {
 		}
 	}
 
-	function load_textdomain() {
+	public function load_textdomain() {
 		load_plugin_textdomain( 'wpchaosclient', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
 	}
 

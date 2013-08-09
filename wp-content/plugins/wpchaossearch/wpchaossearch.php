@@ -47,6 +47,7 @@ class WPChaosSearch {
 
 			$this->load_dependencies();
 
+			add_action('plugins_loaded',array(&$this,'load_textdomain'));
 			add_action('admin_init', array(&$this, 'check_chaosclient'));
 			add_action('widgets_init', array(&$this, 'register_widgets'));
 			add_action('template_redirect', array(&$this, 'get_search_page'));
@@ -70,6 +71,10 @@ class WPChaosSearch {
 			
 		}
 
+	}
+
+	public function load_textdomain() {
+		load_plugin_textdomain( 'wpchaossearch', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
 	}
 	
 	public static function install() {
@@ -96,22 +101,22 @@ class WPChaosSearch {
 		$new_settings = array(array(
 			/*Sections*/
 			'name'		=> 'search',
-			'title'		=> 'Search Settings',
+			'title'		=> __('Search Settings','wpchaossearch'),
 			'fields'	=> array(
 				/*Section fields*/
 				array(
 					'name' => 'wpchaos-searchpage',
-					'title' => 'Page for search results',
+					'title' => __('Page for search results','wpchaossearch'),
 					'type' => 'select',
 					'list' => $pages,
 					'precond' => array(array(
 						'cond' => (get_option('permalink_structure') != ''),
-						'message' => 'Permalinks must be enabled for CHAOS search to work properly'
+						'message' => __('Permalinks must be enabled for CHAOS search to work properly','wpchaossearch')
 					))
 				),
 				array(
 					'name' => 'wpchaos-searchsize',
-					'title' => 'Results per page',
+					'title' => __('Results per page','wpchaossearch'),
 					'type' => 'text',
 					'val' => 20,
 					'class' => 'small-text'
@@ -427,7 +432,7 @@ class WPChaosSearch {
 			delete_option(self::FLUSH_REWRITE_RULES_OPTION_KEY);
 			if(WP_DEBUG) {
 				add_action( 'admin_notices', function() {
-					echo '<div class="updated"><p><strong>WordPress CHAOS Search</strong> Rewrite rules flushed ..</p></div>';
+					echo '<div class="updated"><p><strong>'.__('WordPress CHAOS Search','wpchaossearch').'</strong> '.__('Rewrite rules flushed ..','wpchaossearch').'</p></div>';
 				}, 10);
 			}
 			flush_rewrite_rules();
@@ -468,7 +473,7 @@ class WPChaosSearch {
 			if(!empty($dep)) {
 				//deactivate_plugins(array($plugin));
 				add_action( 'admin_notices', function() use (&$dep) { 
-					echo '<div class="error"><p><strong>WordPress CHAOS Search</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
+					echo '<div class="error"><p><strong>'.__('WordPress CHAOS Search','wpchaossearch').'</strong> '.sprintf(__('needs %s to be activated.','wpchaossearch'),'<strong>'.implode('</strong>, </strong>',$dep).'</strong>').'</p></div>';
 				},10);
 				return false;
 			}
