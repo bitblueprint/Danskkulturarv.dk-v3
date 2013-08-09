@@ -4221,7 +4221,8 @@ a.dropdown-toggle:active {
 }
 .container.search .btn-advanced-search {
   background: none;
-  background-color: #ffffff;
+  color: #ffffff;
+  background-color: #2f94fd;
   height: 44px;
   padding: 0 8px;
   border: 1px solid #eeeded;
@@ -4237,6 +4238,10 @@ a.dropdown-toggle:active {
   -webkit-transition-duration: 0.25s;
   -webkit-transition-property: all;
   -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.container.search .btn-advanced-search.collapsed {
+  background-color: #ffffff;
+  color: #2f94fd;
 }
 .container.search .btn-advanced-search i {
   margin: 0 2px;

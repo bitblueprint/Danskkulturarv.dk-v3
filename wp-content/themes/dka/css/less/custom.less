@@ -179,7 +179,6 @@ a.dropdown-toggle:active {
     a.dropdown-menu-item:hover {
       background-color: @blue !important;
     }
-
 }
 
 // --------------------------------------------------
@@ -230,7 +229,8 @@ a.dropdown-toggle:active {
 
   .btn-advanced-search {
     background: none;
-    background-color: @white;
+    color: @white;
+    background-color: @blue;
     height: 44px;
     padding: 0 8px;
     border: 1px solid @grayBorder;
@@ -246,6 +246,11 @@ a.dropdown-toggle:active {
     -webkit-transition-duration: 0.25s;
     -webkit-transition-property: all;
     -webkit-transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .btn-advanced-search.collapsed {
+    background-color: @white;
+    color: @blue;
   }
 
   .btn-advanced-search i {

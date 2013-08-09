@@ -29,7 +29,7 @@ foreach($object->Files as $file) {
 $sharing_link = site_url($_SERVER["REQUEST_URI"]);
 
 $options = array(
-	"skin" => get_template_directory_uri() . '/lib/jwplayer/five.xml',
+	"skin" => get_template_directory_uri() . '/lib/jwplayer/dka.xml',
 	"width" => "100%",
 	"aspectratio" => "4:3",
 	"logo" => array(
