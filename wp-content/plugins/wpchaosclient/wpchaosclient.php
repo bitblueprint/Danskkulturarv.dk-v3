@@ -63,19 +63,23 @@ class WPChaosClient {
 
 		$this->load_dependencies();
 
+		if(is_admin()) {
+
+			add_action('admin_menu', array(&$this,'create_submenu'));
+			add_action('admin_init', array(&$this,'register_settings'));
+			add_action('admin_init', array(&$this,'settings_updated'));
+			
+			add_action('chaos-settings-updated', function() {
+				WPChaosClient::instance()->resetSession();
+			});
+
+		}
+
 		add_action('plugins_loaded',array(&$this,'load_textdomain'));
-		add_action('admin_menu', array(&$this,'create_submenu'));
-		add_action('admin_init', array(&$this,'register_settings'));
-		add_action('admin_init', array(&$this,'settings_updated'));
-		
 		add_action('template_redirect', array(&$this,'get_object_page'));
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
-		
-		add_action('init', array(&$this, 'add_shortcodes'));
-		
-		add_action('chaos-settings-updated', function() {
-			WPChaosClient::instance()->resetSession();
-		});
+
+		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
 		
 		$thiz = $this;
 		$prev_handler = set_exception_handler(function($e) use ($thiz) {
@@ -244,11 +248,7 @@ class WPChaosClient {
 		extract( shortcode_atts( array(
 			'query' => ''
 		), $atts ) );
-		return WPChaosClient::instance()->Object()->Get($query, null, null, 0, 0)->MCM()->TotalCount();
-	}
-	
-	public function add_shortcodes($atts) {
-		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
+		return number_format_i18n(WPChaosClient::instance()->Object()->Get($query, null, null, 0, 0)->MCM()->TotalCount());
 	}
 
 	/**
@@ -312,7 +312,16 @@ class WPChaosClient {
 			
 				// Call this by reference.
 				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
-	
+
+				//Remove meta and add a dynamic canonical for better seo
+				remove_action('wp_head', 'rel_canonical');
+				remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10,0);
+
+				add_action('wp_head', function() {
+					$link = WPChaosClient::get_object()->url;
+					echo '<link rel="canonical" href="'.$link.'" />'."\n";
+				});
+
 				//Look in theme dir and include if found
 				$include = locate_template('templates/chaos-object-page.php', false);
 				if($include == "") {

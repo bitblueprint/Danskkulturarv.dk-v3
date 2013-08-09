@@ -4324,7 +4324,7 @@ a.dropdown-toggle:active {
   width: 100%;
   height: 145px;
   background-position: center;
-  background-size: cover;
+  background-size: cover !important;
   position: relative;
   margin-bottom: 0;
 }
@@ -4335,6 +4335,22 @@ a.dropdown-toggle:active {
   bottom: 3px;
   right: 3px;
   padding: 0 3px;
+}
+.search-object .thumb.format-lyd {
+  background: #eeeded url('../img/format-lyd.png') no-repeat center center !important;
+  background-size: 116px !important;
+}
+.search-object .thumbformat-billede {
+  background: #eeeded url('../img/format-billede.png') no-repeat center center !important;
+  background-size: 116px !important;
+}
+.search-object .thumb.format-video {
+  background: #eeeded url('../img/format-video.png') no-repeat center center !important;
+  background-size: 116px !important;
+}
+.search-object .thumb.format-billede-lyd {
+  background: #eeeded url('../img/format-billede-lyd.png') no-repeat center center !important;
+  background-size: 116px !important;
 }
 .search-object a:hover {
   text-decoration: none;
@@ -4569,6 +4585,13 @@ article.container .single-material {
 .nav.info .rights-container a {
   display: inline;
   text-wrap: unrestricted;
+}
+.nav.info .external-link-container a {
+  display: inline;
+  text-wrap: unrestricted;
+}
+.nav.info .external-link-container a:hover {
+  text-decoration: none;
 }
 .nav.info a.tag {
   margin-right: 3px;

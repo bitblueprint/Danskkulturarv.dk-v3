@@ -170,15 +170,20 @@ class WPDKAObject {
 			}
 		}, 20, 2);
 
-		//object->tags
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
+		//object->tags_array
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags_raw', function($value, \WPCHAOSObject $object) {
 			$tags = $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
 				null
 			);
 			//If there are no tags, null is returned above, we need an array
-			$tags = ($tags?:array());
+			return ($tags?:array());
+		}, 10, 2);
+
+		//object->tags
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
+			$tags = $object->tags_raw;
 			foreach($tags as $key => &$tag) {
 				//Remove tag if empty
 				if(!$tag) {
@@ -305,9 +310,8 @@ class WPDKAObject {
 					return $value . htmlspecialchars($file->URL);
 				}
 			}
-			// Fallback
-			// TODO: Consider making this fallback type-specific.
-			return $value . 'http://placekitten.com/202/145';
+			// Fallback to nothing
+			return null;
 		}, 10, 2);
 
 		//object->slug
