@@ -361,7 +361,7 @@ a.dropdown-toggle:active {
     width: 100%;
     height: 145px;
     background-position: center;
-    background-size: cover !important;
+    background-size: cover;
     position: relative;
     margin-bottom: 0;
 
@@ -376,19 +376,23 @@ a.dropdown-toggle:active {
   }
 
       .thumb.format-lyd {
-        background: @grayBorder url('../img/format-lyd.png') no-repeat center center!important;
+        background: @grayBorder url('../img/format-lyd.png') no-repeat center center;
+        background-size: cover;
       }
 
     .thumbformat-billede {
-        background: @grayBorder url('../img/format-billede.png') no-repeat center center!important;
+        background: @grayBorder url('../img/format-billede.png') no-repeat center center;
+        background-size: cover;
       }
 
    .thumb.format-video {
-        background: @grayBorder url('../img/format-video.png') no-repeat center center!important;
+        background: @grayBorder url('../img/format-video.png') no-repeat center center;
+        background-size: cover;
       }
 
     .thumb.format-billede-lyd {
-        background: @grayBorder url('../img/format-billede-lyd.png') no-repeat center center!important;
+        background: @grayBorder url('../img/format-billede-lyd.png') no-repeat center center;
+        background-size: cover;
       }
 
   a:hover {
@@ -400,7 +404,11 @@ a.dropdown-toggle:active {
   }
 
   hr {
-    margin: 0 0 6px 0;
+    margin: 6px 0;
+  }
+
+  h5.strong.orange.organization {
+    margin: 3px 0;
   }
 
   .title, .organization {
@@ -412,7 +420,7 @@ a.dropdown-toggle:active {
     margin-top: 0;
   }
 
-  strong.strong.orange.organization:after {
+  h5.strong.orange.organization:after {
     content: "\0000a0";
   }
 
@@ -472,6 +480,23 @@ ul.row.listview {
       float: left;
       margin-right: 6px;
       position: relative;
+      width: 100%;
+      white-space:nowrap;
+
+      strong {
+        overflow-x: visible;
+overflow-y: visible;
+padding-bottom: 0px;
+padding-left: 0px;
+padding-right: 0px;
+padding-top: 0px;
+text-align: -webkit-auto;
+text-decoration: none;
+text-overflow: clip;
+white-space: nowrap;
+width: auto;
+      }
+
     }
 
     .date {

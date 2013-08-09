@@ -62,14 +62,14 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 ?>
 		<li class="search-object col-12 col-sm-6 col-lg-3">
 			<a class="thumbnail" href="<?php echo WPChaosClient::get_object()->url; ?>" id="<?php echo WPChaosClient::get_object()->GUID; ?>">
-				
+
 				<div class="thumb format-<?php echo WPChaosClient::get_object()->type; ?>"<?php echo $thumbnail; ?>>
 <?php $caption = WPChaosClient::get_object()->caption; if($caption):?>
 					<div class="caption"><?php echo $caption ?></div>
 <?php endif;?>
 				</div>
 				<h2 class="title"><strong><?php echo WPChaosClient::get_object()->title; ?></strong></h2>
-				<strong class="strong orange organization"><?php echo WPChaosClient::get_object()->organization; ?></strong>
+				<h5 class="strong orange organization"><strong><?php echo WPChaosClient::get_object()->organization; ?></strong></h5>
 <?php if(WPChaosClient::get_object()->published) : ?>
 				<p class="date"><i class="icon-calendar"></i> <?php echo WPChaosClient::get_object()->published; ?></p>
 <?php endif; ?>

@@ -4324,7 +4324,7 @@ a.dropdown-toggle:active {
   width: 100%;
   height: 145px;
   background-position: center;
-  background-size: cover !important;
+  background-size: cover;
   position: relative;
   margin-bottom: 0;
 }
@@ -4337,16 +4337,20 @@ a.dropdown-toggle:active {
   padding: 0 3px;
 }
 .search-object .thumb.format-lyd {
-  background: #eeeded url('../img/format-lyd.png') no-repeat center center !important;
+  background: #eeeded url('../img/format-lyd.png') no-repeat center center;
+  background-size: cover;
 }
 .search-object .thumbformat-billede {
-  background: #eeeded url('../img/format-billede.png') no-repeat center center !important;
+  background: #eeeded url('../img/format-billede.png') no-repeat center center;
+  background-size: cover;
 }
 .search-object .thumb.format-video {
-  background: #eeeded url('../img/format-video.png') no-repeat center center !important;
+  background: #eeeded url('../img/format-video.png') no-repeat center center;
+  background-size: cover;
 }
 .search-object .thumb.format-billede-lyd {
-  background: #eeeded url('../img/format-billede-lyd.png') no-repeat center center !important;
+  background: #eeeded url('../img/format-billede-lyd.png') no-repeat center center;
+  background-size: cover;
 }
 .search-object a:hover {
   text-decoration: none;
@@ -4355,7 +4359,10 @@ a.dropdown-toggle:active {
   color: #555555;
 }
 .search-object hr {
-  margin: 0 0 6px 0;
+  margin: 6px 0;
+}
+.search-object h5.strong.orange.organization {
+  margin: 3px 0;
 }
 .search-object .title,
 .search-object .organization {
@@ -4366,7 +4373,7 @@ a.dropdown-toggle:active {
   margin-bottom: 0;
   margin-top: 0;
 }
-.search-object strong.strong.orange.organization:after {
+.search-object h5.strong.orange.organization:after {
   content: "\0000a0";
 }
 .search-object p.date:after {
@@ -4413,6 +4420,21 @@ ul.row.listview li .organization {
   float: left;
   margin-right: 6px;
   position: relative;
+  width: 100%;
+  white-space: nowrap;
+}
+ul.row.listview li .organization strong {
+  overflow-x: visible;
+  overflow-y: visible;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+  text-align: -webkit-auto;
+  text-decoration: none;
+  text-overflow: clip;
+  white-space: nowrap;
+  width: auto;
 }
 ul.row.listview li .date {
   float: left;
