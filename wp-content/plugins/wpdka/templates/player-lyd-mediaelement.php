@@ -31,7 +31,7 @@ $("#main-jwplayer").each(function () {
 			link: "<?php echo site_url() ?>",
 			margin: 20,
 		},
-		abouttext: "Om Dansk Kulturarv",
+		abouttext: "<?php printf(__('About %s','wpdka'),get_bloginfo('title')); ?>",
 		aboutlink: "<?php echo site_url('om') ?>",
 		playlist: [{
 			image: "<?php echo $object->thumbnail ?>",
