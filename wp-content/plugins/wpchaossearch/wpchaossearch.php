@@ -393,7 +393,7 @@ class WPChaosSearch {
 	}
 
 	public function random_tags_shortcode($atts) {
-		$this->get_random_tags_from_results(shortcode_atts( array(
+		return $this->get_random_tags_from_results(shortcode_atts( array(
 			'query' => '',
 			'number_of_tags' => 10,
 			'pageindex' => 0,
