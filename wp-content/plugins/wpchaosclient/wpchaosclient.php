@@ -276,7 +276,7 @@ class WPChaosClient {
 	 */
 	public function get_object_page() {
 		global $wp_query;
-		if($wp_query->is_404()) {
+		if($wp_query->is_404() || $wp_query->is_attachment()) {
 			$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
 			
 			if($searchQuery) {
