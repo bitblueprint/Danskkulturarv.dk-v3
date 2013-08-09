@@ -245,8 +245,11 @@ class WPDKAObject {
 			$organizations = WPDKASearch::get_organizations();
 			$organization = $object->organization_raw;
 
-			if(isset($organizations[$organization]))
+			if(isset($organizations[$organization])) {
 				$value .= get_permalink($organizations[$organization]['id']);
+			} else {
+				$value .= get_permalink(get_option('wpdka-default-organization-page'));
+			}
 
 			return $value;
 		}, 10, 2);
@@ -321,16 +324,10 @@ class WPDKAObject {
 
 		//object->url
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'url', function($value, \WPCHAOSObject $object) {
-			$result = site_url() . '/';
-			$slug = $object->slug;
-			if($slug) {
-				$organizations = WPDKASearch::get_organizations();
-				if(array_key_exists($object->organization_raw, $organizations)) {
-					$result .= $organizations[$object->organization_raw]['slug'] . '/';
-				}
-				return $result . $slug . '/' . $value;
+			if($object->slug) {
+				return $object->organization_link . $object->slug . '/' . $value;
 			} else {
-				return $result . '?guid=' . $object->GUID . $value;
+				return $object->organization_link . $value . '?guid=' . $object->GUID;
 			}
 		}, 10, 2);
 
@@ -457,7 +454,7 @@ class WPDKAObject {
 			} else {
 				$query = array();
 			}
-			
+
 			global $wp_query;
 			// The slug will register as a post name or post attachement name.
 			$slug = $wp_query->query_vars['name'];

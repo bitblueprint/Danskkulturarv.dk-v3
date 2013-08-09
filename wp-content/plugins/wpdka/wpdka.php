@@ -97,7 +97,27 @@ class WPDKA {
 	 * @return array           Merged CHAOS settings
 	 */
 	public function settings($settings) {
+		$pages = array(); 
+		foreach(get_pages() as $page) {
+			$pages[$page->ID] = $page->post_title;
+		}
+		
 		$new_settings = array(array(
+			'name'      => 'dka',
+			'title'     => __('Dansk Kulturarv', 'wpdka'),
+			'fields'    => array(
+				array(
+					'name' => 'wpdka-default-organization-page',
+					'title' => __('Page for objects with an unknown organization.','wpdka'),
+					'type' => 'select',
+					'list' => $pages,
+					'precond' => array(array(
+						'cond' => (get_option('permalink_structure') != ''),
+						'message' => __('Permalinks must be enabled for CHAOS search to work properly','wpdka')
+					))
+				),
+			)
+		),array(
 			/*Sections*/
 			'name'		=> 'jwplayer',
 			'title'		=> __('JW Player Settings','wpdka'),

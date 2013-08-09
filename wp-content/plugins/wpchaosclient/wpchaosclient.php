@@ -76,7 +76,7 @@ class WPChaosClient {
 		}
 
 		add_action('plugins_loaded',array(&$this,'load_textdomain'));
-		add_action('template_redirect', array(&$this,'get_object_page'));
+		add_action('template_redirect', array(&$this,'get_object_page'), 9);
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
 
 		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
@@ -275,70 +275,71 @@ class WPChaosClient {
 	 * @return void 
 	 */
 	public function get_object_page() {
-		//index.php?&org=1&slug=2 => /org/slug/
-		//org&guid
-		$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
-		
-		if($searchQuery) {
-			try {
-				$serviceResult = self::instance()->Object()->Get(
-					$searchQuery,	// Search query
-					null,	// Sort
-					null,	// AccessPoint given by settings.
-					0,		// pageIndex
-					1,		// pageSize
-					true,	// includeMetadata
-					true,	// includeFiles
-					true	// includeObjectRelations
-				);
-			} catch(\CHAOSException $e) {
-				// Do nothing but log it.
-				error_log('CHAOS Error when calling get_object_page: '.$e->getMessage());
-			}
+		global $wp_query;
+		if($wp_query->is_404() || $wp_query->is_attachment()) {
+			$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
 			
-			// No need for a 404 page - as the template is just not applied if the 
-			if($serviceResult->MCM()->TotalCount() >= 1) {
-				// TODO: Consider if this prevents caching.
-				status_header(200);
-				global $wp_query;
-				$wp_query->is_404 = false;
+			if($searchQuery) {
+				try {
+					$serviceResult = self::instance()->Object()->Get(
+						$searchQuery,	// Search query
+						null,	// Sort
+						null,	// AccessPoint given by settings.
+						0,		// pageIndex
+						1,		// pageSize
+						true,	// includeMetadata
+						true,	// includeFiles
+						true	// includeObjectRelations
+					);
+				} catch(\CHAOSException $e) {
+					// Do nothing but log it.
+					error_log('CHAOS Error when calling get_object_page: '.$e->getMessage());
+				}
 				
-				if($serviceResult->MCM()->TotalCount() > 1) {
-					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (search query was '. $searchQuery .').');
+				// No need for a 404 page - as the template is just not applied if the 
+				if($serviceResult->MCM()->TotalCount() >= 1) {
+					// TODO: Consider if this prevents caching.
+					status_header(200);
+					global $wp_query;
+					$wp_query->is_404 = false;
+					
+					if($serviceResult->MCM()->TotalCount() > 1) {
+						error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (search query was '. $searchQuery .').');
+					}
+					$objects = $serviceResult->MCM()->Results();
+					$object = new WPChaosObject($objects[0]);
+					self::set_object($object);
+				
+					// Call this by reference.
+					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
+	
+					//Remove meta and add a dynamic canonical for better seo
+					remove_action('wp_head', 'rel_canonical');
+					remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10,0);
+	
+					add_action('wp_head', function() {
+						$link = WPChaosClient::get_object()->url;
+						echo '<link rel="canonical" href="'.$link.'" />'."\n";
+					});
+	
+					//Look in theme dir and include if found
+					$include = locate_template('templates/chaos-object-page.php', false);
+					if($include == "") {
+						//Include from plugin template	
+						$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
+					}
+					require($include);
+					self::reset_object();
+					exit();
 				}
-				$objects = $serviceResult->MCM()->Results();
-				$object = new WPChaosObject($objects[0]);
-				self::set_object($object);
-			
-				// Call this by reference.
-				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
-
-				//Remove meta and add a dynamic canonical for better seo
-				remove_action('wp_head', 'rel_canonical');
-				remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10,0);
-
-				add_action('wp_head', function() {
-					$link = WPChaosClient::get_object()->url;
-					echo '<link rel="canonical" href="'.$link.'" />'."\n";
-				});
-
-				//Look in theme dir and include if found
-				$include = locate_template('templates/chaos-object-page.php', false);
-				if($include == "") {
-					//Include from plugin template	
-					$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
+				
+				// If we get to this point, and guid was a query parameter - we didn't get what we were looking for.
+				if(array_key_exists('guid', $_GET)) {
+					// The user specifically asked for an object of a particular GUID.
+					status_header(400);
+					global $wp_query;
+					$wp_query->set_404();
 				}
-				require($include);
-				self::reset_object();
-				exit();
-			}
-			
-			// If we get to this point, and guid was a query parameter - we didn't get what we were looking for.
-			if(array_key_exists('guid', $_GET)) {
-				// The user specifically asked for an object of a particular GUID.
-				status_header(400);
-				global $wp_query;
-				$wp_query->set_404();
 			}
 		}
 	}
