@@ -69,7 +69,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		}
 	}
 	
-	public function clear_cache($name) {
+	public function clear_cache($name = null) {
 		if($name) {
 			unset($this->variable_cache[$name]);
 		} else {
