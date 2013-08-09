@@ -307,7 +307,7 @@ class WPDKAObject {
 			}
 			// Fallback
 			// TODO: Consider making this fallback type-specific.
-			return $value . 'http://placekitten.com/202/145';
+			return $value . get_template_directory_uri() . '/img/format-'.$object->type.'.png';
 		}, 10, 2);
 
 		//object->slug
