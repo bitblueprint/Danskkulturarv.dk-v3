@@ -305,9 +305,8 @@ class WPDKAObject {
 					return $value . htmlspecialchars($file->URL);
 				}
 			}
-			// Fallback
-			// TODO: Consider making this fallback type-specific.
-			return $value . get_template_directory_uri() . '/img/format-'.$object->type.'.png';
+			// Fallback to nothing
+			return null;
 		}, 10, 2);
 
 		//object->slug
