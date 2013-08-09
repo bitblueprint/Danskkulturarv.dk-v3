@@ -379,7 +379,7 @@ class WPChaosSearch {
 			$tag = array_splice($tags, rand(0,count($tags)-1), 1);
 			$tag = $tag[0];
 
-			$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
+			$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag, WPChaosSearch::QUERY_KEY_SORT => $sort));
 			$result .= $sep."\n".'<a class="'.$class.'" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a>';
 			$number_of_tags--;
 			if($last_seperator && ($number_of_tags == 1 || count($tags) == 1)) {
@@ -401,7 +401,7 @@ class WPChaosSearch {
 			'sort' => 'visninger',
 			'accesspoint' => null,
 			'class' => 'tag',
-			'seperator' => ' ',
+			'seperator' => ', ',
 			'last_seperator' => ' and ',
 		), $atts ));
 	}
