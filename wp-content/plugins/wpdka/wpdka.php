@@ -57,6 +57,7 @@ class WPDKA {
 			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
 			
 			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
+			add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
 
 		}
 
@@ -390,6 +391,13 @@ class WPDKA {
 		echo '</tr>';
 
 	}
+
+	public function remove_dashboard_widgets() {
+		remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+		remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+		remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+		remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+	} 
 	
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
 		echo '<div id="'.$player_id.'"><p style="text-align:center;">Loading the player ...</p></div>';

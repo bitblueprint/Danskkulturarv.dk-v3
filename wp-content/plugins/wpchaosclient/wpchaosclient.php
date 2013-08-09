@@ -312,7 +312,16 @@ class WPChaosClient {
 			
 				// Call this by reference.
 				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
-	
+
+				//Remove meta and add a dynamic canonical for better seo
+				remove_action('wp_head', 'rel_canonical');
+				remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10,0);
+
+				add_action('wp_head', function() {
+					$link = WPChaosClient::get_object()->url;
+					echo '<link rel="canonical" href="'.$link.'" />'."\n";
+				});
+
 				//Look in theme dir and include if found
 				$include = locate_template('templates/chaos-object-page.php', false);
 				if($include == "") {
