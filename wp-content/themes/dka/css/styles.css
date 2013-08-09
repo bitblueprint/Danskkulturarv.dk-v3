@@ -4340,7 +4340,7 @@ a.dropdown-toggle:active {
   background: #eeeded url('../img/format-lyd.png') no-repeat center center;
   background-size: cover;
 }
-.search-object .thumbformat-billede {
+.search-object .thumb.format-billede {
   background: #eeeded url('../img/format-billede.png') no-repeat center center;
   background-size: cover;
 }
