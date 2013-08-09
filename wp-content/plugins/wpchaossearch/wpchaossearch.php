@@ -70,6 +70,7 @@ class WPChaosSearch {
 			// Rewrite tags and rules should always be added.
 			add_action('init', array('WPChaosSearch', 'handle_rewrite_rules'));
 			
+			add_shortcode( 'chaos-random-tags', array( &$this, 'random_tags_shortcode' ) );
 			// Add some custom rewrite rules.
 			// This is implemented as a PHP redirect instead.
 			// add_filter('mod_rewrite_rules', array(&$this, 'custom_mod_rewrite_rules'));
@@ -347,6 +348,60 @@ class WPChaosSearch {
 			$include = plugin_dir_path(__FILE__)."/templates/search-form.php";
 		}
 		require($include);
+	}
+
+	public function get_random_tags_from_results($args) {
+		$args = wp_parse_args($args, array(
+			'query' => '',
+			'number_of_tags' => 10,
+			'pageindex' => 0,
+			'pagesize' => get_option("wpchaos-searchsize"),
+			'sort' => 'visninger',
+			'accesspoint' => null,
+			'class' => 'tag',
+			'seperator' => ' ',
+			'last_seperator' => ' and ',
+		));
+		extract($args, EXTR_SKIP);	
+
+		$this->generate_searchresults($args);
+		$tags = array();
+		foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) {
+			WPChaosClient::set_object($object);
+			$tags = array_merge($tags,WPChaosClient::get_object()->tags_raw);
+
+		}
+		WPChaosClient::reset_object();
+
+		$sep = '';
+		while($number_of_tags > 0 && $tags) {
+			$tag = array_splice($tags, rand(0,count($tags)-1), 1);
+			$tag = $tag[0];
+
+			$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
+			echo $sep.'<a class="'.$class.'" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a>'."\n";
+			$number_of_tags--;
+			if($last_seperator && ($number_of_tags == 1 || count($tags) == 1)) {
+				$sep = $last_seperator;
+			} else {
+				$sep = $seperator;
+			}
+		}
+
+	}
+
+	public function random_tags_shortcode($atts) {
+		$this->get_random_tags_from_results(shortcode_atts( array(
+			'query' => '',
+			'number_of_tags' => 10,
+			'pageindex' => 0,
+			'pagesize' => get_option("wpchaos-searchsize"),
+			'sort' => 'visninger',
+			'accesspoint' => null,
+			'class' => 'tag',
+			'seperator' => ' ',
+			'last_seperator' => ' and ',
+		), $atts ));
 	}
 	
 	public static $search_query_variables = array();
