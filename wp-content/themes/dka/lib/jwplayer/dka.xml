@@ -37,8 +37,8 @@
 
 		<component name="display">
 			<settings>
-				<setting name="bufferrotation" value="90" />
-				<setting name="bufferinterval" value="150" />
+				<setting name="bufferrotation" value="45" />
+				<setting name="bufferinterval" value="100" />
 				<setting name="fontcolor" value="ffffff" />
 			</settings>
 			<elements>
