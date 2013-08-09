@@ -76,7 +76,7 @@ class WPChaosClient {
 		}
 
 		add_action('plugins_loaded',array(&$this,'load_textdomain'));
-		add_action('template_redirect', array(&$this,'get_object_page'));
+		add_action('template_redirect', array(&$this,'get_object_page'), 9);
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
 
 		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
