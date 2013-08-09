@@ -162,9 +162,9 @@ class WPDKAObject {
 			if($value == "") {
 				$typeTitle = $object->type_title;
 				if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
-					$typeTitle = __('Materiale');
+					$typeTitle = __('Material','wpdka');
 				}
-				return $typeTitle . __(' uden title');
+				return $typeTitle . __(' without title','wpdka');
 			} else {
 				return $value;
 			}
@@ -189,7 +189,7 @@ class WPDKAObject {
 				$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
 			}
 			if(empty($tags)) {
-				$value .= '<span class="no-tag">Ingen tags</span>'."\n";
+				$value .= '<span class="no-tag">'.__('No tags','wpdka').'</span>'."\n";
 			}
 			
 			return $value;
@@ -265,7 +265,7 @@ class WPDKAObject {
 				$time = strtotime($time);
 				//If january 1st, only print year, else get format from WordPress
 				if(date("d-m",$time) == "01-01") {
-					$time = __('Året ','dka').date_i18n('Y',$time);
+					$time = __('Year ','wpdka').date_i18n('Y',$time);
 				} else {
 					$time = date_i18n(get_option('date_format'),$time);
 				}
@@ -377,13 +377,7 @@ class WPDKAObject {
 						$realImages++;
 					}
 				}
-				if($realImages == 0) {
-					return $value . __('Ingen billeder');
-				} elseif($realImages == 1) {
-					return $value . $realImages . __(' billede');
-				} else {
-					return $value . $realImages . __(' billeder');
-				}
+				return $value . sprintf(_n('%s image', '%s images', $realImages,'wpdka'),$realImages);
 			} else {
 				return $value;
 			}
@@ -406,7 +400,7 @@ class WPDKAObject {
 			}
 			$value .= "</dl>\n";
 		} else {
-			$value .= "<p>Ikke opgivet</p>\n";
+			$value .= "<p>".__('Not provided','wpdka')."</p>\n";
 		}
 		return $value;
 	}

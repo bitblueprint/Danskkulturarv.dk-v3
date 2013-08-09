@@ -38,7 +38,7 @@ $options = array(
 		"link" => site_url(),
 		"margin" => 20
 	),
-	"abouttext" => __("Om Dansk Kulturarv"),
+	"abouttext" => sprintf(__("About %s",'wpdka'),get_bloginfo('title')),
 	"aboutlink" => site_url('om'),
 	"playlist" => array(array(
 		"image" => $object->thumbnail,

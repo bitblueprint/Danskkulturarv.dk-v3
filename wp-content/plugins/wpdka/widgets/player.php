@@ -25,8 +25,8 @@ class WPDKAObjectPlayerWidget extends WP_Widget {
 		
 		parent::__construct(
 			'dka-object-player-widget',
-			'DKA Object Player',
-			array( 'description' => 'Display a player according to the material format' )
+			__('DKA Object Player','wpdka'),
+			array( 'description' => __('Display a player according to the material format','wpdka') )
 		);
 
 	}

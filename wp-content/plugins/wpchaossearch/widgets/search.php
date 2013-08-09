@@ -14,16 +14,7 @@ class WPChaos_Search_Widget extends WP_Widget {
 	 * Fields in widget. Defines keys for values
 	 * @var array
 	 */
-	private $fields = array(
-		array(
-			'title' => 'Title',
-			'name' => 'title'
-		),
-		array(
-			'title' => 'Placeholder',
-			'name' => 'placeholder'
-		)
-	);
+	private $fields;
 
 	/**
 	 * Constructor
@@ -31,8 +22,19 @@ class WPChaos_Search_Widget extends WP_Widget {
 	public function __construct() {
 		parent::__construct(
 			'chaos-search',
-			'CHAOS Search',
-			array( 'description' => 'Adds fields to search in CHAOS material' )
+			__('CHAOS Search','wpchaossearch'),
+			array( 'description' => __('Adds form to search in CHAOS material','wpchaossearch') )
+		);
+
+		$this->fields = array(
+			array(
+				'title' => __('Title','wpchaossearch'),
+				'name' => 'title'
+			),
+			array(
+				'title' => __('Placeholder','wpchaossearch'),
+				'name' => 'placeholder'
+			)
 		);
 	}
 

@@ -47,6 +47,7 @@ class WPDKA {
 		if(self::check_chaosclient()) {
 			$this->load_dependencies();
 			
+			add_action('plugins_loaded',array(&$this,'load_textdomain'));
 			add_action('admin_menu', array(&$this, 'create_menu'));
 			add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
 
@@ -55,10 +56,14 @@ class WPDKA {
 			add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
 			add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
 			
-			add_action('wp_dashboard_setup', array(&$this, 'add_dashboard_widget') );
+			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
 
 		}
 
+	}
+
+	public function load_textdomain() {
+		load_plugin_textdomain( 'wpdka', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
 	}
 	
 	public static function install() {
@@ -85,13 +90,13 @@ class WPDKA {
 
 		$new_settings = array(array(
 			/*Sections*/
-			'name'		=> 'JW Player',
-			'title'		=> 'JW Player Settings',
+			'name'		=> 'jwplayer',
+			'title'		=> __('JW Player Settings','wpdka'),
 			'fields'	=> array(
 				/*Section fields*/
 				array(
 					'name' => 'wpdka-jwplayer-api-key',
-					'title' => 'JW Player API key',
+					'title' => __('JW Player API key','wpdka'),
 					'type' => 'text',
 					'val' => '',
 					'class' => 'regular-text'
@@ -341,31 +346,49 @@ class WPDKA {
 		echo json_encode($result);
 		die();
 	}
+
+	function add_chaos_material_counts() {
 	
-	public function add_dashboard_widget() {
-		wp_add_dashboard_widget('wpdka_admin_widget', 'Dansk Kulturarv', array(&$this, 'display_widget_content'));
-	}
-	
-	public function display_widget_content() {
-		echo '<h4>'. __("Fakta om websitet").'</h4>';
 		$facetFields = array('DKA-Crowd-Views_int', 'DKA-Crowd-Likes_int', 'DKA-Crowd-Shares_int');
 
-		echo "<p>";
-		printf(__("Totale antal materialer: %s"), do_shortcode('[chaos-total-count query=""]'));
-		echo "</p>";
-		
+		$num_posts = do_shortcode('[chaos-total-count query=""]');
+		$num = number_format_i18n($num_posts);
+		$text = _n('CHAOS material', 'CHAOS materials', intval($num_posts),'wpdka');
+
+		echo '<tr>';
+		echo '<td class="first b b-chaos-material">'.$num.'</td>';
+		echo '<td class="t chaos-material">'.$text.'</td>';
+		echo '</tr>';
+
 		$sum = WPChaosClient::summed_index_search($facetFields);
-		echo "<p>";
-		printf(__("Totale antal materiale visninger: %s"), $sum['DKA-Crowd-Views_int']);
-		echo "</p>";
-		
-		echo "<p>";
-		printf(__("Totale antal materiale likes: %s"), $sum['DKA-Crowd-Likes_int']);
-		echo "</p>";
-		
-		echo "<p>";
-		printf(__("Totale antal materiale delinger: %s"), $sum['DKA-Crowd-Shares_int']);
-		echo "</p>";
+
+		$num_posts = $sum['DKA-Crowd-Views_int'];
+		$num = number_format_i18n($num_posts);
+		$text = _n('CHAOS material view', 'CHAOS material views', intval($num_posts),'wpdka');
+
+		echo '<tr>';
+		echo '<td class="first b b-chaos-material">'.$num.'</td>';
+		echo '<td class="t chaos-material">'.$text.'</td>';
+		echo '</tr>';
+
+		$num_posts = $sum['DKA-Crowd-Likes_int'];
+		$num = number_format_i18n($num_posts);
+		$text = _n('CHAOS material like', 'CHAOS material likes', intval($num_posts),'wpdka');
+
+		echo '<tr>';
+		echo '<td class="first b b-chaos-material">'.$num.'</td>';
+		echo '<td class="t chaos-material">'.$text.'</td>';
+		echo '</tr>';
+
+		$num_posts = $sum['DKA-Crowd-Shares_int'];
+		$num = number_format_i18n($num_posts);
+		$text = _n('CHAOS material share', 'CHAOS material shares', intval($num_posts),'wpdka');
+
+		echo '<tr>';
+		echo '<td class="first b b-chaos-material">'.$num.'</td>';
+		echo '<td class="t chaos-material">'.$text.'</td>';
+		echo '</tr>';
+
 	}
 	
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
@@ -397,7 +420,7 @@ class WPDKA {
 			if(!empty($dep)) {
 				//deactivate_plugins(array($plugin));
 				add_action( 'admin_notices', function() use (&$dep) { 
-					echo '<div class="error"><p><strong>WordPress DKA Object</strong> needs <strong>'.implode('</strong>, </strong>',$dep).'</strong> to be activated.</p></div>';
+					echo '<div class="error"><p><strong>'.__('WordPress DKA','wpdka').'</strong> '.sprintf(__('needs %s to be activated.','wpdka'),'<strong>'.implode('</strong>, </strong>',$dep).'</strong>').'</p></div>';
 				},10);
 				return false;
 			}

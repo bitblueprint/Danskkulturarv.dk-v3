@@ -63,7 +63,7 @@ class WPDKASearch {
 		
 		if(get_option('wpchaos-searchpage') && is_page(get_option('wpchaos-searchpage'))) {
 			global $wp_query;
-			$wp_query->queried_object->post_title = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
+			$wp_query->queried_object->post_title = sprintf(__('%s about %s','wpdka'),get_bloginfo('title'),WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'));
 
 			//Alter some meta nodes to show information about the current search
 			add_filter('wpchaos-head-meta',function($metadatas) {
@@ -81,7 +81,7 @@ class WPDKASearch {
 					}
 
 					if($temp) {
-						$extra_description .= ' De fremsøgte materialer er fra '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+						$extra_description .= sprintf(__(' The material is from %s.','wpdka'),preg_replace('/(.*),/','$1 '.__('and','wpdka'),implode(", ", $temp)));
 					}
 					
 					unset($temp);
@@ -96,17 +96,15 @@ class WPDKASearch {
 						}
 					}
 					if($temp) {
-						$extra_description .= ' Formatet er '.preg_replace('/(.*),/','$1 og',implode(", ", $temp)).'.';
+						$extra_description .= sprintf(__(' The format is %s.','wpdka'),preg_replace('/(.*),/','$1 '.__('and','wpdka'),implode(", ", $temp)));
 					}
 					
 					unset($temp);
 					
 				}
 
-				$metadatas['og:title']['content'] = get_bloginfo('title')." om ".WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html');
-				$metadatas['description']['content'] = $metadatas['og:description']['content'] = get_bloginfo('title').' indeholder '.WPChaosSearch::get_search_results()->MCM()->TotalCount().
-				' materialer om "'.WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html').
-				'".'.$extra_description;
+				$metadatas['og:title']['content'] = sprintf(__('%s about %s','wpdka'),get_bloginfo('title'),WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html'));
+				$metadatas['description']['content'] = $metadatas['og:description']['content'] = sprintf(__('%s contains %s materials about %s.','wpdka'),get_bloginfo('title'),WPChaosSearch::get_search_results()->MCM()->TotalCount(),WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html')).$extra_description;
 
 				return $metadatas;
 			});
