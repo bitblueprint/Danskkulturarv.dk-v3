@@ -315,7 +315,7 @@ class WPDKAObject {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
-					return $value . htmlspecialchars($file->URL);
+					return $value . urlencode($file->URL);
 				}
 			}
 			// Fallback to nothing
@@ -338,7 +338,7 @@ class WPDKAObject {
 
 		//object->externalurl
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
-			return $value . htmlspecialchars($object->metadata(
+			return $value . urlencode($object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:ExternalURL/text()')
 			));
