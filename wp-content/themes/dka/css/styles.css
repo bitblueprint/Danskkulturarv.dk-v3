@@ -4397,7 +4397,7 @@ ul.row.listview li.search-object {
   border-bottom: #eeeded;
 }
 ul.row.listview li.search-object:hover {
-  background-color: #888888;
+  background-color: #eeeded;
 }
 ul.row.listview li {
   width: 100%;
