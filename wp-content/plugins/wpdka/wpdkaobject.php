@@ -257,8 +257,8 @@ class WPDKAObject {
 		//object->description
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
-					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:Description', '/DKA/Description/text()')
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:Description/*','/dka2:DKA/dka2:Description/text()', '/DKA/Description/text()')
 			);
 		}, 10, 2);
 
