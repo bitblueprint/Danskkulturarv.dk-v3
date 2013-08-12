@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosSearch\n"
-"POT-Creation-Date: 2013-08-12 09:57+0100\n"
-"PO-Revision-Date: 2013-08-12 09:58+0100\n"
+"POT-Creation-Date: 2013-08-12 11:09+0100\n"
+"PO-Revision-Date: 2013-08-12 11:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -95,7 +95,35 @@ msgid_plural "%s images"
 msgstr[0] "%s billede"
 msgstr[1] "%s billeder"
 
+#: ../wpdkaobject.php:399
+msgid "Actors"
+msgstr "Skuespillere"
+
+#: ../wpdkaobject.php:400
+msgid "Cinematography"
+msgstr "Kinematografi"
+
+#: ../wpdkaobject.php:401
+msgid "Creator"
+msgstr "Skaber"
+
+#: ../wpdkaobject.php:402
+msgid "Direction"
+msgstr "Instruktion"
+
+#: ../wpdkaobject.php:403
+msgid "Directors"
+msgstr "Instruktører"
+
 #: ../wpdkaobject.php:404
+msgid "Production"
+msgstr "Produktion"
+
+#: ../wpdkaobject.php:405
+msgid "Script"
+msgstr "Manuskript"
+
+#: ../wpdkaobject.php:418
 msgid "Not provided"
 msgstr "Ikke opgivet"
 

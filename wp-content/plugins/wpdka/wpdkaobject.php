@@ -257,8 +257,8 @@ class WPDKAObject {
 		//object->description
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
-					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:Description/*','/dka2:DKA/dka2:Description/text()', '/DKA/Description/text()')
+					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
+					array('/dka2:DKA/dka2:Description', '/DKA/Description/text()')
 			);
 		}, 10, 2);
 
@@ -392,11 +392,25 @@ class WPDKAObject {
 	}
 
 	public static function get_creator_attributes($creators) {
-		$value = "";
+		$value = "";	
 		if($creators) {
+			//Some roles are in English, gettext cannot translate variables, thus this whitelist
+			$role_i18n = array(
+				'actors' => __('Actors','wpdka'),
+				'cinematography' => __('Cinematography','wpdka'),
+				'creator' => __('Creator','wpdka'),
+				'direction' => __('Direction','wpdka'),
+				'directors' => __('Directors','wpdka'),
+				'production' => __('Production','wpdka'),
+				'script' => __('Script','wpdka'),
+
+			);
+
 			$value .= "<dl>\n";
 			foreach($creators as $creator) {
-				$value .= "<dt>".$creator['Role']."</dt>\n";
+				$role = strtolower(strval($creator['Role']));
+				$role = (isset($role_i18n[$role]) ? $role_i18n[$role] : ucfirst($creator['Role']));
+				$value .= "<dt>".$role."</dt>\n";
 				$value .= "<dd>".$creator['Name']."</dd>\n";
 			}
 			$value .= "</dl>\n";
