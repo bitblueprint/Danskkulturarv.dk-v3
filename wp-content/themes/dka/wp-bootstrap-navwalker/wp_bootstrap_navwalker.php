@@ -77,7 +77,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 			$attributes = ! empty( $item->target )     ? ' target="' . esc_attr( $item->target     ) .'"' : '';
 			$attributes .= ! empty( $item->xfn )        ? ' rel="'    . esc_attr( $item->xfn        ) .'"' : '';
 			$attributes .= ! empty( $item->url )        ? ' href="'   . esc_attr( $item->url        ) .'"' : '';
-			$attributes .= ($args->has_children) 	    ? ' data-toggle="dropdown" data-target="#" class="dropdown-toggle"' : '';
+			$attributes .= ($args->has_children) 	    ? ' data-toggle="dropdown" data-target="#"' : '';
 
 			$item_output = $args->before;
 			
