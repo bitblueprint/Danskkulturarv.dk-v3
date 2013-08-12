@@ -97,6 +97,11 @@ class WPDKAObject {
 			'title' => 'Billeder',
 			'chaos-value' => 'image'
 		),
+		WPDKAObject::TYPE_UNKNOWN => array(
+			'class' => 'icon-circle-blank',
+			'title' => 'Materiale',
+			'chaos-value' => ''
+			),
 	);
 
 	/**
@@ -161,9 +166,9 @@ class WPDKAObject {
 			// If we have no title at all.
 			if($value == "") {
 				$typeTitle = $object->type_title;
-				if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
-					$typeTitle = __('Material','wpdka');
-				}
+				// if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
+				// 	$typeTitle = __('Material','wpdka');
+				// }
 				return $typeTitle . __(' without title','wpdka');
 			} else {
 				return $value;
