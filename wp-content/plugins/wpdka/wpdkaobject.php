@@ -315,7 +315,7 @@ class WPDKAObject {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
-					return $value . urlencode($file->URL);
+					return $value . htmlspecialchars($file->URL);
 				}
 			}
 			// Fallback to nothing
