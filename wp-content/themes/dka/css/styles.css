@@ -4743,6 +4743,10 @@ footer ul#menu-footer.nav-footer > li + li {
   margin-left: 10px;
   padding-left: 10px;
 }
+footer ul#menu-footer.nav-footer > li + li:last-child {
+  border-left: none;
+  margin-left: -6px;
+}
 footer ul#menu-footer.nav-footer > li {
   display: inline-block;
   list-style: none;
