@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosSearch\n"
-"POT-Creation-Date: 2013-08-09 15:42+0100\n"
-"PO-Revision-Date: 2013-08-09 15:42+0100\n"
+"POT-Creation-Date: 2013-08-12 09:57+0100\n"
+"PO-Revision-Date: 2013-08-12 09:58+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -19,47 +19,55 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../wpdka.php:95
+#: ../wpdka.php:107
+msgid "Dansk Kulturarv"
+msgstr "Dansk Kulturarv"
+
+#: ../wpdka.php:111
+msgid "Page for objects with an unknown organization."
+msgstr "Side til objekter med ukendt organisation"
+
+#: ../wpdka.php:119
 msgid "JW Player Settings"
 msgstr "JW Player indstillinger"
 
-#: ../wpdka.php:100
+#: ../wpdka.php:124
 msgid "JW Player API key"
 msgstr "JW Player API-nøgle"
 
-#: ../wpdka.php:357
+#: ../wpdka.php:404
 msgid "CHAOS material"
 msgid_plural "CHAOS materials"
 msgstr[0] "CHAOS materiale"
 msgstr[1] "CHAOS materialer"
 
-#: ../wpdka.php:368
+#: ../wpdka.php:415
 msgid "CHAOS material view"
 msgid_plural "CHAOS material views"
 msgstr[0] "CHAOS materialevisning"
 msgstr[1] "CHAOS materialevisninger"
 
-#: ../wpdka.php:377
+#: ../wpdka.php:424
 msgid "CHAOS material like"
 msgid_plural "CHAOS material likes"
 msgstr[0] "CHAOS materiale-like"
 msgstr[1] "CHAOS materiale-likes"
 
-#: ../wpdka.php:386
+#: ../wpdka.php:433
 msgid "CHAOS material share"
 msgid_plural "CHAOS material shares"
 msgstr[0] "CHAOS materialedeling"
 msgstr[1] "CHAOS materialedelinger"
 
-#: ../wpdka.php:403
+#: ../wpdka.php:450
 msgid "Loading the player ..."
 msgstr "Henter afspiller ..."
 
-#: ../wpdka.php:431
+#: ../wpdka.php:478
 msgid "WordPress DKA"
 msgstr "WordPress DKA"
 
-#: ../wpdka.php:431
+#: ../wpdka.php:478
 #, php-format
 msgid "needs %s to be activated."
 msgstr "kræver at %s er aktiveret."
@@ -72,22 +80,22 @@ msgstr "Materiale"
 msgid " without title"
 msgstr " uden titel"
 
-#: ../wpdkaobject.php:192
+#: ../wpdkaobject.php:197
 msgid "No tags"
 msgstr "Ingen tags"
 
-#: ../wpdkaobject.php:268
+#: ../wpdkaobject.php:276
 msgid "Year "
 msgstr "Året "
 
-#: ../wpdkaobject.php:379
+#: ../wpdkaobject.php:381
 #, php-format
 msgid "%s image"
 msgid_plural "%s images"
 msgstr[0] "%s billede"
 msgstr[1] "%s billeder"
 
-#: ../wpdkaobject.php:402
+#: ../wpdkaobject.php:404
 msgid "Not provided"
 msgstr "Ikke opgivet"
 
@@ -115,8 +123,8 @@ msgstr "%s indeholder %s materialer om %s."
 msgid "Image %s for %s"
 msgstr "Billede %s til %s"
 
-#: ../templates/player-lyd-mediaelement.php:34 ../templates/player-lyd.php:41
-#: ../templates/player-video.php:41
+#: ../templates/player-lyd-mediaelement.backup.php:34
+#: ../templates/player-lyd.php:41 ../templates/player-video.php:41
 #, php-format
 msgid "About %s"
 msgstr "Om %s"
@@ -129,6 +137,10 @@ msgstr "DKA Objektafspiller"
 msgid "Display a player according to the material format"
 msgstr "Vis en afspiller i henhold til materialeformatet"
 
+#~ msgid "Permalinks must be enabled for CHAOS search to work properly"
+#~ msgstr ""
+#~ "Permalinks skal være aktiveret for at CHAOS søgning skal fungere korrekt"
+
 #~ msgid "%s about %s"
 #~ msgstr "%s om %s"
 
@@ -138,10 +150,6 @@ msgstr "Vis en afspiller i henhold til materialeformatet"
 
 #~ msgid "Page for search results"
 #~ msgstr "Side til søgeresultater"
-
-#~ msgid "Permalinks must be enabled for CHAOS search to work properly"
-#~ msgstr ""
-#~ "Permalinks skal være aktiveret for at CHAOS søgning skal fungere korrekt"
 
 #~ msgid "Results per page"
 #~ msgstr "Resultater per side"
