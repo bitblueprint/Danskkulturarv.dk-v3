@@ -11,7 +11,7 @@
  */
 class WPDKAObject {
 
-	const OBJECT_TYPE_ID = 36;
+	static $OBJECT_TYPE_IDS = array(36, 41);
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
 	const DKA_CROWD_SCHEMA_GUID = 'a37167e0-e13b-4d29-8a41-b0ffbaa1fe5f';
@@ -50,7 +50,11 @@ class WPDKAObject {
 		add_filter('widgets_init',array(&$this,'register_widgets'));
 		
 		// Restrict chaos query to this object type.
-		WPChaosClient::instance()->addGlobalConstraint('ObjectTypeID:' . self::OBJECT_TYPE_ID);
+		$objectTypeConstraints = array();
+		foreach(self::$OBJECT_TYPE_IDS as $id) {
+			$objectTypeConstraints[] = "ObjectTypeID:$id";
+		}
+		WPChaosClient::instance()->addGlobalConstraint(implode('+OR+', $objectTypeConstraints));
 	}
 
 	const TYPE_VIDEO = 'video';
