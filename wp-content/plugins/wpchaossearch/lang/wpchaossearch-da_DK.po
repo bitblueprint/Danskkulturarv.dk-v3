@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosSearch\n"
-"POT-Creation-Date: 2013-08-09 13:48+0100\n"
-"PO-Revision-Date: 2013-08-09 13:48+0100\n"
+"POT-Creation-Date: 2013-08-12 09:56+0100\n"
+"PO-Revision-Date: 2013-08-12 09:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -19,37 +19,37 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../wpchaossearch.php:104
+#: ../wpchaossearch.php:110
 msgid "Search Settings"
 msgstr "Søgeindstillinger"
 
-#: ../wpchaossearch.php:109
+#: ../wpchaossearch.php:115
 msgid "Page for search results"
 msgstr "Side til søgeresultater"
 
-#: ../wpchaossearch.php:114
+#: ../wpchaossearch.php:120
 msgid "Permalinks must be enabled for CHAOS search to work properly"
 msgstr ""
 "Permalinks skal være aktiveret for at CHAOS søgning skal fungere korrekt"
 
-#: ../wpchaossearch.php:119
+#: ../wpchaossearch.php:125
 msgid "Results per page"
 msgstr "Resultater per side"
 
-#: ../wpchaossearch.php:214
+#: ../wpchaossearch.php:228
 #, php-format
 msgid "%s about %s"
 msgstr "%s om %s"
 
-#: ../wpchaossearch.php:476 ../wpchaossearch.php:517
+#: ../wpchaossearch.php:546 ../wpchaossearch.php:587
 msgid "WordPress CHAOS Search"
 msgstr "WordPress CHAOS Search"
 
-#: ../wpchaossearch.php:476
+#: ../wpchaossearch.php:546
 msgid "Rewrite rules flushed .."
 msgstr "Rewrite rules nulstillet .."
 
-#: ../wpchaossearch.php:517
+#: ../wpchaossearch.php:587
 #, php-format
 msgid "needs %s to be activated."
 msgstr "kræver at %s er aktiveret."

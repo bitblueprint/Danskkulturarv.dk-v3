@@ -453,7 +453,7 @@ ul.row.listview {
     }
 
     li.search-object:hover {
-      background-color: @grayLighter;
+      background-color: @grayBorder;
     }
 
   li {
@@ -881,6 +881,10 @@ footer {
       border-left: 1px solid @grayLightest;
       margin-left: 10px;
       padding-left: 10px;
+    }
+    > li+li:last-child {
+      border-left: none;
+      margin-left: -6px;
     }
     > li {
       display: inline-block;

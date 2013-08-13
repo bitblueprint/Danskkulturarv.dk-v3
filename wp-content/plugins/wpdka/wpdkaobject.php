@@ -101,6 +101,11 @@ class WPDKAObject {
 			'title' => 'Billeder',
 			'chaos-value' => 'image'
 		),
+		WPDKAObject::TYPE_UNKNOWN => array(
+			'class' => 'icon-circle-blank',
+			'title' => 'Materiale',
+			'chaos-value' => ''
+			),
 	);
 
 	/**
@@ -165,9 +170,9 @@ class WPDKAObject {
 			// If we have no title at all.
 			if($value == "") {
 				$typeTitle = $object->type_title;
-				if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
-					$typeTitle = __('Material','wpdka');
-				}
+				// if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
+				// 	$typeTitle = __('Material','wpdka');
+				// }
 				return $typeTitle . __(' without title','wpdka');
 			} else {
 				return $value;
@@ -337,7 +342,7 @@ class WPDKAObject {
 
 		//object->externalurl
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
-			return $value . htmlspecialchars($object->metadata(
+			return $value . urlencode($object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:ExternalURL/text()')
 			));
@@ -396,11 +401,25 @@ class WPDKAObject {
 	}
 
 	public static function get_creator_attributes($creators) {
-		$value = "";
+		$value = "";	
 		if($creators) {
+			//Some roles are in English, gettext cannot translate variables, thus this whitelist
+			$role_i18n = array(
+				'actors' => __('Actors','wpdka'),
+				'cinematography' => __('Cinematography','wpdka'),
+				'creator' => __('Creator','wpdka'),
+				'direction' => __('Direction','wpdka'),
+				'directors' => __('Directors','wpdka'),
+				'production' => __('Production','wpdka'),
+				'script' => __('Script','wpdka'),
+
+			);
+
 			$value .= "<dl>\n";
 			foreach($creators as $creator) {
-				$value .= "<dt>".$creator['Role']."</dt>\n";
+				$role = strtolower(strval($creator['Role']));
+				$role = (isset($role_i18n[$role]) ? $role_i18n[$role] : ucfirst($creator['Role']));
+				$value .= "<dt>".$role."</dt>\n";
 				$value .= "<dd>".$creator['Name']."</dd>\n";
 			}
 			$value .= "</dl>\n";

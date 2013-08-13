@@ -111,10 +111,6 @@ class WPDKA {
 					'title' => __('Page for objects with an unknown organization.','wpdka'),
 					'type' => 'select',
 					'list' => $pages,
-					'precond' => array(array(
-						'cond' => (get_option('permalink_structure') != ''),
-						'message' => __('Permalinks must be enabled for CHAOS search to work properly','wpdka')
-					))
 				),
 			)
 		),array(

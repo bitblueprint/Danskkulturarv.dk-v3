@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosClient\n"
-"POT-Creation-Date: 2013-08-08 17:11+0100\n"
-"PO-Revision-Date: 2013-08-08 17:12+0100\n"
+"POT-Creation-Date: 2013-08-12 09:56+0100\n"
+"PO-Revision-Date: 2013-08-12 09:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -43,37 +43,37 @@ msgstr "E-mail til autentificering"
 msgid "Password"
 msgstr "Adgangskode"
 
-#: ../wpchaosclient.php:171
+#: ../wpchaosclient.php:175
 msgid "CHAOS Client"
 msgstr "CHAOS Klient"
 
-#: ../wpchaosclient.php:172
+#: ../wpchaosclient.php:176
 msgid "CHAOS"
 msgstr "CHAOS"
 
-#: ../wpchaosclient.php:190
+#: ../wpchaosclient.php:194
 msgid "Connection to CHAOS is established"
 msgstr "Forbindelse til CHAOS er etableret"
 
-#: ../wpchaosclient.php:192
+#: ../wpchaosclient.php:196
 #, php-format
 msgid "(session is %s last updated %s)"
 msgstr "(session er %s sidst opdateret %s)"
 
-#: ../wpchaosclient.php:195
+#: ../wpchaosclient.php:199
 msgid "Could not connect to CHAOS. Please check the details below."
 msgstr ""
 "Kunne ikke forbinde til CHAOS. Kontroller venligst nedenstående oplysninger."
 
-#: ../wpchaosclient.php:214
+#: ../wpchaosclient.php:218
 msgid "CHAOS Object - Featured"
 msgstr "CHAOS Objekt - Fremhævet"
 
-#: ../wpchaosclient.php:223
+#: ../wpchaosclient.php:227
 msgid "CHAOS Object - Main"
 msgstr "CHAOS Objekt - Primær"
 
-#: ../wpchaosclient.php:232
+#: ../wpchaosclient.php:236
 msgid "CHAOS Object - Sidebar"
 msgstr "CHAOS Objekt - Sidebar"
 
