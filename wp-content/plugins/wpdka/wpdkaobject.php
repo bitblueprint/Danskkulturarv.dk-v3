@@ -11,6 +11,7 @@
  */
 class WPDKAObject {
 
+	// TODO: Consider making this an option.
 	static $OBJECT_TYPE_IDS = array(36, 41);
 	const DKA_SCHEMA_GUID = '00000000-0000-0000-0000-000063c30000';
 	const DKA2_SCHEMA_GUID = '5906a41b-feae-48db-bfb7-714b3e105396';
@@ -319,6 +320,14 @@ class WPDKAObject {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
 				if($file->FormatID == 10) {
+					return $value . htmlspecialchars($file->URL);
+				}
+			}
+			// Try another image - any image will do.
+			// TODO: Consider using a serverside cache and downscaling service.
+			foreach($object->Files as $file) {
+				// FormatID = 10 is thumbnail format. This is what we want here
+				if($file->FormatType == "Image") {
 					return $value . htmlspecialchars($file->URL);
 				}
 			}
