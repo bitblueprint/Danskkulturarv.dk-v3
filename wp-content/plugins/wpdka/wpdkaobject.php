@@ -479,10 +479,12 @@ class WPDKAObject {
 			}
 
 			global $wp_query;
-			// The slug will register as a post name or post attachement name.
-			$slug = $wp_query->query_vars['name'];
-			if($slug) {
-				$query[] = WPDKAObject::DKA_CROWD_SLUG_SOLR_FIELD. ':"'. $wp_query->query_vars['name'] .'"';
+			if($wp_query->is_404() || $wp_query->is_attachment()) {
+				// The slug will register as a post name or post attachement name.
+				$slug = $wp_query->query_vars['name'];
+				if($slug) {
+					$query[] = WPDKAObject::DKA_CROWD_SLUG_SOLR_FIELD. ':"'. $wp_query->query_vars['name'] .'"';
+				}
 			}
 			
 			return implode("+OR+", $query);
