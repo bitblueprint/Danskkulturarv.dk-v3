@@ -68,7 +68,7 @@ class WPDKAObject {
 	 * How many seconds should we wait for the CHAOS service to realize the slug has changed?
 	 * @var integer
 	 */
-	const RESET_TIMEOUT_S = 10; // 10 seconds.
+	const RESET_TIMEOUT_S = 30; // 10 seconds.
 	
 	/**
 	 * How many milliseconds delay between checking the service for the object to become searchable on the slug.
@@ -564,7 +564,7 @@ class WPDKAObject {
 		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET) && current_user_can('edit_posts');
 		
 		if($forceReset || !$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
-			$slug = self::reset_crowd_metadata($object)->slug;
+			$slug = self::reset_crowd_metadata($object, true)->slug;
 		} else {
 			// If the metadata is present, we can extract the slug from there.
 			$slug = $object->slug;
@@ -594,7 +594,7 @@ class WPDKAObject {
 		return $object;
 	}
 	
-	public static function reset_crowd_metadata(\WPChaosObject $object) {
+	public static function reset_crowd_metadata(\WPChaosObject $object, $forceNewSlug = false) {
 		$existingMetadata = $object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
 		$revisionID = $existingMetadata != false ? $existingMetadata->RevisionID : null;
 		
@@ -607,7 +607,7 @@ class WPDKAObject {
 		$metadataXML->addChild('Likes', '0');
 		$metadataXML->addChild('Ratings', '0');
 		$metadataXML->addChild('AccumulatedRate', '0');
-		$slug = WPDKAObject::generateSlug($object);
+		$slug = WPDKAObject::generateSlug($object, $forceNewSlug);
 		$metadataXML->addChild('Slug', $slug);
 		$metadataXML->addChild('Tags');
 		
@@ -627,9 +627,9 @@ class WPDKAObject {
 	 * @param \CHAOS\Portal\Client\Data\Object $object The object to generate the slug from.
 	 * @return string The slug generated - prepended with a nummeric postfix to prevent douplicates.
 	 */
-	public static function generateSlug(\WPChaosObject $object) {
+	public static function generateSlug(\WPChaosObject $object, $forceNew = false) {
 		// Check if the object is reachable on its exsisting slug.
-		if($object->slug) {
+		if($object->slug && !$forceNew) {
 			$exsistingSlugObjects = self::getObjectFromSlug($object->slug, true);
 			if(count($exsistingSlugObjects) == 1 && $exsistingSlugObjects[0]->GUID == $object->GUID) {
 				// There is only a single object with this slug, and its the same object.
@@ -641,6 +641,9 @@ class WPDKAObject {
 		$title = $object->title;
 		// We need to urldecode, as special chars are encoded to octets.
 		$slug_base = urldecode(sanitize_title_with_dashes($title));
+		if(strlen($slug_base) == 0) {
+			$slug_base = 'materiale-uden-titel';
+		}
 		// Is it free without a postfix?
 		if(self::isSlugFree($slug_base)) {
 			return $slug_base;
