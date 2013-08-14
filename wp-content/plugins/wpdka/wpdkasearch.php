@@ -26,17 +26,20 @@ class WPDKASearch {
 			'link' => null,
 			'chaos-value' => null
 		),
-		// FIXME: Uncomment when it becomes available in CHAOS.
-		/*'titel' => array(
+		'titel' => array(
 			'title' => 'Titel',
 			'link' => 'titel',
-			'chaos-value' => 'DKA2-Title_string'
+			'chaos-value' => 'DKA-Title_string+asc'
 		),
-		*/
 		'visninger' => array(
 			'title' => 'Visninger',
 			'link' => 'visninger',
 			'chaos-value' => 'DKA-Crowd-Views_int+desc'
+		),
+		'udgivelse' => array(
+			'title' => 'Udgivelsestid',
+			'link' => 'udgivelse',
+			'chaos-value' => 'DKA-FirstPublishedDate_date+asc'
 		),
 	);
 
