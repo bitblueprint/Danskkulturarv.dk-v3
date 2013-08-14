@@ -594,7 +594,7 @@ class WPDKAObject {
 		return $object;
 	}
 	
-	public static function reset_crowd_metadata(\WPChaosObject $object, $forceNewSlug = false) {
+	public static function reset_crowd_metadata(\WPChaosObject $object, $forceNewSlug = false, $fetchSocialCounts = false) {
 		$existingMetadata = $object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
 		$revisionID = $existingMetadata != false ? $existingMetadata->RevisionID : null;
 		
@@ -602,7 +602,11 @@ class WPDKAObject {
 		$objectGUID = $object->GUID;
 		$metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkac:DKACrowd xmlns:dkac='http://www.danskkulturarv.dk/DKA-Crowd.xsd'></dkac:DKACrowd>");
 		$metadataXML->addChild('Views', WPDKAObject::restore_views($object->GUID));
-		$shares = array_sum(self::fetch_social_counts($object));
+		if($fetchSocialCounts) {
+			$shares = array_sum(self::fetch_social_counts($object));
+		} else {
+			$shares = 0;
+		}
 		$metadataXML->addChild('Shares', $shares);
 		$metadataXML->addChild('Likes', '0');
 		$metadataXML->addChild('Ratings', '0');
