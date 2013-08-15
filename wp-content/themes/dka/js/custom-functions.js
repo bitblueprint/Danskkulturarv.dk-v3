@@ -83,7 +83,8 @@
 		addFlexSliders: function() {
 			$('.flexslider').flexslider({
 				animation: "slide",
-				touch: true
+				touch: true,
+				smoothHeight: true
 			});
 		},
 
