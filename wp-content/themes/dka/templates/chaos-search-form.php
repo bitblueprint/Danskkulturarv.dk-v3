@@ -31,8 +31,8 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 	</div>
 	<div class="col-lg-4 col-2 btn-advanced-search-container">
 		<button class="btn btn-large btn-block btn-advanced-search collapsed blue dropdown-toggle" type="button" data-toggle="collapse" data-target="#advanced-search-container">
-			<span class="visible-lg"><i class="icon-cogs"></i> <?php _e('Refine search','dka'); ?> <i class="icon-caret-down"></i></span>
-			<span class="hidden-lg"><i class="icon-cogs"></i> <i class="icon-caret-down"></i></span>
+			<span class="visible-lg"><i class="icon-cog"></i> <?php _e('Refine search','dka'); ?> <i class="icon-caret-down"></i></span>
+			<span class="hidden-lg"><i class="icon-cog"></i> <i class="icon-caret-down"></i></span>
 		</button>
 	</div>
 	<div id="advanced-search-container" class="container row collapse<?php echo $advanced_search_expanded; ?>">

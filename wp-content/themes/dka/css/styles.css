@@ -4394,7 +4394,10 @@ ul.row.listview {
   width: 100%;
 }
 ul.row.listview li.search-object {
-  border-bottom: #eeeded;
+  border-bottom: 1px solid #eeeded;
+}
+ul.row.listview li.search-object:last-child {
+  border-bottom: none;
 }
 ul.row.listview li.search-object:hover {
   background-color: #eeeded;
@@ -4413,6 +4416,9 @@ ul.row.listview li .thumbnail {
   border: none;
   background-color: rgba(0, 0, 0, 0) !important;
 }
+ul.row.listview li a.thumbnail {
+  height: 100px;
+}
 ul.row.listview li h2.title {
   background-color: none !important;
 }
@@ -4420,32 +4426,24 @@ ul.row.listview li .organization {
   float: left;
   margin-right: 6px;
   position: relative;
-  width: 100%;
   white-space: nowrap;
-}
-ul.row.listview li .organization strong {
-  overflow-x: visible;
-  overflow-y: visible;
-  padding-bottom: 0px;
-  padding-left: 0px;
-  padding-right: 0px;
-  padding-top: 0px;
-  text-align: -webkit-auto;
-  text-decoration: none;
-  text-overflow: clip;
-  white-space: nowrap;
-  width: auto;
 }
 ul.row.listview li .date {
   float: left;
   margin-right: 10px;
+  margin-bottom: 0;
   position: relative;
+  clear: left;
 }
 ul.row.listview li .media-type-container {
   float: left;
+  clear: left;
 }
 ul.row.listview .thumb {
-  display: none;
+  float: right;
+  height: 100px;
+  width: 100px;
+  clear: all !important;
 }
 .search-results {
   border-left: 1px solid #eeeded;
@@ -4683,6 +4681,7 @@ div.contributors dd {
 .front-page-content a {
   color: #2f94fd;
   text-decoration: none;
+  text-transform: lowercase;
 }
 .front-page-content a:hover {
   color: #555555;

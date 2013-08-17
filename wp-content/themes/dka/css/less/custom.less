@@ -449,7 +449,11 @@ ul.row.listview {
   width: 100%;
 
     li.search-object {
-      border-bottom: @grayBorder;
+      border-bottom: 1px solid @grayBorder;
+    }
+
+    li.search-object:last-child {
+      border-bottom: none;
     }
 
     li.search-object:hover {
@@ -472,6 +476,10 @@ ul.row.listview {
       background-color: rgba(0,0,0,0) !important;
     }
 
+    a.thumbnail {
+      height: 100px;
+    }
+
     h2.title {
       background-color: none !important;
     }
@@ -480,39 +488,30 @@ ul.row.listview {
       float: left;
       margin-right: 6px;
       position: relative;
-      width: 100%;
-      white-space:nowrap;
-
-      strong {
-        overflow-x: visible;
-overflow-y: visible;
-padding-bottom: 0px;
-padding-left: 0px;
-padding-right: 0px;
-padding-top: 0px;
-text-align: -webkit-auto;
-text-decoration: none;
-text-overflow: clip;
-white-space: nowrap;
-width: auto;
-      }
+      white-space: nowrap;
 
     }
 
     .date {
       float: left;
       margin-right: 10px;
+      margin-bottom: 0;
       position: relative;
+      clear: left;
     }
 
     .media-type-container {
       float: left;
+      clear: left;
     }
 
   }
 
   .thumb {
-    display: none;
+    float: right;
+    height: 100px;
+    width: 100px;
+    clear: all !important;
   }
 
 }
@@ -810,6 +809,7 @@ div.contributors {
   a {
     color: @blue;
     text-decoration: none;
+    text-transform:lowercase;
   }
 
   a:hover {
