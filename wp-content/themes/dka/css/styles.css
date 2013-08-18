@@ -4513,8 +4513,24 @@ ul.row.listview .thumb {
   padding-top: 14px;
   float: left;
 }
-a.sortby-link:hover {
-  text-decoration: none;
+a.sortby-link:hover,
+a.sortby-link:active {
+  text-decoration: none !important;
+  color: #2f94fd;
+}
+.sortby-dropdown a:link {
+  text-decoration: none !important;
+  color: #2f94fd;
+}
+.sortby-dropdown .dropdown-menu li > a:hover,
+.sortby-dropdown .dropdown-menu li > a:active,
+.sortby-dropdown .dropdown-menu li > a:visited {
+  background-color: #2f94fd !important;
+  background: #2f94fd !important;
+  text-decoration: none !important;
+}
+.sortby-dropdown .dropdown-menu a#dLabel.sortby-link:active {
+  text-decoration: none !important;
 }
 .pagination {
   -webkit-border-radius: 0;

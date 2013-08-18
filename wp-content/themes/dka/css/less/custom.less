@@ -599,11 +599,30 @@ ul.row.listview {
 
 .sortby-dropdown {
   padding-top: 14px;
-  float: left;
+  float: left;;
 }
 
-a.sortby-link:hover {
-  text-decoration: none;
+
+a.sortby-link:hover, a.sortby-link:active {
+  text-decoration: none !important;
+  color: @blue;
+}
+
+.sortby-dropdown a:link {
+  text-decoration: none !important;
+  color: @blue;
+}
+
+.sortby-dropdown .dropdown-menu {
+  li > a:hover, li > a:active, li > a:visited {
+    background-color: @blue !important;
+    background: @blue !important;
+    text-decoration: none !important;
+  }
+
+  a#dLabel.sortby-link:active {
+    text-decoration: none !important;
+  }
 }
 
 .pagination {
