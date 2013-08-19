@@ -351,10 +351,10 @@ class WPDKAObject {
 
 		//object->externalurl
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
-			return $value . urlencode($object->metadata(
+			return $value . $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID),
 				array('/dka2:DKA/dka2:ExternalURL/text()')
-			));
+			);
 		}, 10, 2);
 
 		//object->views
