@@ -51,7 +51,16 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 		<div class="col-sm-6 col-12 filter-container filter-media-type filter-organizations">
 			<label class="btn filter-btn filter-btn-all"><?php _e('All Organizations','dka'); ?><i class="icon-ok"></i></label>
 			<hr class="hidden-sm">
-<?php foreach(WPDKASearch::get_organizations() as $title => $organization) : ?>
+<?php
+$current_organization_id = 0;
+foreach(WPDKASearch::get_organizations() as $title => $organization) :
+
+	if($current_organization_id == $organization['id']) {
+		continue;
+	}
+	$current_organization_id = $organization['id'];
+
+?>
 			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" <?php checked(in_array($organization['slug'],(array)$organizations)); ?>>
 				<?php echo $organization['title']; ?> (<?php echo get_facet_count(WPDKASearch::QUERY_KEY_ORGANIZATION, $title) ?>)<i class="icon-remove-sign"></i>

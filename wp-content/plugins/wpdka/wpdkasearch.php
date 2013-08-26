@@ -188,7 +188,6 @@ class WPDKASearch {
 					$query[] = '(' . implode("+OR+", $searches) . ')';
 				}
 			}
-				
 			return implode("+AND+", $query);
 		}, 11, 2);
 	}
@@ -204,21 +203,25 @@ class WPDKASearch {
 	 */
 	public static function get_organizations() {
 		if(empty(self::$organizations)) {
+			$key = 'chaos_organization';
 			$posts = new WP_Query(array(
-				'meta_key' => 'chaos_organization',
+				'meta_key' => $key ,
 				'post_type' => 'page',
 				'post_status' => 'publish,private,future',
 				'orderby' => 'title',
 				'order' => 'ASC'
 			));
 			foreach($posts->posts as $post) {
-				self::$organizations[$post->chaos_organization] = array(
-					'title' => $post->post_title,
-					'slug' => $post->post_name,
-					'id' => $post->ID
-				);
-			} 
-		}	
+				$post_organizations = get_post_custom_values($key, $post->ID);
+				foreach($post_organizations as $organization) {
+					self::$organizations[$organization] = array(
+						'title' => $post->post_title,
+						'slug' => $post->post_name,
+						'id' => $post->ID
+					);
+				}
+			}
+		}
 		return self::$organizations;
 	}
 
