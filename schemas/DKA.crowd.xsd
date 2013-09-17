@@ -44,11 +44,35 @@
                     </annotation>
                     <complexType>
     					<sequence>
-    						<element name="Tag" type="string"
-    							maxOccurs="unbounded" minOccurs="0">
-                                <annotation>
-                                	<documentation>A single lowercased tag.</documentation>
-                                </annotation>
+    						<element name="Tag" maxOccurs="unbounded" minOccurs="0">
+    							<annotation>
+    								<documentation>A single lowercased string describing a tag su</documentation>
+    							</annotation>
+    							<complexType>
+    								<simpleContent>
+    									<extension base="string">
+    										<attribute name="created"
+    											type="dateTime">
+    										</attribute>
+    										<attribute name="status">
+    											<simpleType>
+    												<restriction
+    													base="string">
+    													<enumeration
+    														value="Unapproved">
+    													</enumeration>
+    													<enumeration
+    														value="Flagged">
+    													</enumeration>
+    													<enumeration
+    														value="Approved">
+    													</enumeration>
+    												</restriction>
+    											</simpleType>
+    										</attribute>
+    									</extension>
+    								</simpleContent>
+    							</complexType>
     						</element>
     					</sequence>
     				</complexType>
