@@ -18,3 +18,6 @@
 		<h4><?php _e('Tags','dka'); ?></h4>
 		<?php echo WPChaosClient::get_object()->tags; ?>
 
+		<h4><?php _e('User Tags','dka'); ?></h4>
+		<?php echo WPChaosClient::get_object()->usertags; ?>
+
