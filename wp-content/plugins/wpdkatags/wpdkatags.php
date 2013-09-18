@@ -123,7 +123,8 @@ final class WPDKATags {
         \CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.Crowd.xsd');
         $xml = $objects[0]->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
         
-        $tags = $xml->xpath('/dkac:DKACrowd/dkac:Tags')[0];
+        $tags = $xml->xpath('/dkac:DKACrowd/dkac:Tags');
+        $tags = $tags[0];
 
         //$response = $xml->asXML();
         $tagnode = $tags->addChild('Tag',$tag);
