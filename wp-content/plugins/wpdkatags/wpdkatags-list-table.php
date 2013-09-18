@@ -70,20 +70,15 @@ class WPDKATags_List_Table extends WP_List_Table {
             )
         );
     
-    /** ************************************************************************
-     * REQUIRED. Set up a constructor that references the parent constructor. We 
-     * use the parent reference to set some default configs.
-     ***************************************************************************/
-    function __construct(){
+    public function __construct(){
         global $status, $page;
                 
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => self::NAME_SINGULAR,     //singular name of the listed records
-            'plural'    => self::NAME_PLURAL,    //plural name of the listed records
+            'singular'  => self::NAME_SINGULAR,
+            'plural'    => self::NAME_PLURAL,
             'ajax'      => false        //does this table support ajax?
         ) );
-        //$_GET['author'] = get_current_user_id();
     }
 
     public function extra_tablenav($which) {
@@ -163,7 +158,7 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @param array $column_name The name/slug of the column to be processed
      * @return string Text or HTML to be placed inside the column <td>
      **************************************************************************/
-    function column_default($item, $column_name){
+    protected function column_default($item, $column_name){
         switch($column_name){
             case 'rating':
             case 'director':
@@ -190,12 +185,12 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
-    function column_title($item){
+    protected function column_title($item){
         
         //Build row actions
         $actions = array(
-            'edit'      => sprintf('<a href="?page=%s&action=%s&'.$this->_args['singular'].'=%s">Edit</a>',$_REQUEST['page'],'edit',$item['ID']),
-            'delete'    => sprintf('<a href="?page=%s&action=%s&'.$this->_args['singular'].'=%s">Delete</a>',$_REQUEST['page'],'delete',$item['ID']),
+            'edit'      => '<a href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'edit', $this->_args['singular'] => $item['ID']), 'admin.php').'">'.__('Edit').'</a>',
+            'delete'      => '<a class="submitdelete" href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'delete', $this->_args['singular'] => $item['ID']), 'admin.php').'">'.__('Delete').'</a>',
         );
         
         //Return the title contents
@@ -215,29 +210,15 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @param array $item A singular item (one full row's worth of data)
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
-    function column_cb($item){
+    protected function column_cb($item){
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
             /*$2%s*/ $item['ID']                //The value of the checkbox should be the record's id
         );
     }
-    
-    
-    /** ************************************************************************
-     * REQUIRED! This method dictates the table's columns and titles. This should
-     * return an array where the key is the column slug (and class) and the value 
-     * is the column's title text. If you need a checkbox for bulk actions, refer
-     * to the $columns array below.
-     * 
-     * The 'cb' column is treated differently than the rest. If including a checkbox
-     * column in your table you must create a column_cb() method. If you don't need
-     * bulk actions or checkboxes, simply leave the 'cb' entry out of your array.
-     * 
-     * @see WP_List_Table::::single_row_columns()
-     * @return array An associative array containing column information: 'slugs'=>'Visible Titles'
-     **************************************************************************/
-    function get_columns(){
+
+    public function get_columns(){
         $columns = array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
             'title'     => __('Title'),
@@ -261,7 +242,7 @@ class WPDKATags_List_Table extends WP_List_Table {
      * 
      * @return array An associative array containing all the columns that should be sortable: 'slugs'=>array('data_values',bool)
      **************************************************************************/
-    function get_sortable_columns() {
+    public function get_sortable_columns() {
         $sortable_columns = array(
             'title'     => array('title',false),     //true means it's already sorted
             'quantity'    => array('quantity',false),
@@ -285,9 +266,9 @@ class WPDKATags_List_Table extends WP_List_Table {
      * 
      * @return array An associative array containing all the bulk actions: 'slugs'=>'Visible Titles'
      **************************************************************************/
-    function get_bulk_actions() {
+    public function get_bulk_actions() {
         $actions = array(
-            'delete'    => 'Delete'
+            'delete' => __('Delete')
         );
         return $actions;
     }
@@ -300,10 +281,10 @@ class WPDKATags_List_Table extends WP_List_Table {
      * 
      * @see $this->prepare_items()
      **************************************************************************/
-    function process_bulk_action() {
+    protected function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
-        if( 'delete'===$this->current_action() ) {
+        if($this->current_action() == 'delete') {
             wp_die('Items deleted (or they would be if we had items to delete)!');
         }
         
@@ -325,26 +306,12 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @uses $this->get_pagenum()
      * @uses $this->set_pagination_args()
      **************************************************************************/
-    function prepare_items() {
-        global $wpdb; //This is used only if making any database queries
+    public function prepare_items() {
 
         /**
          * First, lets decide how many records per page to show
          */
         $per_page = $this->get_items_per_page( 'edit_wpdkatags_per_page');
-        
-        
-        /**
-         * REQUIRED. Now we need to define our column headers. This includes a complete
-         * array of columns to be displayed (slugs & titles), a list of columns
-         * to keep hidden, and a list of columns that are sortable. Each of these
-         * can be defined in another method (as we've done here) before being
-         * used to build the value for our _column_headers property.
-         */
-        $columns = $this->get_columns();
-        $hidden = array();
-        $sortable = $this->get_sortable_columns();
-        
         
         /**
          * REQUIRED. Finally, we build an array to be used by the class for column 
@@ -352,7 +319,8 @@ class WPDKATags_List_Table extends WP_List_Table {
          * 3 other arrays. One for all columns, one for hidden columns, and one
          * for sortable columns.
          */
-        $this->_column_headers = array($columns, $hidden, $sortable);
+        $hidden = array();
+        $this->_column_headers = array($this->get_columns(), $hidden, $this->get_sortable_columns());
         
         
         /**
@@ -361,16 +329,6 @@ class WPDKATags_List_Table extends WP_List_Table {
          */
         $this->process_bulk_action();
         
-        
-        /**
-         * Instead of querying a database, we're going to fetch the example data
-         * property we created for use in this plugin. This makes this example 
-         * package slightly different than one you might build on your own. In 
-         * this example, we'll be using array manipulation to sort and paginate 
-         * our data. In a real-world implementation, you will probably want to 
-         * use sort and pagination data to build a custom query instead, as you'll
-         * be able to use your precisely-queried data immediately.
-         */
         $data = $this->example_data;
                 
         
@@ -400,14 +358,23 @@ class WPDKATags_List_Table extends WP_List_Table {
          * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
          * ---------------------------------------------------------------------
          **********************************************************************/
-        
-                
-        /**
-         * REQUIRED for pagination. Let's figure out what page the user is currently 
-         * looking at. We'll need this later, so you should always include it in 
-         * your own package classes.
-         */
-        $current_page = $this->get_pagenum();
+
+        // $response = WPChaosClient::instance()->Object()->Get(
+        //     WPChaosClient::escapeSolrValue($_POST['object_guid']),   // Search query
+        //     null,   // Sort
+        //     null,   // AccessPoint given by settings.
+        //     $this->get_pagenum(), // pageIndex
+        //     $this->get_items_per_page( 'edit_wpdkatags_per_page'), // pageSize
+        //     true,   // includeMetadata
+        //     false,  // includeFiles
+        //     true    // includeObjectRelations
+        // );
+        $tags = WPChaosClient::index_search(array('DKA-Crowd-Tags_stringmv'));
+        var_dump($tags);
+        //$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query(array('DKA-Crowd-Tags_stringmv')), "");
+        //var_dump($facetsResponse);
+
+        //$objects = WPChaosObject::parseResponse($response);
         
         /**
          * REQUIRED for pagination. Let's check how many items are in our data array. 
@@ -423,7 +390,7 @@ class WPDKATags_List_Table extends WP_List_Table {
          * to ensure that the data is trimmed to only the current page. We can use
          * array_slice() to 
          */
-        $data = array_slice($data,(($current_page-1)*$per_page),$per_page);
+        $data = array_slice($data,(($this->get_pagenum()-1)*$per_page),$per_page);
         
         
         
@@ -438,9 +405,9 @@ class WPDKATags_List_Table extends WP_List_Table {
          * REQUIRED. We also have to register our pagination options & calculations.
          */
         $this->set_pagination_args( array(
-            'total_items' => $total_items,                  //WE have to calculate the total number of items
-            'per_page'    => $per_page,                     //WE have to determine how many items to show on a page
-            'total_pages' => ceil($total_items/$per_page)   //WE have to calculate the total number of pages
+            'total_items' => $total_items,
+            'per_page'    => $per_page,
+            'total_pages' => ceil($total_items/$per_page)
         ) );
     }
     
