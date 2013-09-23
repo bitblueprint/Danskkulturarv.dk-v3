@@ -384,11 +384,6 @@ class WPDKAObject {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
 		}, 10, 2);
 
-		//object->tags
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/text()');
-		}, 10, 2);
-
 		//object->caption
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'caption', function($value, $object) {
 			if($object->type == WPDKAObject::TYPE_IMAGE || $object->type == WPDKAObject::TYPE_IMAGE_AUDIO) {
