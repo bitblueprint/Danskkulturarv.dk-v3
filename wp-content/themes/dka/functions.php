@@ -57,7 +57,7 @@ function dka_scripts_styles() {
 		//'modal',
 		//'scrollspy',
 		//'tab',
-		//'tooltip',
+		'tooltip', // Used by the /api page.
 		'popover', // Used by the /api page.
 		//'affix'
 	);
