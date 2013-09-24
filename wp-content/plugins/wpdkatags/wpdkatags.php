@@ -27,9 +27,9 @@ final class WPDKATags {
                 add_action('wp_ajax_wpdkatags_submit_tag', array(&$this,'ajax_submit_tag') );
                 add_action('wp_ajax_nopriv_wpdkatags_submit_tag', array(&$this,'ajax_submit_tag') );
             }
-        
 
             add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', array(&$this,'define_usertags_filter'),10,2);
+            add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags_raw', array(&$this,'define_usertags_raw_filter'),10,2);
         }
     }
 
@@ -46,9 +46,9 @@ final class WPDKATags {
                         'title' => __('Sitewide Status',self::DOMAIN),
                         'type' => 'select',
                         'list' => array(
-                            'Hidden',
-                            'Frozen',
-                            'Active'
+                            __('Hidden',self::DOMAIN),
+                            __('Frozen',self::DOMAIN),
+                            __('Active',self::DOMAIN)
                             )
                         )
                     )
@@ -58,33 +58,52 @@ final class WPDKATags {
     }
 
     public function add_menu_items(){
+        global $submenu;
         add_menu_page(
             'WP DKA Tags',
             'User Tags',
             'activate_plugins',
             'wpdkatags',
             array(&$this,'render_tags_page')
-            );
+        );
     }
 
-    function render_tags_page(){
+    public function render_tags_page(){
 
-        $usertags = new WPDKATags_List_Table();
-        $usertags->prepare_items();
-        
-        ?>
+?>
         <div class="wrap">
             <div id="icon-users" class="icon32"><br/></div>
-            <h2>User Tags</h2>
-            <form id="movies-filter" method="get">
-                <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-                <?php $usertags->views(); ?>
-                <?php $usertags->display(); ?>
-            </form>
+<?php
+            $page = (isset($_GET['subpage']) ? $_GET['subpage'] : "");
+            switch($page) {
+                case 'wpdkatag-objects' :
+                    $this->render_list_table(new WPDKATagObjects_List_Table());
+                    break;
+                default :
+                    $this->render_list_table(new WPDKATags_List_Table());
+            }
+?>
         </div>
-        <?php
+<?php
     }
 
+    private function render_list_table($table) {
+        $table->prepare_items();   
+?>
+    <h2><?php $table->get_title(); ?></h2>
+    <form id="movies-filter" method="get">
+        <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+        <?php $table->views(); ?>
+        <?php $table->display(); ?>
+    </form>
+<?php
+        return $table;
+    }
+
+    /**
+     * Handle AJAX request and response of (frontend) tag submission
+     * @return void
+     */
     public function ajax_submit_tag() {
 
         //iff status == active
@@ -92,16 +111,70 @@ final class WPDKATags {
             throw new \RuntimeException("Cheating uh?");
         }
 
-        $tag = esc_html($_POST['tag']);
-
         if(!isset($_POST['object_guid'])) {
             throw new \RuntimeException("GUID not found");
         }
 
+        $object = $this->get_object_by_guid($_POST['object_guid']);
+        
+        $tag = esc_html($_POST['tag']);
+        
+        if($this->add_tag($object,$tag)) {
+            $response = array(
+                'title' => $tag,
+                'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
+            );
+        } else {
+            throw new \RuntimeException("Tag could not be added to CHAOS");
+        }
+
+        // $response = array(
+        //     'title' => $tag,
+        //     'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
+        // );
+        
+        echo json_encode($response);
+        die();
+    }
+
+    /**
+     * Adds tag node to object metadata and saves object
+     * @param  WPChaosObject    $object
+     * @param  [type]    $tag
+     */
+    private function add_tag(WPChaosObject $object,$tag) {
+        if($tag != null && $object != null) {
+
+            $xml = $object->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
+
+            \CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.Crowd.xsd');
+            $tags = $xml->xpath('/dkac:DKACrowd/dkac:Tags');
+            $tags = $tags[0];
+
+            $tagnode = $tags->addChild('Tag',$tag);
+            //date seems 2 hours behind gmt1 and daylight saving time. using gmt0?
+            $tagnode->addAttribute('created', date('c', time()));
+            $tagnode->addAttribute('status', 'Unapproved');
+
+            if($object->set_metadata(WPChaosClient::instance(),WPDKAObject::DKA_CROWD_SCHEMA_GUID,$xml,"da")) {
+                return $tagnode;
+            }
+            //return true;
+
+        }
+        return false;
+    }
+
+    /**
+     * Get a single WPChaosObject
+     * @param  string    $guid
+     * @return WPChaosObject
+     */
+    private function get_object_by_guid($guid) {
         $objects = array();
         try {
             $response = WPChaosClient::instance()->Object()->Get(
-                WPChaosClient::escapeSolrValue($_POST['object_guid']),   // Search query
+                WPChaosClient::escapeSolrValue($guid),   // Search query
                 null,   // Sort
                 null,   // AccessPoint given by settings.
                 0,      // pageIndex
@@ -114,39 +187,14 @@ final class WPDKATags {
          } catch(\CHAOSException $e) {
             error_log('CHAOS Error when calling ajax_submit_tag: '.$e->getMessage());
         }
-
-        
         if(empty($objects)) {
             throw new \RuntimeException("No object found for GUID");
         }
+        return $objects[0];
+    }
 
-        \CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.Crowd.xsd');
-        $xml = $objects[0]->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
-        
-        $tags = $xml->xpath('/dkac:DKACrowd/dkac:Tags');
-        $tags = $tags[0];
-
-        //$response = $xml->asXML();
-        $tagnode = $tags->addChild('Tag',$tag);
-        //date seems 2 hours behind gmt1 and daylight saving time. using gmt0?
-        $tagnode->addAttribute('created', date('c', time()));
-        $tagnode->addAttribute('status', 'Unapproved');
-
-        if($objects[0]->set_metadata(WPChaosClient::instance(),WPDKAObject::DKA_CROWD_SCHEMA_GUID,$xml,"da")) {
-            $response = array(
-                'title' => $tag,
-                'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
-            );
-        } else {
-            throw new \RuntimeException("Tag could not be added to CHAOS");
-        }
-        // $response = array(
-        //     'title' => $tag,
-        //     'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
-        // );
-        
-        echo json_encode($response);
-        die();
+    public function define_usertags_raw_filter($value, $object) {
+        return (array)$object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/dkac:Tag/text()', null);
     }
 
     public function define_usertags_filter($value, $object) {
@@ -155,7 +203,7 @@ final class WPDKATags {
 
         //iff status == active or frozen
         if($status > 0) {
-            $tags = (array)$object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/dkac:Tag/text()', null);
+            $tags = $object->usertags_raw;
         
             $value .= '<div class="usertags">';
             foreach($tags as $tag) {
@@ -225,6 +273,7 @@ EOTEXT;
             require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
         }
         require_once("wpdkatags-list-table.php");
+        require_once("wpdkatagobjects-list-table.php");
     }
 
 

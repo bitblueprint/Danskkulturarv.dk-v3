@@ -16,59 +16,9 @@ class WPDKATags_List_Table extends WP_List_Table {
 
     const NAME_SINGULAR = 'dka-tag';
     const NAME_PLURAL = 'dka-tags';
-    
-    /** ************************************************************************
-     * Normally we would be querying data from a database and manipulating that
-     * for use in your list table. For this example, we're going to simplify it
-     * slightly and create a pre-built array. Think of this as the data that might
-     * be returned by $wpdb->query().
-     * 
-     * @var array 
-     **************************************************************************/
-    var $example_data = array(
-            array(
-                'ID'        => 1,
-                'title'     => '300',
-                'rating'    => 'R',
-                'director'  => 'Zach Snyder'
-            ),
-            array(
-                'ID'        => 2,
-                'title'     => 'Eyes Wide Shut',
-                'rating'    => 'R',
-                'director'  => 'Stanley Kubrick'
-            ),
-            array(
-                'ID'        => 3,
-                'title'     => 'Moulin Rouge!',
-                'rating'    => 'PG-13',
-                'director'  => 'Baz Luhrman'
-            ),
-            array(
-                'ID'        => 4,
-                'title'     => 'Snow White',
-                'rating'    => 'G',
-                'director'  => 'Walt Disney'
-            ),
-            array(
-                'ID'        => 5,
-                'title'     => 'Super 8',
-                'rating'    => 'PG-13',
-                'director'  => 'JJ Abrams'
-            ),
-            array(
-                'ID'        => 6,
-                'title'     => 'The Fountain',
-                'rating'    => 'PG-13',
-                'director'  => 'Darren Aronofsky'
-            ),
-            array(
-                'ID'        => 7,
-                'title'     => 'Watchmen',
-                'rating'    => 'R',
-                'director'  => 'Zach Snyder'
-            )
-        );
+
+    protected $title;
+    protected $states;
     
     public function __construct(){
         global $status, $page;
@@ -79,6 +29,26 @@ class WPDKATags_List_Table extends WP_List_Table {
             'plural'    => self::NAME_PLURAL,
             'ajax'      => false        //does this table support ajax?
         ) );
+
+        $this->title = "User Tags";
+        $this->states = array(
+            'Unapproved' => array(
+                'title' => __('Unapproved'),
+                'count' => 0,
+            ),
+            'Flagged' => array(
+                'title' => __('Flagged'),
+                'count' => 0,
+            ),
+            'Approved' => array(
+                'title' => __('Approved'),
+                'count' => 0,
+            ),
+        );
+    }
+
+    public function get_title() {
+        echo $this->title;
     }
 
     public function extra_tablenav($which) {
@@ -111,26 +81,17 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @access public
      */
     public function get_views() {
-        global $pagenow;
 
-        //var_dump($pagenow);
-        //var_dump($this->screen);
-
-        $states = array(
-            1 => 'Unapproved',
-            2 => 'Flagged',
-            3 => 'Approved'
-        );
         $status_links = array();
 
         $class = empty($_REQUEST['tag_status']) ? ' class="current"' : '';
-        $status_links['all'] = '<a href="admin.php?page=wpdkatags"'.$class.'>' . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $this->get_pagination_arg('total_items'), 'posts' ), number_format_i18n( $this->get_pagination_arg('total_items') ) ) . '</a>';
+        $status_links['all'] = '<a href="admin.php?page='.$this->screen->parent_base.'"'.$class.'>' . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $this->get_pagination_arg('total_items'), 'posts' ), number_format_i18n( $this->get_pagination_arg('total_items') ) ) . '</a>';
 
-        foreach($states as $status_key => $status_title) {
+        foreach($this->states as $status_key => $status) {
             $class = '';
             if(isset($_REQUEST['tag_status']) && $_REQUEST['tag_status'] == $status_key)
                 $class = ' class="current"';
-            $status_links[$status_title] = '<a href="admin.php?page=wpdkatags&amp;tag_status='.$status_key.'"'.$class.'>'.$status_title.'</a>';
+            $status_links[$status_key] = '<a href="admin.php?page='.$this->screen->parent_base.'&amp;tag_status='.$status_key.'"'.$class.'>'.$status['title'].'</a>';
         }
 
         return $status_links;
@@ -160,9 +121,8 @@ class WPDKATags_List_Table extends WP_List_Table {
      **************************************************************************/
     protected function column_default($item, $column_name){
         switch($column_name){
-            case 'rating':
-            case 'director':
-                return $item[$column_name];
+            case 'quantity':
+                return $item->Count;
             default:
                 return print_r($item,true); //Show the whole array for troubleshooting purposes
         }
@@ -189,15 +149,15 @@ class WPDKATags_List_Table extends WP_List_Table {
         
         //Build row actions
         $actions = array(
-            'edit'      => '<a href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'edit', $this->_args['singular'] => $item['ID']), 'admin.php').'">'.__('Edit').'</a>',
-            'delete'      => '<a class="submitdelete" href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'delete', $this->_args['singular'] => $item['ID']), 'admin.php').'">'.__('Delete').'</a>',
+            'edit'      => '<a href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'edit', $this->_args['singular'] => $item->Value), 'admin.php').'">'.__('Edit').'</a>',
+            'delete'      => '<a class="submitdelete" href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'delete', $this->_args['singular'] => $item->Value), 'admin.php').'">'.__('Delete').'</a>',
         );
         
         //Return the title contents
-        return sprintf('%1$s <span style="color:silver">(id:%2$s)</span>%3$s',
-            /*$1%s*/ $item['title'],
-            /*$2%s*/ $item['ID'],
-            /*$3%s*/ $this->row_actions($actions)
+        return sprintf('<strong><a href="%1$s">%2$s</a></strong>%3$s',
+            add_query_arg(array('page' => $_REQUEST['page'], 'subpage' => 'wpdkatag-objects', $this->_args['singular'] => $item->Value), 'admin.php'),
+            $item->Value,
+            $this->row_actions($actions)
         );
     }
     
@@ -214,7 +174,7 @@ class WPDKATags_List_Table extends WP_List_Table {
         return sprintf(
             '<input type="checkbox" name="%1$s[]" value="%2$s" />',
             /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
-            /*$2%s*/ $item['ID']                //The value of the checkbox should be the record's id
+            /*$2%s*/ $item->Value                //The value of the checkbox should be the record's id
         );
     }
 
@@ -328,10 +288,7 @@ class WPDKATags_List_Table extends WP_List_Table {
          * case, we'll handle them within our package just to keep things clean.
          */
         $this->process_bulk_action();
-        
-        $data = $this->example_data;
-                
-        
+                     
         /**
          * This checks for sorting input and sorts the data in our array accordingly.
          * 
@@ -340,13 +297,13 @@ class WPDKATags_List_Table extends WP_List_Table {
          * to a custom query. The returned data will be pre-sorted, and this array
          * sorting technique would be unnecessary.
          */
-        function usort_reorder($a,$b){
-            $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
-            $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
-            $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
-            return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
-        }
-        usort($data, 'usort_reorder');
+        // function usort_reorder($a,$b){
+        //     $orderby = (!empty($_REQUEST['orderby'])) ? $_REQUEST['orderby'] : 'title'; //If no sort, default to title
+        //     $order = (!empty($_REQUEST['order'])) ? $_REQUEST['order'] : 'asc'; //If no order, default to asc
+        //     $result = strcmp($a[$orderby], $b[$orderby]); //Determine sort order
+        //     return ($order==='asc') ? $result : -$result; //Send final sort direction to usort
+        // }
+        // usort($data, 'usort_reorder');
         
         
         /***********************************************************************
@@ -369,20 +326,33 @@ class WPDKATags_List_Table extends WP_List_Table {
         //     false,  // includeFiles
         //     true    // includeObjectRelations
         // );
-        $tags = WPChaosClient::index_search(array('DKA-Crowd-Tags_stringmv'));
-        var_dump($tags);
+        // 
+        $facet = "DKA-Crowd-Tags_stringmv";
+
+        // $tags = WPChaosClient::index_search(array($facet));
+        // $tags = $tags[$facet];
         //$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query(array('DKA-Crowd-Tags_stringmv')), "");
         //var_dump($facetsResponse);
 
         //$objects = WPChaosObject::parseResponse($response);
-        
+        //
+        $tags = array();
+        $facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query(array($facet)), "");
+
+        foreach($facetsResponse->Index()->Results() as $facetResult) {
+            foreach($facetResult->FacetFieldsResult as $fieldResult) {
+                foreach($fieldResult->Facets as $facet) {
+                    $tags[] = $facet;
+                }
+            }
+        }
         /**
          * REQUIRED for pagination. Let's check how many items are in our data array. 
          * In real-world use, this would be the total number of items in your database, 
          * without filtering. We'll need this later, so you should always include it 
          * in your own package classes.
          */
-        $total_items = count($data);
+        $total_items = count($tags);
         
         
         /**
@@ -390,15 +360,17 @@ class WPDKATags_List_Table extends WP_List_Table {
          * to ensure that the data is trimmed to only the current page. We can use
          * array_slice() to 
          */
-        $data = array_slice($data,(($this->get_pagenum()-1)*$per_page),$per_page);
+        $tags = array_slice($tags,(($this->get_pagenum()-1)*$per_page),$per_page);
         
-        
+        // foreach($tags as $tag_k => $tag_v) {
+        //     $this->items[] = array("count")
+        // }
         
         /**
          * REQUIRED. Now we can add our *sorted* data to the items property, where 
          * it can be used by the rest of the class.
          */
-        $this->items = $data;
+        $this->items = $tags;
         
         
         /**
