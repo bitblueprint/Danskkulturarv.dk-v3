@@ -58,7 +58,7 @@ function dka_scripts_styles() {
 		//'scrollspy',
 		//'tab',
 		//'tooltip',
-		//'popover',
+		'popover', // Used by the /api page.
 		//'affix'
 	);
 	foreach($bootstrap_scripts as $bootscript) {
