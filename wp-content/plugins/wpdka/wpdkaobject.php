@@ -463,18 +463,33 @@ class WPDKAObject {
 			}
 		});
 		
-		// Increment the views counter
+		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
+			// Make sure no tags is present in the metadata.
+			$crowd_metadata = $object->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
+			if($crowd_metadata instanceof \SimpleXMLElement) {
+				$crowd_metadata_dom = dom_import_simplexml($crowd_metadata);
+				// Remove all Tags elements.
+				foreach($crowd_metadata_dom->getElementsByTagName('Tags') as $tag) {
+					// If we've got a tag
+					$tag->parentNode->removeChild($tag);
+				}
+				$object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $crowd_metadata, WPDKAObject::METADATA_LANGUAGE);
+			}
+		}, 11);
+		
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
 			// TODO: Restrict on session data.
 			if(!session_id()){
 				session_start();
 			}
+			// Increment the views counter
 			$viewed_session_name = WPDKAObject::SESSION_PREFIX . '_viewed_' . $object->GUID;
 			if(!array_key_exists($viewed_session_name, $_SESSION)) {
 				$object->increment_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Views/text()', array('views'));
+				// Use the session to make sure that the same user is not just refreshing the view counter by refreshing.
 				$_SESSION[$viewed_session_name] = "viewed";
 			}
-		});
+		}, 12);
 		
 		// Make sure objects are identified if they are there.
 		add_filter(WPChaosClient::GENERATE_SINGLE_OBJECT_SOLR_QUERY, function($query) {
@@ -610,7 +625,7 @@ class WPDKAObject {
 		$metadataXML->addChild('AccumulatedRate', '0');
 		$slug = WPDKAObject::generateSlug($object, $forceNewSlug);
 		$metadataXML->addChild('Slug', $slug);
-		$metadataXML->addChild('Tags');
+		// $metadataXML->addChild('Tags'); // Deprecated
 		
 		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::METADATA_LANGUAGE, $revisionID);
 		
