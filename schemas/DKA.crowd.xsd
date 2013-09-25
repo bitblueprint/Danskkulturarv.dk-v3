@@ -38,45 +38,6 @@
                     	<documentation>A short alphanummeric string used for URL shortners.</documentation>
                     </annotation>
     			</element>
-    			<element name="Tags">
-                    <annotation>
-                    	<documentation>Tags contributed by users.</documentation>
-                    </annotation>
-                    <complexType>
-    					<sequence>
-    						<element name="Tag" maxOccurs="unbounded" minOccurs="0">
-    							<annotation>
-    								<documentation>A single lowercased string describing a tag su</documentation>
-    							</annotation>
-    							<complexType>
-    								<simpleContent>
-    									<extension base="string">
-    										<attribute name="created"
-    											type="dateTime">
-    										</attribute>
-    										<attribute name="status">
-    											<simpleType>
-    												<restriction
-    													base="string">
-    													<enumeration
-    														value="Unapproved">
-    													</enumeration>
-    													<enumeration
-    														value="Flagged">
-    													</enumeration>
-    													<enumeration
-    														value="Approved">
-    													</enumeration>
-    												</restriction>
-    											</simpleType>
-    										</attribute>
-    									</extension>
-    								</simpleContent>
-    							</complexType>
-    						</element>
-    					</sequence>
-    				</complexType>
-    			</element>
     		</sequence>
     	</complexType>
     </element>
