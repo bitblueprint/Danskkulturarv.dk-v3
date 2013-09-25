@@ -10,10 +10,10 @@ for($r = 0; $r < count($raw_rows); $r++) {
 	$cells = array();
 	$current_cell = '';
 	$in_quotations = false;
-	for($c = 0; $c < strlen($row); $c++) {
+	for($c = 0; $c <= strlen($row); $c++) {
 		$char = $row[$c];
-		if($in_quotations === false && $char == ',') {
-			// New cell ..
+		if(($in_quotations === false && $char == ',') || $c == strlen($row)) {
+			// New cell or last char.
 			$cells[] = $current_cell;
 			$current_cell = '';
 		} elseif($in_quotations === false && $char == '"') {
