@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.danskkulturarv.dk/DKA-Crowd.xsd" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkac="http://www.danskkulturarv.dk/DKA-Crowd.xsd">
+    <annotation>
+    	<documentation>This metadata schema validates tag data contributed by the crowd.</documentation></annotation>
+
+	<element name="Tag">
+		<annotation>
+			<documentation>
+				A single lowercased string
+				describing a tag su
+			</documentation>
+		</annotation>
+		<complexType>
+			<simpleContent>
+				<extension base="string">
+					<attribute name="created"
+						type="dateTime">
+					</attribute>
+					<attribute name="status">
+						<simpleType>
+							<restriction
+								base="string">
+								<enumeration
+									value="Unapproved">
+								</enumeration>
+								<enumeration
+									value="Flagged">
+								</enumeration>
+								<enumeration
+									value="Approved">
+								</enumeration>
+							</restriction>
+						</simpleType>
+					</attribute>
+				</extension>
+			</simpleContent>
+		</complexType>
+	</element>
+</schema>
