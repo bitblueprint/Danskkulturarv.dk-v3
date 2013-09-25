@@ -13,25 +13,33 @@
 		<complexType>
 			<simpleContent>
 				<extension base="string">
-					<attribute name="created"
-						type="dateTime">
+					<attribute name="created" type="dateTime" use="required">
+                        <annotation>
+                        	<documentation>When was the tag related to / created at the DKA material?</documentation>
+                        </annotation>
 					</attribute>
-					<attribute name="status">
-						<simpleType>
-							<restriction
-								base="string">
-								<enumeration
-									value="Unapproved">
+					<attribute name="status" use="required">
+                        <annotation>
+                        	<documentation>What is the status of the tag?
+- Unapproved: The default state of a tag - no official classification of the tag.
+- Approved: The tag has been approved by a moderator.
+- Flagged: The tag is flagged as in apropriate or incorrect by a user.</documentation>
+                        </annotation>
+                        <simpleType>
+							<restriction base="string">
+								<enumeration value="Unapproved">
 								</enumeration>
-								<enumeration
-									value="Flagged">
+								<enumeration value="Flagged">
 								</enumeration>
-								<enumeration
-									value="Approved">
+								<enumeration value="Approved">
 								</enumeration>
 							</restriction>
 						</simpleType>
 					</attribute>
+					<attribute name="user" type="string" use="optional">
+						<annotation>
+							<documentation>Some identification of the user that created the tag (name, email, IP or another pseudo-unique token).</documentation>
+						</annotation></attribute>
 				</extension>
 			</simpleContent>
 		</complexType>
