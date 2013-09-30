@@ -18,12 +18,12 @@ class WPDKAObject {
 	const DKA_CROWD_SCHEMA_GUID = 'a37167e0-e13b-4d29-8a41-b0ffbaa1fe5f';
 	const DKA_CROWD_TAGS_SCHEMA_GUID = '00000000-0000-0000-0000-000067c30000';
 	const METADATA_LANGUAGE = 'da';
-	const FREETEXT_LANGUAGE = 'da';
 	const SESSION_PREFIX = __CLASS__;
 	
 	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string';
 	
-	public static $ALL_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
+	public static $FREETEXT_SCHEMA_GUIDS = array(self::DKA_SCHEMA_GUID, self::DKA2_SCHEMA_GUID);
+	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE);
 	
 	public static $DERIVED_FILES = array(
 		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/mp4:bonanza/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
