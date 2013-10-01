@@ -52,11 +52,11 @@ class WPDKAObject {
 		add_filter('widgets_init',array(&$this,'register_widgets'));
 		
 		// Restrict chaos query to this object type.
-		$objectTypeConstraints = array();
-		foreach(self::$OBJECT_TYPE_IDS as $id) {
-			$objectTypeConstraints[] = "ObjectTypeID:$id";
-		}
-		WPChaosClient::instance()->addGlobalConstraint(implode('+OR+', $objectTypeConstraints));
+		// $objectTypeConstraints = array();
+		// foreach(self::$OBJECT_TYPE_IDS as $id) {
+		// 	$objectTypeConstraints[] = "ObjectTypeID:$id";
+		// }
+		// WPChaosClient::instance()->addGlobalConstraint(implode('+OR+', $objectTypeConstraints));
 	}
 
 	const TYPE_VIDEO = 'video';

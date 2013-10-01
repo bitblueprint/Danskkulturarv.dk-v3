@@ -8,14 +8,35 @@ Author: Joachim Jensen
 Author URI: 
 License: 
 */
-
 final class WPDKATags {
 
     const DOMAIN = 'wpdkatags';
 
+    const METADATA_SCHEMA_GUID = '00000000-0000-0000-0000-000067c30000';
+
+    /**
+     * ID = 12 is "DKA Crowd Tag"
+     */
+    const TAG_TYPE_ID = 12;
+
+    /**
+     * ID = 11 is "Is related to"
+     */
+    const TAG_RELATION_ID = 11;
+
+    /**
+     * ID = 470 is "DKA/DKA/Tags"
+     */
+    const TAGS_FOLDER_ID = 470;
+
+    const TAG_STATE_APPROVED = 'Approved';
+    const TAG_STATE_UNAPPROVED = 'Unapproved';
+    const TAG_STATE_FLAGGED = 'Flagged';
+
     private static $plugin_dependencies = array(
-        'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client'
-        );
+        'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
+        'wpdka/wpdka.php' => 'WordPress DKA'
+    );
 
     public function __construct() {
         if(self::check_chaosclient()) {
@@ -108,29 +129,47 @@ final class WPDKATags {
 
         //iff status == active
         if(get_option('wpdkatags-status') != '2') {
+            echo "Cheating uh?";
             throw new \RuntimeException("Cheating uh?");
         }
 
-        if(!isset($_POST['object_guid'])) {
-            throw new \RuntimeException("GUID not found");
+        if(!isset($_POST['tag'])) {
+            echo "Invalid tag input";
+            throw new \RuntimeException("Invalid tag input");
+        }
+
+        if(!isset($_POST['object_guid']) || !check_ajax_referer( 'somestring'.$_POST['object_guid'], 'token', false)) {
+            echo "GUID not valid";
+            throw new \RuntimeException("GUID not valid");
         }
 
         $object = $this->get_object_by_guid($_POST['object_guid']);
         
-        $tag = esc_html($_POST['tag']);
-        
-        if($this->add_tag($object,$tag)) {
-            $response = array(
-                'title' => $tag,
-                'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
-            );
-        } else {
-            throw new \RuntimeException("Tag could not be added to CHAOS");
+        if($object == null) {
+            echo "Object could not be found";
+            throw new \RuntimeException("Object could not be found");
         }
 
+        if($this->_tag_exists($object,$_POST['tag'])) {
+            echo "Tag already exists";
+            throw new \RuntimeException("Tag already exists");
+        }
+
+        if($this->_add_tag($_POST['object_guid'],$_POST['tag'])) {
+            $tag_input = esc_html($_POST['tag']);
+            $response = array(
+                'title' => $tag_input,
+                'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag_input))
+            );
+        } else {
+            echo "Tag could not be added";
+            throw new \RuntimeException("Tag could not be added to CHAOS");
+        }
+        
+        // $tag_input = esc_html($_POST['tag']);
         // $response = array(
-        //     'title' => $tag,
-        //     'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag))
+        //     'title' => $tag_input,
+        //     'link' => WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag_input))
         // );
         
         echo json_encode($response);
@@ -138,45 +177,109 @@ final class WPDKATags {
     }
 
     /**
-     * Adds tag node to object metadata and saves object
-     * @param  WPChaosObject    $object
-     * @param  [type]    $tag
+     * Adds a new tag object to CHAOS and relates it to material object
+     * @param  string    $object_guid
+     * @param  string    $tag_input
+     * @return boolean
      */
-    private function add_tag(WPChaosObject $object,$tag) {
-        if($tag != null && $object != null) {
+    private function _add_tag($object_guid, $tag_input) {
 
-            $xml = $object->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
+        try {
+            $serviceResult = WPChaosClient::instance()->Object()->Create(self::TAG_TYPE_ID,self::TAGS_FOLDER_ID);
+            // $serviceResult = WPChaosClient::instance()->Object()->Get(
+            //             "GUID:d96cbd3a-766d-6d42-888d-cbcfa3592ca3",   // Search query
+            //             null,   // Sort
+            //             false,   // Use session instead of AP.
+            //             0,      // pageIndex
+            //             1,      // pageSize
+            //             true,   // includeMetadata
+            //             false,   // includeFiles
+            //             false    // includeObjectRelations
+            // ); //debug purpose. using created guid
 
-            \CHAOS\Portal\Client\Data\Object::registerXMLNamespace('dkac', 'http://www.danskkulturarv.dk/DKA.Crowd.xsd');
-            $tags = $xml->xpath('/dkac:DKACrowd/dkac:Tags');
-            $tags = $tags[0];
+            $tags = WPChaosObject::parseResponse($serviceResult);
+            $tag = $tags[0];
 
-            $tagnode = $tags->addChild('Tag',$tag);
+            //Create XML and set it to tag
+            $metadataXML = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><dkact:Tag xmlns:dkact='http://www.danskkulturarv.dk/DKA-Crowd-Tag.xsd'></dkact:Tag>");
+
+            $metadataXML[0] = esc_html($tag_input);
             //date seems 2 hours behind gmt1 and daylight saving time. using gmt0?
-            $tagnode->addAttribute('created', date('c', time()));
-            $tagnode->addAttribute('status', 'Unapproved');
+            $metadataXML->addAttribute('created', date('c', time()));
+            $metadataXML->addAttribute('status', self::TAG_STATE_UNAPPROVED);
+            
+            $tag->set_metadata(WPChaosClient::instance(),self::METADATA_SCHEMA_GUID,$metadataXML,WPDKAObject::METADATA_LANGUAGE);
 
-            if($object->set_metadata(WPChaosClient::instance(),WPDKAObject::DKA_CROWD_SCHEMA_GUID,$xml,"da")) {
-                return $tagnode;
-            }
-            //return true;
+            //Set relation between object and tag
+            WPChaosClient::instance()->ObjectRelation()->Create(esc_html($object_guid),$tag->GUID,self::TAG_RELATION_ID);
 
+        } catch(\Exception $e) {
+            error_log('CHAOS Error when adding tag: '.$e->getMessage());
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    /**
+     * Change state on a given tag object
+     * @param  WPChaosObject $tag_object
+     * @param  string        $new_state
+     * @return boolean
+     */
+    private function _change_tag_state(WPChaosObject $tag_object,$new_state) {
+        $return = false;
+        if(in_array($new_state,array(self::TAG_STATE_UNAPPROVED,self::TAG_STATE_APPROVED,self::TAG_STATE_FLAGGED))) {
+
+            try {
+
+                $metadataXML = $tag_object->get_metadata(self::METADATA_SCHEMA_GUID);
+                $metadataXML['status'] = $new_state;
+
+                $tag->set_metadata(WPChaosClient::instance(),self::METADATA_SCHEMA_GUID,$metadataXML,WPDKAObject::METADATA_LANGUAGE);
+                $return = true;
+            } catch(\Exception $e) {
+                error_log('CHAOS Error when changing tag state: '.$e->getMessage());
+            }
+        }
+        return $return;
+    }
+
+    /**
+     * Check if given tag exists as relation to object
+     * @param  WPChaosObject $object
+     * @param  string        $tag_input
+     * @return boolean
+     */
+    private function _tag_exists(WPChaosObject $object,$tag_input) {
+        $return = false;
+        $tag_input = esc_html($tag_input);
+        foreach($object->usertags_raw as $tag) {
+            $tag = $tag->metadata(
+                array(WPDKATags::METADATA_SCHEMA_GUID),
+                array(''),
+                null
+            );
+            if((string)$tag == $tag_input) {
+                $return = true;
+                break;
+            }
+        }
+        return $return;
     }
 
     /**
      * Get a single WPChaosObject
-     * @param  string    $guid
+     * @param  string            $guid
+     * @param  string|boolean    $accesspoint
      * @return WPChaosObject
      */
-    private function get_object_by_guid($guid) {
+    private function get_object_by_guid($guid,$accesspoint = null) {
         $objects = array();
         try {
             $response = WPChaosClient::instance()->Object()->Get(
                 WPChaosClient::escapeSolrValue($guid),   // Search query
                 null,   // Sort
-                null,   // AccessPoint given by settings.
+                $accesspoint, 
                 0,      // pageIndex
                 1,      // pageSize
                 true,   // includeMetadata
@@ -185,16 +288,32 @@ final class WPDKATags {
             );
             $objects = WPChaosObject::parseResponse($response);
          } catch(\CHAOSException $e) {
-            error_log('CHAOS Error when calling ajax_submit_tag: '.$e->getMessage());
+            error_log('CHAOS Error when getting object by guid: '.$e->getMessage());
         }
-        if(empty($objects)) {
-            throw new \RuntimeException("No object found for GUID");
-        }
-        return $objects[0];
+        return empty($objects) ? null : $objects[0];
     }
 
     public function define_usertags_raw_filter($value, $object) {
-        return (array)$object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Tags/dkac:Tag/text()', null);
+        $relation_guids = array();
+        foreach($object->ObjectRelations as $relation) {
+            $guid_property = "Object1GUID";
+            if($object->GUID == $relation->{$guid_property}) {
+                $guid_property = "Object2GUID";
+            }
+            $relation_guids[] = "GUID:".$relation->{$guid_property};
+        }
+        $serviceResult = WPChaosClient::instance()->Object()->Get(
+            "(".implode("+OR+", $relation_guids).")+AND+ObjectTypeID:12",   // Search query
+            null,   // Sort
+            false,   // Use session instead of AP
+            0,      // pageIndex
+            10,      // pageSize
+            true,   // includeMetadata
+            false,   // includeFiles
+            false    // includeObjectRelations
+        );
+
+        return WPChaosObject::parseResponse($serviceResult);
     }
 
     public function define_usertags_filter($value, $object) {
@@ -207,6 +326,11 @@ final class WPDKATags {
         
             $value .= '<div class="usertags">';
             foreach($tags as $tag) {
+                $tag = $tag->metadata(
+                    array(WPDKATags::METADATA_SCHEMA_GUID),
+                    array(''),
+                    null
+                );
                 $link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
                 $value .= '<a class="usertag tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
             }
@@ -217,22 +341,26 @@ final class WPDKATags {
 
             //Iff status == active
             if($status == 2) {
-                $value .= $this->add_user_tag_form();
+                $value .= $this->add_user_tag_form($object);
             }
         }
+
+        //$this->_change_tag_state($this->get_object_by_guid("d96cbd3a-766d-6d42-888d-cbcfa3592ca3",false),self::TAG_STATE_FLAGGED);
 
         return $value;
     }
 
-    private function add_user_tag_form() {
+    private function add_user_tag_form($object) {
         $value = '<input type="text" value="" id="usertag-add" class=""><button type="button" id="usertag-submit" class="btn">Add tag</button>';
 
         $ajaxurl = admin_url( 'admin-ajax.php' );
+        $token = wp_create_nonce('somestring'.$object->GUID);
         $value .= <<<EOTEXT
 <script type="text/javascript"><!--
 jQuery(document).ready(function($) {
-    var ajaxurl = '$ajaxurl';
-    var container = $(".usertags");
+    var ajaxurl = '$ajaxurl',
+    token = '$token',
+    container = $(".usertags");
     $("#usertag-submit").click( function(e) {
         var input = $('#usertag-add');
         $.ajax({
@@ -240,7 +368,8 @@ jQuery(document).ready(function($) {
             data:{
                 action: 'wpdkatags_submit_tag',
                 tag: input.val(),
-                object_guid: $('.single-material').attr('id')
+                object_guid: $('.single-material').attr('id'),
+                token: token
             },
             dataType: 'JSON',
             type: 'POST',

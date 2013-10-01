@@ -113,6 +113,22 @@ class WPDKASearch {
 	 * @return string 
 	 */
 	public function define_search_filters() {
+
+		add_filter('wpchaos-solr-query', function($query, $query_vars) {
+			if($query) {
+				$query = array($query);
+			} else {
+				$query = array();
+			}
+				
+			$objectTypeConstraints = array();
+			foreach(WPDKAObject::$OBJECT_TYPE_IDS as $id) {
+				$objectTypeConstraints[] = "ObjectTypeID:$id";
+			}
+			$query[] = '(' . implode("+OR+", $objectTypeConstraints) . ')';
+				
+			return implode("+AND+", $query);
+		}, 9, 2);
 		
 		// Free text search.
 		add_filter('wpchaos-solr-query', function($query, $query_vars) {
@@ -191,7 +207,7 @@ class WPDKASearch {
 				}
 			}
 			return implode("+AND+", $query);
-		}, 11, 2);
+		}, 12, 2);
 	}
 
 	public function map_chaos_sorting($sort,$query_vars) {
