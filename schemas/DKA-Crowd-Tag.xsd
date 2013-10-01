@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema targetNamespace="http://www.danskkulturarv.dk/DKA-Crowd-Tag.xsd" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkac="http://www.danskkulturarv.dk/DKA-Crowd.xsd">
+<schema targetNamespace="http://www.danskkulturarv.dk/DKA-Crowd-Tag.xsd" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dkact="http://www.danskkulturarv.dk/DKA-Crowd-Tag.xsd">
     <annotation>
     	<documentation>This metadata schema validates tag data contributed by the crowd.</documentation></annotation>
 
@@ -17,7 +17,7 @@
                         <annotation>
                         	<documentation>When was the tag related to / created at the DKA material?</documentation>
                         </annotation>
-					</attribute>
+					</attribute><<
 					<attribute name="status" use="required">
                         <annotation>
                         	<documentation>What is the status of the tag?
