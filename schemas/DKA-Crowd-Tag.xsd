@@ -17,7 +17,7 @@
                         <annotation>
                         	<documentation>When was the tag related to / created at the DKA material?</documentation>
                         </annotation>
-					</attribute><<
+					</attribute>
 					<attribute name="status" use="required">
                         <annotation>
                         	<documentation>What is the status of the tag?
