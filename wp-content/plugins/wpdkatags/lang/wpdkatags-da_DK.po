@@ -1,0 +1,346 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WPDKATags\n"
+"POT-Creation-Date: 2013-10-08 12:16+0100\n"
+"PO-Revision-Date: 2013-10-08 12:16+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../wpdkatagobjects-list-table.php:55
+#, php-format
+msgid "%s ago"
+msgstr "%s siden"
+
+#: ../wpdkatagobjects-list-table.php:73 ../wpdkatags-list-table.php:152
+msgid "Edit"
+msgstr "Rediger"
+
+#: ../wpdkatagobjects-list-table.php:74 ../wpdkatagobjects-list-table.php:143
+#: ../wpdkatags-list-table.php:153 ../wpdkatags-list-table.php:231
+msgid "Delete"
+msgstr "Slet"
+
+#: ../wpdkatagobjects-list-table.php:75
+msgid "Show"
+msgstr "Vis"
+
+#: ../wpdkatagobjects-list-table.php:106 ../wpdkatags-list-table.php:184
+msgid "Title"
+msgstr "Titel"
+
+#: ../wpdkatagobjects-list-table.php:107
+msgid "Status"
+msgstr "Status"
+
+#: ../wpdkatagobjects-list-table.php:108 ../wpdkatags-list-table.php:186
+msgid "Date"
+msgstr "Dato"
+
+#: ../wpdkatags-list-table.php:36
+msgid "Unapproved"
+msgstr "Ikke godkendt"
+
+#: ../wpdkatags-list-table.php:40
+msgid "Flagged"
+msgstr "Flagged"
+
+#: ../wpdkatags-list-table.php:44
+msgid "Approved"
+msgstr "Godkendt"
+
+#: ../wpdkatags-list-table.php:88
+#, php-format
+msgctxt "posts"
+msgid "All <span class=\"count\">(%s)</span>"
+msgid_plural "All <span class=\"count\">(%s)</span>"
+msgstr[0] "Alle <span class=\"count\">(%s)</span>"
+msgstr[1] "Alle <span class=\"count\">(%s)</span>"
+
+#: ../wpdkatags-list-table.php:185
+msgid "Quantity"
+msgstr "Kvantitet"
+
+#: ../wpdkatags.php:62
+msgid "User Tags"
+msgstr "Brugertags"
+
+#: ../wpdkatags.php:67
+msgid "Sitewide Status"
+msgstr "Systemstatus"
+
+#: ../wpdkatags.php:70
+msgid "Hidden"
+msgstr "Skjult"
+
+#: ../wpdkatags.php:71
+msgid "Frozen"
+msgstr "Frosset"
+
+#: ../wpdkatags.php:72
+msgid "Active"
+msgstr "Aktivt"
+
+#: ../wpdkatags.php:338
+msgid "No tags"
+msgstr "Ingen tags"
+
+#: ../wpdkatags.php:432
+msgid "WordPress DKA Tags"
+msgstr "WordPress DKA Tags"
+
+#: ../wpdkatags.php:432
+#, php-format
+msgid "needs %s to be activated."
+msgstr "kræver at %s er aktiveret."
+
+#~ msgid "Dansk Kulturarv"
+#~ msgstr "Dansk Kulturarv"
+
+#~ msgid "Page for objects with an unknown organization."
+#~ msgstr "Side til objekter med ukendt organisation"
+
+#~ msgid "JW Player Settings"
+#~ msgstr "JW Player indstillinger"
+
+#~ msgid "JW Player API key"
+#~ msgstr "JW Player API-nøgle"
+
+#~ msgid "CHAOS material"
+#~ msgid_plural "CHAOS materials"
+#~ msgstr[0] "CHAOS materiale"
+#~ msgstr[1] "CHAOS materialer"
+
+#~ msgid "CHAOS material view"
+#~ msgid_plural "CHAOS material views"
+#~ msgstr[0] "CHAOS materialevisning"
+#~ msgstr[1] "CHAOS materialevisninger"
+
+#~ msgid "CHAOS material like"
+#~ msgid_plural "CHAOS material likes"
+#~ msgstr[0] "CHAOS materiale-like"
+#~ msgstr[1] "CHAOS materiale-likes"
+
+#~ msgid "CHAOS material share"
+#~ msgid_plural "CHAOS material shares"
+#~ msgstr[0] "CHAOS materialedeling"
+#~ msgstr[1] "CHAOS materialedelinger"
+
+#~ msgid "Loading the player ..."
+#~ msgstr "Henter afspiller ..."
+
+#~ msgid "Material"
+#~ msgstr "Materiale"
+
+#~ msgid " without title"
+#~ msgstr " uden titel"
+
+#~ msgid "Year "
+#~ msgstr "Året "
+
+#~ msgid "%s image"
+#~ msgid_plural "%s images"
+#~ msgstr[0] "%s billede"
+#~ msgstr[1] "%s billeder"
+
+#~ msgid "Actors"
+#~ msgstr "Skuespillere"
+
+#~ msgid "Cinematography"
+#~ msgstr "Kinematografi"
+
+#~ msgid "Creator"
+#~ msgstr "Skaber"
+
+#~ msgid "Direction"
+#~ msgstr "Instruktion"
+
+#~ msgid "Directors"
+#~ msgstr "Instruktører"
+
+#~ msgid "Production"
+#~ msgstr "Produktion"
+
+#~ msgid "Script"
+#~ msgstr "Manuskript"
+
+#~ msgid " The material is from %s."
+#~ msgstr " Det fremsøgte materiale er fra %s."
+
+#~ msgid "and"
+#~ msgstr "og"
+
+#~ msgid " The format is %s."
+#~ msgstr " Formatet er %s."
+
+#~ msgid "%s contains %s materials about %s."
+#~ msgstr "%s indeholder %s materialer om %s."
+
+#~ msgid "Image %s for %s"
+#~ msgstr "Billede %s til %s"
+
+#~ msgid "About %s"
+#~ msgstr "Om %s"
+
+#~ msgid "DKA Object Player"
+#~ msgstr "DKA Objektafspiller"
+
+#~ msgid "Display a player according to the material format"
+#~ msgstr "Vis en afspiller i henhold til materialeformatet"
+
+#~ msgid "Permalinks must be enabled for CHAOS search to work properly"
+#~ msgstr ""
+#~ "Permalinks skal være aktiveret for at CHAOS søgning skal fungere korrekt"
+
+#~ msgid "%s about %s"
+#~ msgstr "%s om %s"
+
+#, fuzzy
+#~ msgid "Ingen tags"
+#~ msgstr "Alle Tags"
+
+#~ msgid "Page for search results"
+#~ msgstr "Side til søgeresultater"
+
+#~ msgid "Results per page"
+#~ msgstr "Resultater per side"
+
+#~ msgid "Rewrite rules flushed .."
+#~ msgstr "Rewrite rules nulstillet .."
+
+#~ msgid "View as List"
+#~ msgstr "Vis som liste"
+
+#~ msgid "View as Gallery"
+#~ msgstr "Vis som galleri"
+
+#~ msgid ""
+#~ "<span class=\"hidden-sm\">The search for %s gave&nbsp;</span><span>%s "
+#~ "results</span>"
+#~ msgstr ""
+#~ "<span class=\"hidden-sm\">Søgningen på %s gav&nbsp;</span><span>%s "
+#~ "resultater</span>"
+
+#~ msgid "Adds form to search in CHAOS material"
+#~ msgstr "Tilføjer formular til at søge i CHAOS materiale"
+
+#~ msgid "Placeholder"
+#~ msgstr "Pladsholder"
+
+#~ msgid "Service Path"
+#~ msgstr "Servicesti"
+
+#~ msgid "Client GUID"
+#~ msgstr "Klient GUID"
+
+#~ msgid "Access Point GUID"
+#~ msgstr "Adgangspunkt GUID"
+
+#~ msgid "E-mail used for authentication"
+#~ msgstr "E-mail til autentificering"
+
+#~ msgid "Password"
+#~ msgstr "Adgangskode"
+
+#~ msgid "CHAOS Client"
+#~ msgstr "CHAOS Klient"
+
+#~ msgid "CHAOS"
+#~ msgstr "CHAOS"
+
+#~ msgid "Connection to CHAOS is established"
+#~ msgstr "Forbindelse til CHAOS er etableret"
+
+#~ msgid "(session is %s last updated %s)"
+#~ msgstr "(session er %s sidst opdateret %s)"
+
+#~ msgid "Could not connect to CHAOS. Please check the details below."
+#~ msgstr ""
+#~ "Kunne ikke forbinde til CHAOS. Kontroller venligst nedenstående "
+#~ "oplysninger."
+
+#~ msgid "CHAOS Object - Featured"
+#~ msgstr "CHAOS Objekt - Fremhævet"
+
+#~ msgid "CHAOS Object - Main"
+#~ msgstr "CHAOS Objekt - Primær"
+
+#~ msgid "CHAOS Object - Sidebar"
+#~ msgstr "CHAOS Objekt - Sidebar"
+
+#~ msgid "CHAOS Object Attribute"
+#~ msgstr "CHAOS Objekt-attribut"
+
+#~ msgid "Style and display data from a CHAOS object"
+#~ msgstr "Design og vis data fra et CHAOS objekt"
+
+#~ msgid "Attribute"
+#~ msgstr "Attribut"
+
+#~ msgid "Markup"
+#~ msgstr "Markup"
+
+#~ msgid "CHAOS Object Multi Attributes"
+#~ msgstr "CHAOS Objekt-multiattributter"
+
+#~ msgid "Style and display several data from a CHAOS object"
+#~ msgstr "Design og vis flere data fra et CHAOS objekt"
+
+#~ msgid "Template \"%s\" not found for CHAOS Object Multi Attributes Widget"
+#~ msgstr ""
+#~ "Skabelon \"%s\" blev ikke fundet for widgeten CHAOS Objekt-"
+#~ "multiattributter"
+
+#~ msgid "Allowed attributes:"
+#~ msgstr "Tilladte attributter:"
+
+#~ msgid "None"
+#~ msgstr "Ingen"
+
+#~ msgid "Found template files:"
+#~ msgstr "Fundne skabelonfiler:"
+
+#~ msgid "Page not found"
+#~ msgstr "Side ikke fundet"
+
+#~ msgid "%s on Facebook"
+#~ msgstr "%s på Facebook"
+
+#~ msgid "%s on Twitter"
+#~ msgstr "%s på Twitter"
+
+#~ msgid "Page %s"
+#~ msgstr "Side %s"
+
+#~ msgid "Share on %s"
+#~ msgstr "Del på %s"
+
+#~ msgid "Send as e-mail"
+#~ msgstr "Send som e-mail"
+
+#~ msgid "Refine search"
+#~ msgstr "Præciser søgning"
+
+#~ msgid "All Formats"
+#~ msgstr "Alle Typer"
+
+#~ msgid "All Organizations"
+#~ msgstr "Alle Organisationer"
+
+#~ msgid "Views"
+#~ msgstr "Visninger"
+
+#~ msgid "Read more at %s"
+#~ msgstr "Læs mere hos %s"

@@ -5,7 +5,8 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
     const NAME_SINGULAR = 'dka-tag-object';
     const NAME_PLURAL = 'dka-tag-objects';
 
-    protected $_items_current_tag = array();
+    protected $_tags_related_item = array();
+    protected $_tags_metadata = array();
     protected $_current_tag;
 
     /**
@@ -42,14 +43,11 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
      * @return string
      */
     protected function column_default($item, $column_name){
-        $current_tag = $this->_items_current_tag[$item->GUID];
         switch($column_name){
             case 'status':
-            if(!isset($current_tag['status'])) return "Not defined"; //safety for old scheme
-                return $this->states[(string)$current_tag['status']]['title'];
+                return $this->_tags_metadata[$item->GUID]['status'];
             case 'date':
-                if(!isset($current_tag['created'])) return "Not defined"; //safety for old scheme
-                $time = strtotime($current_tag['created']);
+                $time = strtotime($this->_tags_metadata[$item->GUID]['created']);
                 $time_diff = time() - $time;
                 if ($time_diff > 0 && $time_diff < WEEK_IN_SECONDS )
                     $time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
@@ -72,13 +70,13 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
         $actions = array(
             'edit' => '<a href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'edit', $this->_args['singular'] => $item->GUID), 'admin.php').'">'.__('Edit').'</a>',
             'delete' => '<a class="submitdelete" href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'delete', $this->_args['singular'] => $item->GUID), 'admin.php').'">'.__('Delete').'</a>',
-            'show' => '<a href="'.$item->url.'" target="_blank">'.__('Show').'</a>'
+            'show' => '<a href="'.$this->_tags_related_item[$item->ObjectRelations[0]->Object1GUID]->url.'" target="_blank">'.__('Show material').'</a>'
         );
 
         //Return the title contents
         return sprintf('<strong><a href="%1$s">%2$s</a></strong>%3$s',
             "#",
-            $item->title,
+            $this->_tags_related_item[$item->ObjectRelations[0]->Object1GUID]->title,
             $this->row_actions($actions)
         );
     }
@@ -103,7 +101,7 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
     public function get_columns(){
         $columns = array(
             'cb'        => '<input type="checkbox" />',
-            'title'     => __('Title'),
+            'title'     => __('Material Title','wpdkatags'),
             'status'    => __('Status'),
             'date'      => __('Date')
         );
@@ -168,47 +166,73 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
      */
     public function prepare_items() {
 
+        $per_page = $this->get_items_per_page( 'edit_wpdkatags_per_page');
+        //$per_page = 1;
+
         //Set column headers
         $hidden = array();
         $this->_column_headers = array($this->get_columns(), $hidden, $this->get_sortable_columns());
         
         //Process actions
-        $this->process_bulk_action();                
+        $this->process_bulk_action();
 
-        //Run query for current tag
-        $facet = "DKA-Crowd-Tags_stringmv";
-        $response = WPChaosClient::instance()->Object()->Get(
-            $facet.":".WPChaosClient::escapeSolrValue($this->get_current_tag()),   // Search query
+        //Get tag objects by name
+        //A tag is NOT unique by name, as the object<->tag relation is 1:1
+        $serviceResult = WPChaosClient::instance()->Object()->Get(
+            self::FACET_KEY_VALUE.":".$this->get_current_tag()."+AND+ObjectTypeID:".WPDKATags::TAG_TYPE_ID,   // Search query
             null,   // Sort
-            null,   // AccessPoint given by settings.
-            $this->get_pagenum()-1, // pageIndex
-            $this->get_items_per_page( 'edit_wpdkatags_per_page'), // pageSize
+            false,   // Use session instead of AP
+            $this->get_pagenum()-1,      // pageIndex
+            $per_page,      // pageSize
             true,   // includeMetadata
-            false,  // includeFiles
-            false   // includeObjectRelations
+            false,   // includeFiles
+            true    // includeObjectRelations
         );
 
-        //Instantiate objects from result
-        $objects = WPChaosObject::parseResponse($response);
+        //Instantiate tags from serviceResult
+        $tags = WPChaosObject::parseResponse($serviceResult);
 
-        //Objects can have more tags. Identify the relevant one for each
-        foreach($objects as $object) {
-            foreach($object->usertags_raw as $tag) {
-                if($tag == $this->get_current_tag()) {
-                    $this->_items_current_tag[$object->GUID] = $tag;
-                    break;
-                }
+        //Loop through tags to get and cache metadata and get relations
+        $relation_guids = array();
+        foreach($tags as $object) {
+            $this->_tags_metadata[$object->GUID] = $object->metadata(
+                array(WPDKATags::METADATA_SCHEMA_GUID),
+                array(''),
+                null
+            );
+            foreach($object->ObjectRelations as $relation) {
+                $relation_guids[] = "GUID:".$relation->Object1GUID;
+                $relation_guids_map[$relation->Object1GUID] = $object->GUID;
             }
+        }
+
+        //Get the related objects to the tags.
+        //The quantity we get here should at most be the quantity we got in $serviceResult
+        $serviceResult2 = WPChaosClient::instance()->Object()->Get(
+            "(".implode("+OR+", $relation_guids).")",   // Search query
+            null,   // Sort
+            null,   // AP injected
+            0,      // pageIndex
+            $per_page,      // pageSize
+            true,   // includeMetadata
+            false,   // includeFiles
+            false    // includeObjectRelations
+        );
+
+        //Loop through objects to make them available for later use
+        foreach($serviceResult2->MCM()->Results() as $object) {
+            $this->_tags_related_item[$object->GUID] = new WPChaosObject($object);
         }
         
         //Set items
-        $this->items = $objects;
+        $this->items = $tags;
         
         //Set pagination
+        //$serviceResult->MCM()->TotalPages() cannot be trusted here!
         $this->set_pagination_args( array(
-            'total_items' => $response->MCM()->TotalCount(),
-            'per_page'    => $this->get_items_per_page( 'edit_wpdkatags_per_page'),
-            'total_pages' => $response->MCM()->TotalPages()
+            'total_items' => $serviceResult->MCM()->TotalCount(),
+            'per_page'    => $per_page,
+            'total_pages' => ceil($serviceResult->MCM()->TotalCount()/$per_page)
         ) );
     }
     

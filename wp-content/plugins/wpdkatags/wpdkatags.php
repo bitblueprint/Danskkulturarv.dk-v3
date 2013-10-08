@@ -29,15 +29,25 @@ final class WPDKATags {
      */
     const TAGS_FOLDER_ID = 470;
 
+    /**
+     * States
+     */
     const TAG_STATE_APPROVED = 'Approved';
     const TAG_STATE_UNAPPROVED = 'Unapproved';
     const TAG_STATE_FLAGGED = 'Flagged';
 
+    /**
+     * Plugin dependencies
+     * @var array
+     */
     private static $plugin_dependencies = array(
         'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
         'wpdka/wpdka.php' => 'WordPress DKA'
     );
 
+    /**
+     * Constructor
+     */
     public function __construct() {
         if(self::check_chaosclient()) {
             if(is_admin()) {
@@ -51,9 +61,24 @@ final class WPDKATags {
 
             add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags', array(&$this,'define_usertags_filter'),10,2);
             add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'usertags_raw', array(&$this,'define_usertags_raw_filter'),10,2);
+
+            add_action('plugins_loaded',array(&$this,'load_textdomain'));
         }
     }
 
+    /**
+     * Load textdomain for i18n
+     * @return void
+     */
+    public function load_textdomain() {
+        load_plugin_textdomain(self::DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
+    }
+
+    /**
+     * Add some setting keys to CHAOS settings
+     * @param  array    $settings
+     * @return array 
+     */
     public function add_chaos_settings($settings) {
         $new_settings = array(
             array(
@@ -78,6 +103,9 @@ final class WPDKATags {
         return array_merge($settings,$new_settings);
     }
 
+    /**
+     * Add menu to adminisration
+     */
     public function add_menu_items(){
         global $submenu;
         add_menu_page(
@@ -89,6 +117,11 @@ final class WPDKATags {
         );
     }
 
+    /**
+     * Render page added in menu
+     * @author Joachim Jensen <jv@intox.dk>
+     * @return void
+     */
     public function render_tags_page(){
 
 ?>
@@ -108,7 +141,12 @@ final class WPDKATags {
 <?php
     }
 
-    private function render_list_table($table) {
+    /**
+     * Render page for a given list table
+     * @param  WPDKATags_List_Table $table
+     * @return WPDKATags_List_Table
+     */
+    private function render_list_table(WPDKATags_List_Table $table) {
         $table->prepare_items();   
 ?>
     <h2><?php $table->get_title(); ?></h2>
@@ -293,6 +331,12 @@ final class WPDKATags {
         return empty($objects) ? null : $objects[0];
     }
 
+    /**
+     * Create usertags_raw property for WPChaosObject
+     * @param  mixed            $value
+     * @param  WPChaosObject    $object
+     * @return array
+     */
     public function define_usertags_raw_filter($value, $object) {
         $relation_guids = array();
         foreach($object->ObjectRelations as $relation) {
@@ -303,11 +347,11 @@ final class WPDKATags {
             $relation_guids[] = "GUID:".$relation->{$guid_property};
         }
         $serviceResult = WPChaosClient::instance()->Object()->Get(
-            "(".implode("+OR+", $relation_guids).")+AND+ObjectTypeID:12",   // Search query
+            "(".implode("+OR+", $relation_guids).")+AND+ObjectTypeID:".self::TAG_TYPE_ID,   // Search query
             null,   // Sort
             false,   // Use session instead of AP
             0,      // pageIndex
-            10,      // pageSize
+            count($relation_guids),      // pageSize
             true,   // includeMetadata
             false,   // includeFiles
             false    // includeObjectRelations
@@ -316,6 +360,12 @@ final class WPDKATags {
         return WPChaosObject::parseResponse($serviceResult);
     }
 
+    /**
+     * Create usertags property for WPChaosObject
+     * @param  mixed            $value
+     * @param  WPChaosObject    $object
+     * @return string
+     */
     public function define_usertags_filter($value, $object) {
 
         $status = intval(get_option('wpdkatags-status'));
@@ -350,6 +400,10 @@ final class WPDKATags {
         return $value;
     }
 
+    /**
+     * Render form and js for tag submission
+     * @param  WPChaosObject    $object
+     */
     private function add_user_tag_form($object) {
         $value = '<input type="text" value="" id="usertag-add" class=""><button type="button" id="usertag-submit" class="btn">Add tag</button>';
 
@@ -402,6 +456,10 @@ EOTEXT;
         return $value;
     }
 
+    /**
+     * Load file dependencies
+     * @return void
+     */
     private function load_dependencies() {
         //WP_List_Table might not be available automatically
         if(!class_exists('WP_List_Table')){

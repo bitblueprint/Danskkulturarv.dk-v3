@@ -6,6 +6,10 @@
 
 require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 
+//Diasable Core Updates
+add_filter( 'pre_site_transient_update_core', function($a) { return null; } );
+//wp_clear_scheduled_hook( 'wp_version_check' );
+
 function dka_setup() {
 
 	add_editor_style();
