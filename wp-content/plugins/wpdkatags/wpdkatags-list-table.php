@@ -268,25 +268,11 @@ class WPDKATags_List_Table extends WP_List_Table {
      **************************************************************************/
     public function prepare_items() {
 
-        /**
-         * First, lets decide how many records per page to show
-         */
         $per_page = $this->get_items_per_page( 'edit_wpdkatags_per_page');
         
-        /**
-         * REQUIRED. Finally, we build an array to be used by the class for column 
-         * headers. The $this->_column_headers property takes an array which contains
-         * 3 other arrays. One for all columns, one for hidden columns, and one
-         * for sortable columns.
-         */
         $hidden = array();
         $this->_column_headers = array($this->get_columns(), $hidden, $this->get_sortable_columns());
         
-        
-        /**
-         * Optional. You can handle your bulk actions however you see fit. In this
-         * case, we'll handle them within our package just to keep things clean.
-         */
         $this->process_bulk_action();
                      
         /**
@@ -327,7 +313,7 @@ class WPDKATags_List_Table extends WP_List_Table {
         //     true    // includeObjectRelations
         // );
         // 
-        $facet = "DKA-Crowd-Tags_stringmv";
+        $facet = "DKA-Crowd-Tag-Value_string";
 
         // $tags = WPChaosClient::index_search(array($facet));
         // $tags = $tags[$facet];
@@ -337,7 +323,8 @@ class WPDKATags_List_Table extends WP_List_Table {
         //$objects = WPChaosObject::parseResponse($response);
         //
         $tags = array();
-        $facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query(array($facet)), "");
+        $facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query(array($facet)), null, false);
+        var_dump($facetsResponse);
 
         foreach($facetsResponse->Index()->Results() as $facetResult) {
             foreach($facetResult->FacetFieldsResult as $fieldResult) {
@@ -346,32 +333,11 @@ class WPDKATags_List_Table extends WP_List_Table {
                 }
             }
         }
-        /**
-         * REQUIRED for pagination. Let's check how many items are in our data array. 
-         * In real-world use, this would be the total number of items in your database, 
-         * without filtering. We'll need this later, so you should always include it 
-         * in your own package classes.
-         */
+
         $total_items = count($tags);
-        
-        
-        /**
-         * The WP_List_Table class does not handle pagination for us, so we need
-         * to ensure that the data is trimmed to only the current page. We can use
-         * array_slice() to 
-         */
         $tags = array_slice($tags,(($this->get_pagenum()-1)*$per_page),$per_page);
-        
-        // foreach($tags as $tag_k => $tag_v) {
-        //     $this->items[] = array("count")
-        // }
-        
-        /**
-         * REQUIRED. Now we can add our *sorted* data to the items property, where 
-         * it can be used by the rest of the class.
-         */
+
         $this->items = $tags;
-        
         
         /**
          * REQUIRED. We also have to register our pagination options & calculations.

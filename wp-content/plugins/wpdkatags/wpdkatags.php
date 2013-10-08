@@ -362,7 +362,11 @@ jQuery(document).ready(function($) {
     token = '$token',
     container = $(".usertags");
     $("#usertag-submit").click( function(e) {
+        $(this).attr('disabled',true);
+        var button = $(this);
         var input = $('#usertag-add');
+
+        button.attr('disabled',true);
         $.ajax({
             url: ajaxurl,
             data:{
@@ -375,6 +379,7 @@ jQuery(document).ready(function($) {
             type: 'POST',
             success:function(data){
                 console.log(data);
+                button.attr('disabled',false);
                 var tag = '<a href="'+data.link+'" class="tag usertag">'+data.title+'</a>';
                 var notag = container.find("span");
                  if(notag.length > 0) {
@@ -384,6 +389,7 @@ jQuery(document).ready(function($) {
                 input.val("");
             },
             error: function(errorThrown){
+                button.attr('disabled',false);
                 console.log("error.");
                 console.log(errorThrown);
             }
