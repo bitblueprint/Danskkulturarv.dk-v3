@@ -17,3 +17,4 @@ sitemap.xml.gz
 .settings/
 wp-content/plugins/rewrite-rules-inspector
 .htaccess
+.DS_Store
