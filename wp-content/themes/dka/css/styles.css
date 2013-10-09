@@ -4641,6 +4641,17 @@ article.container .single-material {
   color: #ffffff;
   cursor: pointer;
 }
+
+i.flag-tag {
+  visibility: hidden;
+  color: black;
+}
+
+a.tag:hover > i.flag-tag {
+  visibility: visible;
+  color: black;
+}
+
 .nav.info a.no-tag {
   padding: 0;
   background: none;

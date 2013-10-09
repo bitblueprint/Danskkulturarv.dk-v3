@@ -195,19 +195,46 @@ class WPDKAObject {
 		//object->tags
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags', function($value, \WPCHAOSObject $object) {
 			$tags = $object->tags_raw;
+			$ajaxurl = admin_url( 'admin-ajax.php' );
+			echo <<<EOTEXT
+<script type="text/javascript"><!--
+function flagTag(e, tag) {
+	e.preventDefault();
+	var c = confirm('Are you sure you want to flag ' + tag);
+	if (c) {
+
+		// TODO AJAX call - Flag.
+		/*$.ajax({
+            url: ajaxurl,
+            data:{
+                action: 'wpdkatags_change_tag_state',
+                state: 'WPDKATags::TAG_STATE_FLAGGED'
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            success:function(data){
+            },
+            error: function(errorThrown){
+                alert("Could not flag tag.");
+            }
+        });*/
+	}
+};
+//--></script>
+EOTEXT;
 			foreach($tags as $key => &$tag) {
 				//Remove tag if empty
-				if(!$tag) {
+				if(!$tag) {	
 					unset($tags[$key]);
 					continue;
 				}
+
 				$link = WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_FREETEXT => $tag));
-				$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.'</a> '."\n";
+				$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.' <i onClick="flagTag(event, \'' . $tag . '\');" class="icon-remove flag-tag"></i></a>'."\n";
 			}
 			if(empty($tags)) {
 				$value .= '<span class="no-tag">'.__('No tags','wpdka').'</span>'."\n";
 			}
-			
 			return $value;
 		}, 10, 2);
 
