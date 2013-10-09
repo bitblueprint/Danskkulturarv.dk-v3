@@ -24,7 +24,7 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
 
         $this->_current_tag = $_GET[parent::NAME_SINGULAR];
 
-        $this->title = "User Tag: ".$this->get_current_tag();
+        $this->title = sprintf(__('User Tag: %s', 'wpdkatags'), $this->get_current_tag());
     }
 
     /**
@@ -42,10 +42,20 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
      * @param  string           $column_name
      * @return string
      */
-    protected function column_default($item, $column_name){
-        switch($column_name){
+    protected function column_default($item, $column_name) {
+        $selects = array(WPDKATags::TAG_STATE_UNAPPROVED, WPDKATags::TAG_STATE_FLAGGED, WPDKATags::TAG_STATE_APPROVED);
+        switch($column_name) {
             case 'status':
-                return $this->_tags_metadata[$item->GUID]['status'];
+                $status = '<select id="' . $item->GUID . '" onchange="changeTagStatus(\'' . $item->GUID . '\');">'; // AJAX to change tag status.
+                $status .= '<option value="' . $this->_tags_metadata[$item->GUID]['status'] . '">' . $this->_tags_metadata[$item->GUID]['status'] . '</option>';
+
+                foreach ($selects as $s) {
+                    if ($s == $this->_tags_metadata[$item->GUID]['status'])
+                        continue;
+                    $status .= '<option value="' . $s . '">' . $s . '</option>';
+                }
+                $status .= '</select>';
+                return $status;
             case 'date':
                 $time = strtotime($this->_tags_metadata[$item->GUID]['created']);
                 $time_diff = time() - $time;
@@ -64,7 +74,7 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
      * @param  WPChaosObject    $item
      * @return string
      */
-    protected function column_title($item){
+    protected function column_title($item) {
         
         //Build row actions
         $actions = array(
@@ -102,8 +112,8 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
         $columns = array(
             'cb'        => '<input type="checkbox" />',
             'title'     => __('Material Title','wpdkatags'),
-            'status'    => __('Status'),
-            'date'      => __('Date')
+            'status'    => __('Status', 'wpdkatags'),
+            'date'      => __('Date', 'wpdkatags')
         );
         return $columns;
     }
@@ -138,7 +148,9 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
      **************************************************************************/
     public function get_bulk_actions() {
         $actions = array(
-            'delete' => __('Delete')
+            'delete' => __('Delete', 'wpdkatags'),
+            'approve' => __('Approve', 'wpdkatags'),
+            'unapprove' => __('Unapprove', 'wpdkatags')
         );
         return $actions;
     }
@@ -154,8 +166,16 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
     protected function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
-        if($this->current_action() == 'delete') {
-            wp_die('Items deleted (or they would be if we had items to delete)!');
+        switch ($this->current_action()) {
+            case 'detele':
+                // Delete tags TODO
+                wp_die('Items deleted (or they would be if we had items to delete)!');
+            case 'approve':
+                // Approve tags TODO
+                wp_die('Items approved (or they would be if we had items to delete!)');
+            case 'unapprove':
+                // Unapprove tags TODO
+                wp_die('Items unapproved (or they would be if we had items to approve)!');
         }
         
     }
@@ -168,6 +188,21 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
 
         $per_page = $this->get_items_per_page( 'edit_wpdkatags_per_page');
         //$per_page = 1;
+
+
+        if (isset($_GET['tag_status'])) {
+            switch ($_GET['tag_status']) {
+                case 'unapproved':
+                    // TODO
+                    break;
+                case 'flagged':
+                    // TODO
+                    break;
+                case 'approved':
+                    // TODO
+                    break;
+            }
+        }
 
         //Set column headers
         $hidden = array();
@@ -234,6 +269,22 @@ class WPDKATagObjects_List_Table extends WPDKATags_List_Table {
             'per_page'    => $per_page,
             'total_pages' => ceil($serviceResult->MCM()->TotalCount()/$per_page)
         ) );
+
+        // AJAX call for change tag status TODO
+        $ajaxurl = admin_url( 'admin-ajax.php' );
+        echo <<<EOTEXT
+<script type="text/javascript"><!--
+    function changeTagStatus(tag) {
+        var ajaxurl = '$ajaxurl';
+        var token = 'somestring' + tag;
+        var element = document.getElementById(tag);
+        var status = element.options[element.selectedIndex].value;
+
+        // AJAX call needed TODO
+
+    }
+//--></script>
+EOTEXT;
     }
     
 }

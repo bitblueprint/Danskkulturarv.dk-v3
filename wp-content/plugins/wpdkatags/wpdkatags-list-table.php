@@ -34,7 +34,7 @@ class WPDKATags_List_Table extends WP_List_Table {
             'ajax'      => false        //does this table support ajax?
         ) );
 
-        $this->title = "User Tags";
+        $this->title = __('User Tags', 'wpdkatags');
         $this->states = array(
             'unapproved' => array(
                 'title' => __('Unapproved','wpdkatags'),
@@ -153,7 +153,6 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @return string Text to be placed inside the column <td> (movie title only)
      **************************************************************************/
     protected function column_title($item){
-        
         //Build row actions
         $actions = array(
             'edit'      => '<a href="'.add_query_arg(array('page' => $_REQUEST['page'], 'action' => 'edit', $this->_args['singular'] => $item->Value), 'admin.php').'">'.__('Edit').'</a>',
@@ -188,7 +187,7 @@ class WPDKATags_List_Table extends WP_List_Table {
     public function get_columns(){
         $columns = array(
             'cb'        => '<input type="checkbox" />', //Render a checkbox instead of text
-            'title'     => __('Title'),
+            'title'     => __('Title', 'wpdkatags'),
             'quantity'    => __('Quantity','wpdkatags'),
         );
         return $columns;
@@ -233,7 +232,9 @@ class WPDKATags_List_Table extends WP_List_Table {
      **************************************************************************/
     public function get_bulk_actions() {
         $actions = array(
-            'delete' => __('Delete')
+            'delete' => __('Delete', 'wpdkatags'),
+            'approve' => __('Approve', 'wpdkatags'),
+            'unapprove' => __('Unapprove', 'wpdkatags')
         );
         return $actions;
     }
@@ -249,8 +250,16 @@ class WPDKATags_List_Table extends WP_List_Table {
     protected function process_bulk_action() {
         
         //Detect when a bulk action is being triggered...
-        if($this->current_action() == 'delete') {
-            wp_die('Items deleted (or they would be if we had items to delete)!');
+        switch ($this->current_action()) {
+            case 'detele':
+                // Delete tags TODO
+                wp_die('Items deleted (or they would be if we had items to delete)!');
+            case 'approve':
+                // Approve tags TODO
+                wp_die('Items approved (or they would be if we had items to approve)!');
+            case 'unapprove':
+                // Unapprove tags TODO
+                wp_die('Items unapproved (or they would be if we had items to approve)!');
         }
         
     }
@@ -272,6 +281,20 @@ class WPDKATags_List_Table extends WP_List_Table {
      * @uses $this->set_pagination_args()
      **************************************************************************/
     public function prepare_items() {
+        // Sort user tags (unapproved, flagged, approved).
+        if (isset($_GET['tag_status'])) {
+            switch ($_GET['tag_status']) {
+                case 'unapproved':
+                    // TODO
+                    break;
+                case 'flagged':
+                    // TODO
+                    break;
+                case 'approved':
+                    // TODO
+                    break;
+            }
+        }
 
         $per_page = $this->get_items_per_page( 'edit_wpdkatags_per_page');
         //$per_page = 5;
@@ -310,7 +333,6 @@ class WPDKATags_List_Table extends WP_List_Table {
 
         $total_items = count($tags);
         $tags = array_slice($tags,(($this->get_pagenum()-1)*$per_page),$per_page);
-
         $this->items = $tags;
         
         /**
