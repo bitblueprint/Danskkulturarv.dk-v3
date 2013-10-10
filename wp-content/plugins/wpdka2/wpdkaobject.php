@@ -14,14 +14,37 @@ class WPDKAObject {
 	static $OBJECT_TYPE_IDS = array(1);
 	
 	const ANP_SCHEMA_GUID = '22c70550-90ce-43f9-9176-973c09760138';
+
+	/** XML for GUID: 22c70550-90ce-43f9-9176-973c09760138
+	 * 
+		<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			<xs:element name="FIATIFTA.ANP">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Title" type="xs:string" />
+						<xs:element name="Abstract" type="xs:string" />
+						<xs:element name="Description" type="xs:string" />
+						<xs:element name="Publisher" type="xs:string" />
+						<xs:element name="Identifier" type="xs:string" />
+						<xs:element name="FirstPublicationDate" type="xs:dateTime" />
+						<xs:element name="Coverage" type="xs:string" />
+						<xs:element name="Subject" type="xs:string" />
+						<xs:element name="Creator" type="xs:string" />
+						<xs:element name="Contributor" type="xs:string" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	 */
+
 	const METADATA_LANGUAGE = 'en';
 	const SESSION_PREFIX = __CLASS__;
 	
-	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string';
+	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string'; // What's this?
 	
 	// If more GUIDS or languages is added.
 	public static $FREETEXT_SCHEMA_GUIDS = array(self::ANP_SCHEMA_GUID);
-	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE, 'nl');
+	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE, 'nl', 'it'); // 'de' doesn't work.
 
 	public static $DERIVED_FILES = array(
 		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/mp4:bonanza/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
@@ -151,9 +174,7 @@ class WPDKAObject {
 	 * with XML content
 	 * @return void 
 	 */
-	public function define_attribute_filters() {
-		// Registering namespaces.
-		
+	public function define_attribute_filters() {		
 		//object->title
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
@@ -175,11 +196,11 @@ class WPDKAObject {
 			}
 		}, 20, 2);
 
-		/*//object->tags_array
+		//object->tags_array
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags_raw', function($value, \WPCHAOSObject $object) {
 			$tags = $object->metadata(
-				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-				array('/dka2:DKA/dka2:Tags/dka2:Tag','/DKA/Tags/Tag'),
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Subject',
 				null
 			);
 			//If there are no tags, null is returned above, we need an array
@@ -211,7 +232,7 @@ function flagTag(e, tag) {
             error: function(errorThrown){
                 alert("Could not flag tag.");
             }
-        });*//*
+        });*/
 	}
 };
 //--></script>
@@ -230,7 +251,7 @@ EOTEXT;
 				$value .= '<span class="no-tag">'.__('No tags','wpdka').'</span>'."\n";
 			}
 			return $value;
-		}, 10, 2);*/
+		}, 10, 2);
 
 		//object->creator
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'creator', function($value, \WPCHAOSObject $object) {
@@ -250,6 +271,20 @@ EOTEXT;
 				null
 			);
 			return $value . WPDKAObject::get_creator_attributes($contributors);
+		}, 10, 2);
+
+		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'creator_contributor', function($value, \WPCHAOSObject $object) {
+			$creators = $object->metadata(
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Creator',
+				null
+			);
+			$contributors = $object->metadata(
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Contributor',
+				null
+			);
+			return $value . WPDKAObject::get_creator_attributes($creators) . ' / ' . WPDKAObject::get_creator_attributes($contributors);
 		}, 10, 2);
 
 		//object->organization_raw
@@ -314,7 +349,7 @@ EOTEXT;
 			return $value . $time;
 		}, 10, 2);
 
-		//object->rights
+		/*//object->rights
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'rights', function($value, $object) {
 			return $value . $object->metadata(
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
@@ -335,7 +370,7 @@ EOTEXT;
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, \WPCHAOSObject $object) {
 			$type = $object->type;
 			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['title'] : $type);
-		}, 10, 2);
+		}, 10, 2);*/
 
 		//object->thumbnail
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, \WPCHAOSObject $object) {
@@ -360,9 +395,12 @@ EOTEXT;
 		}, 10, 2);
 
 		//object->slug
-		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'slug', function($value, \WPCHAOSObject $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Slug/text()');
-		}, 10, 2);
+		/*add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'slug', function($value, \WPCHAOSObject $object) {
+			return $value . $object->metadata(
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Title'
+			);
+		}, 10, 2);*/
 
 		//object->url
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'url', function($value, \WPCHAOSObject $object) {
@@ -373,15 +411,15 @@ EOTEXT;
 			}
 		}, 10, 2);
 
-		//object->externalurl
+		/*//object->externalurl
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'externalurl', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
-				array(WPDKAObject::DKA2_SCHEMA_GUID),
-				array('/dka2:DKA/dka2:ExternalURL/text()')
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/XXX'
 			);
-		}, 10, 2);
+		}, 10, 2);*/
 
-		//object->views
+		/*//object->views
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'views', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()');
 		}, 10, 2);
@@ -404,7 +442,7 @@ EOTEXT;
 		//object->accumulatedrate
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'accumulatedrate', function($value, $object) {
 			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
-		}, 10, 2);
+		}, 10, 2);*/
 
 		//object->caption
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'caption', function($value, $object) {
@@ -896,6 +934,7 @@ EOTEXT;
 	}
 
 }
+
 //Instantiate
 new WPDKAObject();
 
