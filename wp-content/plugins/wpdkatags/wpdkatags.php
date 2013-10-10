@@ -42,7 +42,7 @@ final class WPDKATags {
      */
     private static $plugin_dependencies = array(
         'wpchaosclient/wpchaosclient.php' => 'WordPress Chaos Client',
-        'wpdka/wpdka.php' => 'WordPress DKA'
+        'wpanp/wpdka.php' => 'WordPress DKANP'
     );
 
     /**

@@ -18,9 +18,3 @@
 		<h4><?php _e('Tags','dka'); ?></h4>
 		<?php echo WPChaosClient::get_object()->tags; ?>
 
-<?php
-//iff status is active or frozen
-if(intval(get_option('wpdkatags-status')) > 0) : ?>
-		<h4><?php _e('User Tags','wpdkatags'); ?></h4>
-		<?php echo WPChaosClient::get_object()->usertags; ?>
-<?php endif; ?>

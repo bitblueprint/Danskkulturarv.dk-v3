@@ -6,9 +6,37 @@
 
 require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 
-//Diasable Core Updates
-add_filter( 'pre_site_transient_update_core', function($a) { return null; } );
-//wp_clear_scheduled_hook( 'wp_version_check' );
+function login_redirect() {
+    if (!is_user_logged_in())
+        auth_redirect();
+}
+add_action( 'wp', 'login_redirect' );
+
+function disableTopToolBar()
+{
+	show_admin_bar(false);
+}
+add_action('init', 'disableTopToolBar', 9);
+
+// LOGIN SCREEN 
+
+function custom_login_css() {
+    echo '<link rel="stylesheet" type="text/css" href="'.get_stylesheet_directory_uri().'/css/login-style.css" />';
+    echo '<style type="text/css">
+		h1 a { background-image: url('.get_template_directory_uri().'/img/fiatiftawhitelogofooter.png) !important; height:130px !important; background-size: auto auto !important; }
+		</style>';
+}
+add_action('login_head', 'custom_login_css');
+
+function custom_fonts() {
+    echo '<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700" rel="stylesheet" type="text/css">';
+}
+add_action('login_head', 'custom_fonts');
+
+function custom_login_header_url($url) {
+    return get_home_url();
+}
+add_filter( 'login_headerurl', 'custom_login_header_url' );
 
 function dka_setup() {
 
@@ -61,8 +89,8 @@ function dka_scripts_styles() {
 		//'modal',
 		//'scrollspy',
 		//'tab',
-		'tooltip', // Used by the /api page.
-		'popover', // Used by the /api page.
+		//'tooltip',
+		//'popover',
 		//'affix'
 	);
 	foreach($bootstrap_scripts as $bootscript) {

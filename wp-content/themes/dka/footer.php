@@ -26,7 +26,9 @@
     );
 ?>
 
-		<div class="copyright">Copyright &#169; 2012-<?php echo date('Y'); ?> <a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"><?php bloginfo( 'name' ); ?></a></div>
+		<div class="copyright">
+            <p>Copyright &#169; 2012-<?php echo date('Y'); ?></p>
+        <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><img src="<?php echo get_template_directory_uri() . '/img/fiatiftawhitelogofooter.png' ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>"></a></div>
 	</div>
 </footer>
 

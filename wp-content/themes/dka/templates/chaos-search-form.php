@@ -7,21 +7,21 @@ $facets = array(
 	WPDKASearch::QUERY_KEY_TYPE => WPChaosSearch::generate_facet("FormatTypeName", WPDKASearch::QUERY_KEY_TYPE),
 	WPDKASearch::QUERY_KEY_ORGANIZATION => WPChaosSearch::generate_facet("DKA-Organization", WPDKASearch::QUERY_KEY_ORGANIZATION),
 );
-function get_facet_count($field, $values) {
-	if(is_string($values)) {
-		$values = array($values);
-	}
-	global $facets;
-	$sum = 0;
-	if(array_key_exists($field, $facets)) {
-		foreach($values as $value) {
-			if(array_key_exists($value, $facets[$field])) {
-				$sum += intval($facets[$field][$value]);
-			}
-		}
-	}
-	return $sum;
-}
+// function get_facet_count($field, $values) {
+	// if(is_string($values)) {
+		// $values = array($values);
+	// }
+	// global $facets;
+	// $sum = 0;
+	// if(array_key_exists($field, $facets)) {
+		// foreach($values as $value) {
+			// if(array_key_exists($value, $facets[$field])) {
+				// $sum += intval($facets[$field][$value]);
+			// }
+		// }
+	// }
+	// return $sum;
+// }
 $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" : "");
 ?>
 <form method="GET" action="<?php echo $page; ?>" class="col-12">
@@ -49,7 +49,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 <?php foreach(WPDKAObject::$format_types as $format_type => $args) : if($format_type == WPDKAObject::TYPE_IMAGE_AUDIO || $format_type == WPDKAObject::TYPE_UNKNOWN) continue; ?>
 			<label title="<?php echo $args['title']; ?>" for="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" class="btn filter-btn filter-btn-single">
 				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_TYPE; ?>[]" value="<?php echo $format_type; ?>" id="<?php echo WPDKASearch::QUERY_KEY_TYPE .'-'. $format_type; ?>" <?php checked(in_array($format_type,(array)$types)); ?>>
-				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?> (<?php echo get_facet_count(WPDKASearch::QUERY_KEY_TYPE, $args['chaos-value']) ?>)<i class="icon-remove-sign"></i>
+				<i class="<?php echo $args['class']; ?>"></i><?php echo $args['title']; ?> ()<i class="icon-remove-sign"></i>
 			</label>
 <?php endforeach; ?>
 		</div>
@@ -57,17 +57,7 @@ $advanced_search_expanded = ((!empty($types) || !empty($organizations)) ? " in" 
 		<div class="col-sm-6 col-12 filter-container filter-media-type filter-organizations">
 			<label class="btn filter-btn filter-btn-all"><?php _e('All Organizations','dka'); ?><i class="icon-ok"></i></label>
 			<hr class="hidden-sm">
-<?php
-$current_organization_id = 0;
-foreach(WPDKASearch::get_organizations_merged() as $id => $organization) :
-	$count = get_facet_count(WPDKASearch::QUERY_KEY_ORGANIZATION, $organization['chaos_titles']);
 
-?>
-			<label for="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" class="btn filter-btn filter-btn-single">
-				<input type="checkbox" class="chaos-filter" style="display: none;" name="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION; ?>[]" value="<?php echo $organization['slug']; ?>" id="<?php echo WPDKASearch::QUERY_KEY_ORGANIZATION .'-'. $organization['slug']; ?>" <?php checked(in_array($organization['slug'],(array)$organizations)); ?>>
-				<?php echo $organization['title']; ?> (<?php echo $count ?>)<i class="icon-remove-sign"></i>
-			</label> 
-<?php endforeach; ?>
 		</div>
 	</div>
 </form>
