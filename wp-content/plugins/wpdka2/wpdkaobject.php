@@ -19,9 +19,10 @@ class WPDKAObject {
 	
 	const DKA_CROWD_SLUG_SOLR_FIELD = 'DKA-Crowd-Slug_string';
 	
+	// If more GUIDS or languages is added.
 	public static $FREETEXT_SCHEMA_GUIDS = array(self::ANP_SCHEMA_GUID);
-	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE);
-	
+	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE, 'nl');
+
 	public static $DERIVED_FILES = array(
 		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/mp4:bonanza/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'
 	);
@@ -156,7 +157,7 @@ class WPDKAObject {
 		//object->title
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'title', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
-				array(WPDKAObject::FREETEXT_SCHEMA_GUIDS),
+				WPDKAObject::ANP_SCHEMA_GUID,
 				'/FIATIFTA.ANP/Title'
 			);
 		}, 10, 2);
@@ -174,7 +175,7 @@ class WPDKAObject {
 			}
 		}, 20, 2);
 
-		//object->tags_array
+		/*//object->tags_array
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'tags_raw', function($value, \WPCHAOSObject $object) {
 			$tags = $object->metadata(
 				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
@@ -210,7 +211,7 @@ function flagTag(e, tag) {
             error: function(errorThrown){
                 alert("Could not flag tag.");
             }
-        });*/
+        });*//*
 	}
 };
 //--></script>
@@ -229,13 +230,13 @@ EOTEXT;
 				$value .= '<span class="no-tag">'.__('No tags','wpdka').'</span>'."\n";
 			}
 			return $value;
-		}, 10, 2);
+		}, 10, 2);*/
 
 		//object->creator
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'creator', function($value, \WPCHAOSObject $object) {
 			$creators = $object->metadata(
-				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-				array('/dka2:DKA/dka2:Creators/dka2:Creator','/DKA/Creator/Person'),
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Creator',
 				null
 			);
 			return $value . WPDKAObject::get_creator_attributes($creators);
@@ -244,8 +245,8 @@ EOTEXT;
 		//object->contributor
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'contributor', function($value, \WPCHAOSObject $object) {
 			$contributors = $object->metadata(
-				array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-				array('/dka2:DKA/dka2:Contributors/dka2:Contributor','/DKA/Contributor/Person'),
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Contributor',
 				null
 			);
 			return $value . WPDKAObject::get_creator_attributes($contributors);
@@ -254,8 +255,8 @@ EOTEXT;
 		//object->organization_raw
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'organization_raw', function($value, \WPCHAOSObject $object) {
 			$organization = $object->metadata(
-					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:Organization/text()', '/DKA/Organization/text()')
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Publisher'
 			);
 			return $value . $organization;
 		}, 10, 2);
@@ -288,16 +289,16 @@ EOTEXT;
 		//object->description
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'description', function($value, \WPCHAOSObject $object) {
 			return $value . $object->metadata(
-					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:Description', '/DKA/Description/text()')
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/Description'
 			);
 		}, 10, 2);
 
 		//object->published
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'published', function($value, \WPCHAOSObject $object) {
 			$time = $object->metadata(
-					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
-					array('/dka2:DKA/dka2:FirstPublishedDate/text()', '/DKA/FirstPublishedDate/text()')
+				WPDKAObject::ANP_SCHEMA_GUID,
+				'/FIATIFTA.ANP/FirstPublicationDate'
 			);
 			
 			if($time) {
