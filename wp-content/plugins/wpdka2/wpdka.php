@@ -74,7 +74,7 @@ class WPDKA {
 	}
 
 	public function load_textdomain() {
-		load_plugin_textdomain( 'wpdka', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
+		load_plugin_textdomain( 'wpanp', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/');
 	}
 	
 	public static function install() {
@@ -104,11 +104,11 @@ class WPDKA {
 		
 		$new_settings = array(array(
 			'name'      => 'dka',
-			'title'     => __('Dansk Kulturarv', 'wpdka'),
+			'title'     => __('Dansk Kulturarv', 'wpanp'),
 			'fields'    => array(
 				array(
 					'name' => 'wpdka-default-organization-page',
-					'title' => __('Page for objects with an unknown organization.','wpdka'),
+					'title' => __('Page for objects with an unknown organization.','wpanp'),
 					'type' => 'select',
 					'list' => $pages,
 				),
@@ -116,12 +116,12 @@ class WPDKA {
 		),array(
 			/*Sections*/
 			'name'		=> 'jwplayer',
-			'title'		=> __('JW Player Settings','wpdka'),
+			'title'		=> __('JW Player Settings','wpanp'),
 			'fields'	=> array(
 				/*Section fields*/
 				array(
 					'name' => 'wpdka-jwplayer-api-key',
-					'title' => __('JW Player API key','wpdka'),
+					'title' => __('JW Player API key','wpanp'),
 					'type' => 'text',
 					'val' => '',
 					'class' => 'regular-text'
@@ -401,7 +401,7 @@ class WPDKA {
 
 		$num_posts = WPChaosClient::instance()->Object()->Get('', null, null, 0, 0)->MCM()->TotalCount();
 		$num = number_format_i18n($num_posts);
-		$text = _n('CHAOS material', 'CHAOS materials', intval($num_posts),'wpdka');
+		$text = _n('CHAOS material', 'CHAOS materials', intval($num_posts),'wpanp');
 
 		echo '<tr>';
 		echo '<td class="first b b-chaos-material">'.$num.'</td>';
@@ -412,7 +412,7 @@ class WPDKA {
 
 		$num_posts = $sum['DKA-Crowd-Views_int'];
 		$num = number_format_i18n($num_posts);
-		$text = _n('CHAOS material view', 'CHAOS material views', intval($num_posts),'wpdka');
+		$text = _n('CHAOS material view', 'CHAOS material views', intval($num_posts),'wpanp');
 
 		echo '<tr>';
 		echo '<td class="first b b-chaos-material">'.$num.'</td>';
@@ -421,7 +421,7 @@ class WPDKA {
 
 		$num_posts = $sum['DKA-Crowd-Likes_int'];
 		$num = number_format_i18n($num_posts);
-		$text = _n('CHAOS material like', 'CHAOS material likes', intval($num_posts),'wpdka');
+		$text = _n('CHAOS material like', 'CHAOS material likes', intval($num_posts),'wpanp');
 
 		echo '<tr>';
 		echo '<td class="first b b-chaos-material">'.$num.'</td>';
@@ -430,7 +430,7 @@ class WPDKA {
 
 		$num_posts = $sum['DKA-Crowd-Shares_int'];
 		$num = number_format_i18n($num_posts);
-		$text = _n('CHAOS material share', 'CHAOS material shares', intval($num_posts),'wpdka');
+		$text = _n('CHAOS material share', 'CHAOS material shares', intval($num_posts),'wpanp');
 
 		echo '<tr>';
 		echo '<td class="first b b-chaos-material">'.$num.'</td>';
@@ -447,7 +447,7 @@ class WPDKA {
 	} 
 	
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
-		echo '<div id="'.$player_id.'"><p style="text-align:center;">'.__('Loading the player ...','wpdka').'</p></div>';
+		echo '<div id="'.$player_id.'"><p style="text-align:center;">'.__('Loading the player ...','wpanp').'</p></div>';
 		echo '<script type="text/javascript">';
 		echo 'jwplayer.key="'. get_option('wpdka-jwplayer-api-key') .'";';
 		echo '$("#main-jwplayer").each(function() {';
@@ -475,7 +475,7 @@ class WPDKA {
 			if(!empty($dep)) {
 				//deactivate_plugins(array($plugin));
 				add_action( 'admin_notices', function() use (&$dep) { 
-					echo '<div class="error"><p><strong>'.__('WordPress DKA','wpdka').'</strong> '.sprintf(__('needs %s to be activated.','wpdka'),'<strong>'.implode('</strong>, </strong>',$dep).'</strong>').'</p></div>';
+					echo '<div class="error"><p><strong>'.__('WordPress ANP','wpanp').'</strong> '.sprintf(__('needs %s to be activated.','wpanp'),'<strong>'.implode('</strong>, </strong>',$dep).'</strong>').'</p></div>';
 				},10);
 				return false;
 			}

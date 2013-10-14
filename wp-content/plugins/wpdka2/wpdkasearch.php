@@ -79,7 +79,7 @@ class WPDKASearch {
 				}
 
 				if($temp) {
-					$extra_description .= sprintf(__(' The material is from %s.','wpdka'),preg_replace('/(.*),/','$1 '.__('and','wpdka'),implode(", ", $temp)));
+					$extra_description .= sprintf(__(' The material is from %s.','wpanp'),preg_replace('/(.*),/','$1 '.__('and','wpanp'),implode(", ", $temp)));
 				}
 
 				unset($temp);
@@ -94,7 +94,7 @@ class WPDKASearch {
 					}
 				}
 				if($temp) {
-					$extra_description .= sprintf(__(' The format is %s.','wpdka'),preg_replace('/(.*),/','$1 '.__('and','wpdka'),implode(", ", $temp)));
+					$extra_description .= sprintf(__(' The format is %s.','wpanp'),preg_replace('/(.*),/','$1 '.__('and','wpanp'),implode(", ", $temp)));
 				}
 
 				unset($temp);
@@ -102,7 +102,7 @@ class WPDKASearch {
 			}
 
 			$metadatas['description']['content'] = 
-			$metadatas['og:description']['content'] = sprintf(__('%s contains %s materials about %s.','wpdka'),get_bloginfo('title'),WPChaosSearch::get_search_results()->MCM()->TotalCount(),WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html')).$extra_description;	
+			$metadatas['og:description']['content'] = sprintf(__('%s contains %s materials about %s.','wpanp'),get_bloginfo('title'),WPChaosSearch::get_search_results()->MCM()->TotalCount(),WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_FREETEXT, 'esc_html')).$extra_description;	
 			
 		}
 		return $metadatas;

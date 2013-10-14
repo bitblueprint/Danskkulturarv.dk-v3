@@ -188,9 +188,9 @@ class WPDKAObject {
 			if($value == "") {
 				$typeTitle = $object->type_title;
 				// if($typeTitle == WPDKAObject::TYPE_UNKNOWN) {
-				// 	$typeTitle = __('Material','wpdka');
+				// 	$typeTitle = __('Material','wpanp');
 				// }
-				return $typeTitle . __(' without title','wpdka');
+				return $typeTitle . __(' without title','wpanp');
 			} else {
 				return $value;
 			}
@@ -248,7 +248,7 @@ EOTEXT;
 				$value .= '<a class="tag" href="'.$link.'" title="'.esc_attr($tag).'">'.$tag.' <i onClick="flagTag(event, \'' . $tag . '\');" class="icon-remove flag-tag"></i></a>'."\n";
 			}
 			if(empty($tags)) {
-				$value .= '<span class="no-tag">'.__('No tags','wpdka').'</span>'."\n";
+				$value .= '<span class="no-tag">'.__('No tags','wpanp').'</span>'."\n";
 			}
 			return $value;
 		}, 10, 2);
@@ -340,7 +340,7 @@ EOTEXT;
 				$time = strtotime($time);
 				//If january 1st, only print year, else get format from WordPress
 				if(date("d-m",$time) == "01-01") {
-					$time = __('Year ','wpdka').date_i18n('Y',$time);
+					$time = __('Year ','wpanp').date_i18n('Y',$time);
 				} else {
 					$time = date_i18n(get_option('date_format'),$time);
 				}
@@ -355,7 +355,7 @@ EOTEXT;
 					array(WPDKAObject::DKA2_SCHEMA_GUID, WPDKAObject::DKA_SCHEMA_GUID),
 					array('/dka2:DKA/dka2:RightsDescription/text()', '/DKA/RightsDescription/text()')
 			);
-		}, 10, 2);
+		}, 10, 2);*/
 
 		//object->type
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type', function($value, \WPCHAOSObject $object) {
@@ -370,15 +370,15 @@ EOTEXT;
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'type_title', function($value, \WPCHAOSObject $object) {
 			$type = $object->type;
 			return $value . (isset(WPDKAObject::$format_types[$type]) ? WPDKAObject::$format_types[$type]['title'] : $type);
-		}, 10, 2);*/
+		}, 10, 2);
 
 		//object->thumbnail
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, \WPCHAOSObject $object) {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
-				if($file->FormatID == 10) {
+				//if($file->FormatID == 10) {
 					return $value . htmlspecialchars($file->URL);
-				}
+				//}
 			}
 			// Try another image - any image will do.
 			// TODO: Consider using a serverside cache and downscaling service.
@@ -421,27 +421,27 @@ EOTEXT;
 
 		/*//object->views
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'views', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()');
+			return $value . $object->metadata(WPDKAObject::ANP_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Views/text()');
 		}, 10, 2);
 
 		//object->shares
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'shares', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Shares/text()');
+			return $value . $object->metadata(WPDKAObject::ANP_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Shares/text()');
 		}, 10, 2);
 
 		//object->likes
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'likes', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Likes/text()');
+			return $value . $object->metadata(WPDKAObject::ANP_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Likes/text()');
 		}, 10, 2);
 
 		//object->ratings
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'ratings', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Ratings/text()');
+			return $value . $object->metadata(WPDKAObject::ANP_SCHEMA_GUID, '/dkac:DKACrowd/dkac:Ratings/text()');
 		}, 10, 2);
 
 		//object->accumulatedrate
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'accumulatedrate', function($value, $object) {
-			return $value . $object->metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
+			return $value . $object->metadata(WPDKAObject::ANP_SCHEMA_GUID, '/dkac:DKACrowd/dkac:AccumulatedRate/text()');
 		}, 10, 2);*/
 
 		//object->caption
@@ -453,7 +453,7 @@ EOTEXT;
 						$realImages++;
 					}
 				}
-				return $value . sprintf(_n('%s image', '%s images', $realImages,'wpdka'),$realImages);
+				return $value . sprintf(_n('%s image', '%s images', $realImages,'wpanp'),$realImages);
 			} else {
 				return $value;
 			}
@@ -471,13 +471,13 @@ EOTEXT;
 		if($creators) {
 			//Some roles are in English, gettext cannot translate variables, thus this whitelist
 			$role_i18n = array(
-				'actors' => __('Actors','wpdka'),
-				'cinematography' => __('Cinematography','wpdka'),
-				'creator' => __('Creator','wpdka'),
-				'direction' => __('Direction','wpdka'),
-				'directors' => __('Directors','wpdka'),
-				'production' => __('Production','wpdka'),
-				'script' => __('Script','wpdka'),
+				'actors' => __('Actors','wpanp'),
+				'cinematography' => __('Cinematography','wpanp'),
+				'creator' => __('Creator','wpanp'),
+				'direction' => __('Direction','wpanp'),
+				'directors' => __('Directors','wpanp'),
+				'production' => __('Production','wpanp'),
+				'script' => __('Script','wpanp'),
 
 			);
 
@@ -490,7 +490,7 @@ EOTEXT;
 			}
 			$value .= "</dl>\n";
 		} else {
-			$value .= "<p>".__('Not provided','wpdka')."</p>\n";
+			$value .= "<p>".__('Not provided','wpanp')."</p>\n";
 		}
 		return $value;
 	}
@@ -525,7 +525,7 @@ EOTEXT;
 		
 		add_action(WPChaosClient::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, function(\WPChaosObject $object) {
 			// Make sure no tags is present in the metadata.
-			$crowd_metadata = $object->get_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
+			$crowd_metadata = $object->get_metadata(WPDKAObject::ANP_SCHEMA_GUID);
 			if($crowd_metadata instanceof \SimpleXMLElement) {
 				$crowd_metadata_dom = dom_import_simplexml($crowd_metadata);
 				// Remove all Tags elements.
@@ -533,7 +533,7 @@ EOTEXT;
 					// If we've got a tag
 					$tag->parentNode->removeChild($tag);
 				}
-				$object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $crowd_metadata, WPDKAObject::METADATA_LANGUAGE);
+				$object->set_metadata(WPChaosClient::instance(), WPDKAObject::ANP_SCHEMA_GUID, $crowd_metadata, WPDKAObject::METADATA_LANGUAGE);
 			}
 		}, 11);
 		
@@ -545,7 +545,7 @@ EOTEXT;
 			// Increment the views counter
 			$viewed_session_name = WPDKAObject::SESSION_PREFIX . '_viewed_' . $object->GUID;
 			if(!array_key_exists($viewed_session_name, $_SESSION)) {
-				$object->increment_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Views/text()', array('views'));
+				$object->increment_metadata_field(WPDKAObject::ANP_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Views/text()', array('views'));
 				// Use the session to make sure that the same user is not just refreshing the view counter by refreshing.
 				$_SESSION[$viewed_session_name] = "viewed";
 			}
@@ -635,7 +635,7 @@ EOTEXT;
 		// Is this the admin force resetting from URL?
 		$forceReset = WP_DEBUG && array_key_exists('reset-crowd-metadata', $_GET) && current_user_can('edit_posts');
 		
-		if($forceReset || !$object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID)) {
+		if($forceReset || !$object->has_metadata(WPDKAObject::ANP_SCHEMA_GUID)) {
 			$slug = self::reset_crowd_metadata($object, true)->slug;
 		} else {
 			// If the metadata is present, we can extract the slug from there.
@@ -667,7 +667,7 @@ EOTEXT;
 	}
 	
 	public static function reset_crowd_metadata(\WPChaosObject $object, $forceNewSlug = false, $fetchSocialCounts = false) {
-		$existingMetadata = $object->has_metadata(WPDKAObject::DKA_CROWD_SCHEMA_GUID);
+		$existingMetadata = $object->has_metadata(WPDKAObject::ANP_SCHEMA_GUID);
 		$revisionID = $existingMetadata != false ? $existingMetadata->RevisionID : null;
 		
 		// The object has not been extended with the crowd matadata schema.
@@ -687,7 +687,7 @@ EOTEXT;
 		$metadataXML->addChild('Slug', $slug);
 		// $metadataXML->addChild('Tags'); // Deprecated
 		
-		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::DKA_CROWD_SCHEMA_GUID, $metadataXML, WPDKAObject::METADATA_LANGUAGE, $revisionID);
+		$successfulValidation = $object->set_metadata(WPChaosClient::instance(), WPDKAObject::ANP_SCHEMA_GUID, $metadataXML, WPDKAObject::METADATA_LANGUAGE, $revisionID);
 		
 		if($successfulValidation === false) {
 			wp_die("Error validating the Crowd Schema");
@@ -827,7 +827,7 @@ EOTEXT;
 	
 		if($update_metadata) {
 			// Update the metadata.
-			$object->set_metadata_field(WPDKAObject::DKA_CROWD_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Shares/text()', $facebook_total_count + $twitter_total_count + $google_plus_total_count, array('shares'));
+			$object->set_metadata_field(WPDKAObject::ANP_SCHEMA_GUID, WPDKAObject::METADATA_LANGUAGE, '/dkac:DKACrowd/dkac:Shares/text()', $facebook_total_count + $twitter_total_count + $google_plus_total_count, array('shares'));
 		}
 	
 		return array(
