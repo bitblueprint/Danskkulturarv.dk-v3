@@ -279,14 +279,7 @@ EOTEXT;
 				'/FIATIFTA.ANP/Creator',
 				null
 			);
-
-			$contributors = $object->metadata(
-				WPANPObject::ANP_SCHEMA_GUID,
-				'/FIATIFTA.ANP/Contributor',
-				null
-			);
-			$arr = array_merge($creators, $contributors);
-			return $value . WPANPObject::get_creator_attributes($arr);
+			return $value . WPANPObject::get_creator_attributes($creators);
 		}, 10, 2);
 
 		//object->contributor

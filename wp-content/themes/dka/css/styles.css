@@ -4218,7 +4218,7 @@ a.dropdown-toggle:active {
 }
 .container.search .btn-search:hover {
   color: #ffffff;
-  background: #555555;
+  background: rgba(44,44,44,0.9);
 }
 .container.search .btn-advanced-search {
   background: none;
@@ -4720,6 +4720,7 @@ div.contributors dd {
 #push,
 footer {
   height: 136px;
+  margin-bottom: 20px;
 }
 footer {
   background-color: rgba(44,44,44, 0.9);

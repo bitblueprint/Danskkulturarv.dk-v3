@@ -12,8 +12,7 @@
 <!-- sticky footer -->
 <footer>
 	<div class="container text-center">
-		<div class="bloginfo-footer"><?php bloginfo( 'name' ); ?> <span>- <?php bloginfo( 'description' ); ?></span></div>
-		
+		<!--<div class="bloginfo-footer"><?php bloginfo( 'name' ); ?> <span>- <?php bloginfo( 'description' ); ?></span></div>-->
 <?php 
     wp_nav_menu( array(
         'theme_location' => 'secondary',

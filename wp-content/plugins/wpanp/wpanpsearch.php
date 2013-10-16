@@ -29,17 +29,17 @@ class WPANPSearch {
 		'titel' => array(
 			'title' => 'Titel',
 			'link' => 'titel',
-			'chaos-value' => 'DKA-Title_string+asc'
+			'chaos-value' => 'ANP-Title_string+asc'
 		),
 		'visninger' => array(
 			'title' => 'Visninger',
 			'link' => 'visninger',
-			'chaos-value' => 'DKA-Crowd-Views_int+desc'
+			'chaos-value' => 'ANP-Crowd-Views_int+desc'
 		),
 		'udgivelse' => array(
 			'title' => 'Udgivelsestid',
 			'link' => 'udgivelse',
-			'chaos-value' => 'DKA-FirstPublishedDate_date+asc'
+			'chaos-value' => 'ANP-FirstPublishedDate_date+asc'
 		),
 	);
 
@@ -77,7 +77,6 @@ class WPANPSearch {
 						$temp[] = $organization['title'];
 					}
 				}
-
 				if($temp) {
 					$extra_description .= sprintf(__(' The material is from %s.','wpanp'),preg_replace('/(.*),/','$1 '.__('and','wpanp'),implode(", ", $temp)));
 				}
@@ -198,7 +197,7 @@ class WPANPSearch {
 				foreach($organizationSlugs as $organizationSlug) {
 					foreach($organizations as $title => $organization) {
 						if($organization['slug'] == $organizationSlug) {
-							$searches[] = "(DKA-Organization:\"$title\")";
+							$searches[] = "(FIATIFTA-ANP-Publisher:\"$title\")";
 						}
 					}
 				}
