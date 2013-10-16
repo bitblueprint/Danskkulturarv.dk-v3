@@ -7,7 +7,7 @@
 /**
  * Class that generates sitemaps with links for every object in the chaos service.
  */
-class WPDKASitemap {
+class WPANPSitemap {
 	
 	const DEFAULT_PAGE_SIZE = 500;
 	
@@ -74,6 +74,6 @@ class WPDKASitemap {
 		}
 	}
 }
-add_action('init', array('WPDKASitemap', 'add_rewrite_tags'), 9);
-add_action('init', array('WPDKASitemap', 'add_rewrite_rules'), 9);
-add_action('template_redirect', array('WPDKASitemap', 'output_sitemap'));
+add_action('init', array('WPANPSitemap', 'add_rewrite_tags'), 9);
+add_action('init', array('WPANPSitemap', 'add_rewrite_rules'), 9);
+add_action('template_redirect', array('WPANPSitemap', 'output_sitemap'));

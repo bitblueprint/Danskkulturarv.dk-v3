@@ -7,7 +7,7 @@
 <?php get_header();
 
 $current_view = (WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_VIEW) ? 'listview' : 'thumbnails');
-$current_sort = isset(WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]) ? WPDKASearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]['title'] : WPDKASearch::$sorts[null]['title'];
+$current_sort = isset(WPANPSearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]) ? WPANPSearch::$sorts[WPChaosSearch::get_search_var(WPChaosSearch::QUERY_KEY_SORT)]['title'] : WPANPSearch::$sorts[null]['title'];
 
 $views = array(
 	array(
@@ -34,7 +34,7 @@ $views = array(
 			<div class="dropdown sortby-dropdown pull-right">
 				  <a class="sortby-link" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="#"><?php _e('Sort by:','dka'); ?> <strong class="blue"><?php echo $current_sort; ?></strong>&nbsp;<i class="icon-caret-down"></i></a>
 				  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-<?php foreach(WPDKASearch::$sorts as $sort) : ?>
+<?php foreach(WPANPSearch::$sorts as $sort) : ?>
 					<li><a tabindex="-1" href="<?php echo WPChaosSearch::generate_pretty_search_url(array(WPChaosSearch::QUERY_KEY_SORT => $sort['link'], WPChaosSearch::QUERY_KEY_PAGE => null)); ?>" title="<?php echo $sort['title']; ?>"><?php echo $sort['title']; ?></a></li>
 <?php endforeach; ?>
 				  </ul>
@@ -75,7 +75,7 @@ foreach(WPChaosSearch::get_search_results()->MCM()->Results() as $object) :
 <?php endif; ?>
 				<hr>
 				<div class="media-type-container">
-					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><i class="icon-eye-open"> <?php echo WPChaosClient::get_object()->views; ?></i>
+					<i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i><!--<i class="icon-eye-open"> <?php echo WPChaosClient::get_object()->views; ?></i>-->
 				</div>
 			</a>
 		</li>

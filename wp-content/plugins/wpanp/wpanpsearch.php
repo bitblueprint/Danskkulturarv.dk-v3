@@ -9,7 +9,7 @@
  * Dansk Kulturarv and registers attributes
  * for WPChaosObject
  */
-class WPDKASearch {
+class WPANPSearch {
 	
 	const QUERY_KEY_TYPE = 'med';
 	const QUERY_KEY_ORGANIZATION = 'fra';
@@ -50,8 +50,8 @@ class WPDKASearch {
 		
 		add_filter('wpchaos-head-meta',array(&$this,'set_search_meta'),99);
 
-		WPChaosSearch::register_search_query_variable(2, WPDKASearch::QUERY_KEY_ORGANIZATION, '[\w-]+?', true, '-');
-		WPChaosSearch::register_search_query_variable(3, WPDKASearch::QUERY_KEY_TYPE, '[\w-]+?', true, '-');
+		WPChaosSearch::register_search_query_variable(2, WPANPSearch::QUERY_KEY_ORGANIZATION, '[\w-]+?', true, '-');
+		WPChaosSearch::register_search_query_variable(3, WPANPSearch::QUERY_KEY_TYPE, '[\w-]+?', true, '-');
 		
 		// Define the free-text search filter.
 		$this->define_search_filters();
@@ -69,11 +69,11 @@ class WPDKASearch {
 			$extra_description = '';
 
 			// Fetch titles from the organizations searched in
-			if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION)) {
-				$organizations = WPDKASearch::get_organizations();
+			if(WPChaosSearch::get_search_var(WPANPSearch::QUERY_KEY_ORGANIZATION)) {
+				$organizations = WPANPSearch::get_organizations();
 				$temp = array();
 				foreach($organizations as $organization) {
-					if(in_array($organization['slug'],WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_ORGANIZATION))) {
+					if(in_array($organization['slug'],WPChaosSearch::get_search_var(WPANPSearch::QUERY_KEY_ORGANIZATION))) {
 						$temp[] = $organization['title'];
 					}
 				}
@@ -86,11 +86,11 @@ class WPDKASearch {
 			}
 
 			//Fetch the titles from the formats searched in
-			if(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE)) {
+			if(WPChaosSearch::get_search_var(WPANPSearch::QUERY_KEY_TYPE)) {
 				$temp = array();
-				foreach(WPChaosSearch::get_search_var(WPDKASearch::QUERY_KEY_TYPE) as $format) {
-					if(isset(WPDKAObject::$format_types[$format])) {
-						$temp[] = strtolower(WPDKAObject::$format_types[$format]['title']);
+				foreach(WPChaosSearch::get_search_var(WPANPSearch::QUERY_KEY_TYPE) as $format) {
+					if(isset(WPANPObject::$format_types[$format])) {
+						$temp[] = strtolower(WPANPObject::$format_types[$format]['title']);
 					}
 				}
 				if($temp) {
@@ -122,7 +122,7 @@ class WPDKASearch {
 			}
 				
 			$objectTypeConstraints = array();
-			foreach(WPDKAObject::$OBJECT_TYPE_IDS as $id) {
+			foreach(WPANPObject::$OBJECT_TYPE_IDS as $id) {
 				$objectTypeConstraints[] = "ObjectTypeID:$id";
 			}
 			$query[] = '(' . implode("+OR+", $objectTypeConstraints) . ')';
@@ -146,8 +146,8 @@ class WPDKASearch {
 				}
 				$freetext = WPChaosClient::escapeSolrValue($freetext);
 				$searches = array();
-				foreach(WPDKAObject::$FREETEXT_SCHEMA_GUIDS as $schemaGUID) {
-					foreach(WPDKAObject::$FREETEXT_LANGUAGE as $language) {
+				foreach(WPANPObject::$FREETEXT_SCHEMA_GUIDS as $schemaGUID) {
+					foreach(WPANPObject::$FREETEXT_LANGUAGE as $language) {
 						$searches[] = sprintf("(m%s_%s_all:(%s))", $schemaGUID, $language, $freetext);
 					}
 				}
@@ -165,13 +165,13 @@ class WPDKASearch {
 				$query = array();
 			}
 				
-			if(array_key_exists(WPDKASearch::QUERY_KEY_TYPE, $query_vars)) {
+			if(array_key_exists(WPANPSearch::QUERY_KEY_TYPE, $query_vars)) {
 				// For each known metadata schema, loop and add freetext search on this.
-				$types = $query_vars[WPDKASearch::QUERY_KEY_TYPE];
+				$types = $query_vars[WPANPSearch::QUERY_KEY_TYPE];
 				$searches = array();
 				foreach($types as $type) {
-					if(isset(WPDKAObject::$format_types[$type])) {
-						$searches[] = "(FormatTypeName:".WPDKAObject::$format_types[$type]['chaos-value'].")";
+					if(isset(WPANPObject::$format_types[$type])) {
+						$searches[] = "(FormatTypeName:".WPANPObject::$format_types[$type]['chaos-value'].")";
 					}
 				}
 				if(count($searches) > 0) {
@@ -190,10 +190,10 @@ class WPDKASearch {
 				$query = array();
 			}
 				
-			if(array_key_exists(WPDKASearch::QUERY_KEY_ORGANIZATION, $query_vars)) {
+			if(array_key_exists(WPANPSearch::QUERY_KEY_ORGANIZATION, $query_vars)) {
 				// For each known metadata schema, loop and add freetext search on this.
-				$organizationSlugs = $query_vars[WPDKASearch::QUERY_KEY_ORGANIZATION];
-				$organizations = WPDKASearch::get_organizations();
+				$organizationSlugs = $query_vars[WPANPSearch::QUERY_KEY_ORGANIZATION];
+				$organizations = WPANPSearch::get_organizations();
 				$searches = array();
 				foreach($organizationSlugs as $organizationSlug) {
 					foreach($organizations as $title => $organization) {
@@ -211,7 +211,7 @@ class WPDKASearch {
 	}
 
 	public function map_chaos_sorting($sort,$query_vars) {
-		return (isset(WPDKASearch::$sorts[$sort]) ? WPDKASearch::$sorts[$sort]['chaos-value'] : null);
+		return (isset(WPANPSearch::$sorts[$sort]) ? WPANPSearch::$sorts[$sort]['chaos-value'] : null);
 	}
 
 	/**
@@ -260,6 +260,6 @@ class WPDKASearch {
 }
 
 //Instantiate
-new WPDKASearch();
+new WPANPSearch();
 
 //eol

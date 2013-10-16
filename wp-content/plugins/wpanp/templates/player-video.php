@@ -53,4 +53,4 @@ $options = array(
 	"ga" => array()
 );
 
-WPDKA::print_jwplayer($options);
+WPANP::print_jwplayer($options);

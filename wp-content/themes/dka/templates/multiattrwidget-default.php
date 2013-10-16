@@ -21,14 +21,15 @@
 <?php endif; ?>
 <hr>
 <div class="description">
-	<h2><strong>Beskrivelse</strong></h2>
+	<h2><strong><?php _e('Description', 'dka'); ?></strong></h2>
 	<?php echo WPChaosClient::get_object()->description; ?>
 </div>
 <div class="colofon">
-	<h2><strong>Kolofon</strong></h2>
+	<h2><strong><?php _e('Colofon', 'dka'); ?></strong></h2>
 	<?php echo WPChaosClient::get_object()->creator; ?>
-</div>
-<div class="contributors">
-	<h2><strong>Medvirkende</strong></h2>
 	<?php echo WPChaosClient::get_object()->contributor; ?>
 </div>
+<!--<div class="contributors">
+	<h2><strong><?php _e('Contributors', 'dka'); ?></strong></h2>
+	<?php echo WPChaosClient::get_object()->contributor; ?>
+</div>-->

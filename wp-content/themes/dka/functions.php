@@ -1,7 +1,7 @@
 <?php
 /**
  * @package WordPress
- * @subpackage DKA
+ * @subpackage ANP
  */
 
 require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');

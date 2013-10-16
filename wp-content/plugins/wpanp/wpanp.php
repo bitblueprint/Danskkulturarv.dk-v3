@@ -6,34 +6,34 @@
 /*
 Plugin Name: WordPress ANP
 Plugin URI: 
-Description: Module applying functionality to manipulate CHAOS material specific for DKA. Depends on WordPress Chaos Client.
-Author: Joachim Jensen <joachim@opensourceshift.com>
+Description: Module applying functionality to manipulate CHAOS material specific for ANP. Depends on WordPress Chaos Client.
+Author: Peter Overgaard <peter@geckon.com>
 Version: 1.0
 Author URI: 
 */
 
 /**
  * Class that manages CHAOS data specific to
- * Dansk Kulturarv and registers attributes
+ * LARM and registers attributes
  * for WPChaosObject
  */
-class WPDKA {
+class WPANP {
 
 	/**
 	 * Name for setting page
 	 * @var string
 	 */
-	const MENU_PAGE = 'wpdka-administration';
+	const MENU_PAGE = 'wpanp-administration';
 	
 	const RESET_CROWD_METADATA_START_BTN = 'Start Resetting Crowd Metadata';
 	const RESET_CROWD_METADATA_PAUSE_BTN = 'Pause';
 	const RESET_CROWD_METADATA_STOP_BTN = 'Stop';
 	const REMOVE_DUPLICATE_SLUGS_BTN = 'Remove duplicate slugs';
-	const RESET_CROWD_METADATA_AJAX = 'wpdka_reset_crowd_metadata';
-	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wpdka_remove_duplicate_slugs';
-	const SOCIAL_COUNTS_AJAX = 'wpdka_social_counts';
-	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-dka-rcm-pageIndex';
-	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-dka-rcm-pageSize';
+	const RESET_CROWD_METADATA_AJAX = 'wpanp_reset_crowd_metadata';
+	const REMOVE_DUPLICATE_SLUGS_AJAX = 'wpanp_remove_duplicate_slugs';
+	const SOCIAL_COUNTS_AJAX = 'wpanp_social_counts';
+	const RESET_CROWD_METADATA_PAGE_INDEX_OPTION = 'wp-anp-rcm-pageIndex';
+	const RESET_CROWD_METADATA_PAGE_SIZE_OPTION = 'wp-anp-rcm-pageSize';
 
 	//List of plugins depending on
 	private static $plugin_dependencies = array(
@@ -45,31 +45,33 @@ class WPDKA {
 	 * Construct
 	 */
 	public function __construct() {
-		if(self::check_chaosclient()) {
+		add_action('init', function() {
+			if(WPANP::check_chaosclient()) {
 
-			self::load_dependencies();
+				WPANP::load_dependencies();
 
-			if(is_admin()) {
+				if(is_admin()) {
 
-				add_action('admin_menu', array(&$this, 'create_menu'));
-				add_action('admin_init', array(&$this, 'reset_crowd_metadata'));
-				add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
-				add_action('wp_dashboard_setup', array(&$this,'remove_dashboard_widgets'));
-				add_action('wp_ajax_' . self::RESET_CROWD_METADATA_AJAX, array(&$this, 'ajax_reset_crowd_metadata'));
-				add_action('wp_ajax_' . self::REMOVE_DUPLICATE_SLUGS_AJAX, array(&$this, 'ajax_remove_duplicate_slugs'));
+					add_action('admin_menu', 'WPANP::create_menu');
+					add_action('admin_init', 'WPANP::reset_crowd_metadata');
+					add_action('right_now_content_table_end', 'WPANP::add_chaos_material_counts');
+					add_action('wp_dashboard_setup', 'WPANP::remove_dashboard_widgets');
+					add_action('wp_ajax_' . WPANP::RESET_CROWD_METADATA_AJAX, 'WPANP::ajax_reset_crowd_metadata');
+					add_action('wp_ajax_' . WPANP::REMOVE_DUPLICATE_SLUGS_AJAX, 'WPANP::ajax_remove_duplicate_slugs');
+					
+					add_filter('wpchaos-config', 'WPANP::settings');
+
+				}
 				
-				add_filter('wpchaos-config', array(&$this, 'settings'));
+				// Social stuff
+				add_action('wp_ajax_' . WPANP::SOCIAL_COUNTS_AJAX, 'WPANP::ajax_social_counts');
+				add_action('wp_ajax_nopriv_' . WPANP::SOCIAL_COUNTS_AJAX, 'WPANP::ajax_social_counts');
+				
+				add_action('right_now_content_table_end', 'WPANP::add_chaos_material_counts');
+				add_action('plugins_loaded', 'WPANP::load_textdomain');
 
 			}
-			
-			// Social stuff
-			add_action('wp_ajax_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
-			add_action('wp_ajax_nopriv_' . self::SOCIAL_COUNTS_AJAX, array(&$this, 'ajax_social_counts'));
-			
-			add_action('right_now_content_table_end', array(&$this,'add_chaos_material_counts'));
-			add_action('plugins_loaded',array(&$this,'load_textdomain'));
-
-		}
+		});
 
 	}
 
@@ -103,11 +105,11 @@ class WPDKA {
 		}
 		
 		$new_settings = array(array(
-			'name'      => 'dka',
-			'title'     => __('Dansk Kulturarv', 'wpanp'),
+			'name'      => 'anp',
+			'title'     => __('Archive Network Pilot', 'wpanp'),
 			'fields'    => array(
 				array(
-					'name' => 'wpdka-default-organization-page',
+					'name' => 'wpanp-default-organization-page',
 					'title' => __('Page for objects with an unknown organization.','wpanp'),
 					'type' => 'select',
 					'list' => $pages,
@@ -120,7 +122,7 @@ class WPDKA {
 			'fields'	=> array(
 				/*Section fields*/
 				array(
-					'name' => 'wpdka-jwplayer-api-key',
+					'name' => 'wpanp-jwplayer-api-key',
 					'title' => __('JW Player API key','wpanp'),
 					'type' => 'text',
 					'val' => '',
@@ -137,8 +139,8 @@ class WPDKA {
 	 */
 	public function create_menu() {
 		add_menu_page(
-			'Dansk Kulturarv',
-			'DKA',
+			'Archive Network Pilot',
+			'ANP',
 			'manage_options',
 			self::MENU_PAGE,
 			array(&$this, 'create_menu_page'),
@@ -226,7 +228,7 @@ class WPDKA {
 			}
 			
 			function reset_crowd_metadata(data) {
-				data['action'] = "<?php echo WPDKA::RESET_CROWD_METADATA_AJAX ?>";
+				data['action'] = "<?php echo WPANP::RESET_CROWD_METADATA_AJAX ?>";
 				// since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
 				$.post(ajaxurl, data, function(response) {
 					// Update the page index, used if the user presses pause.
@@ -257,7 +259,7 @@ class WPDKA {
 			}
 
 			function remove_duplicate_slugs(data) {
-				data['action'] = "<?php echo WPDKA::REMOVE_DUPLICATE_SLUGS_AJAX ?>";
+				data['action'] = "<?php echo WPANP::REMOVE_DUPLICATE_SLUGS_AJAX ?>";
 				$.post(ajaxurl, data, function(response) {
 					removed_duplicate_slugs_count += response.removed;
 					$("#remove-duplicate-slugs-status").text('Removed '+removed_duplicate_slugs_count+' duplicate slugs, so far.');
@@ -313,7 +315,7 @@ class WPDKA {
 				$objectResponse = WPChaosClient::instance()->Object()->Get($chaos_slug_field . ':' . $slug, 'GUID+asc', null, 0, $count, true, false, false);
 				$objects = WPChaosObject::parseResponse($objectResponse);
 				foreach($objects as $object) {
-					$new_slug = WPDKAObject::reset_crowd_metadata($object)->slug;
+					$new_slug = WPANPObject::reset_crowd_metadata($object)->slug;
 					$result['removed']++;
 				}
 				if($result['removed'] >= self::DUPLICATE_SLUGS_REMOVED_PR_REQUEST) {
@@ -352,7 +354,7 @@ class WPDKA {
 		$objects = WPChaosObject::parseResponse($response);
 		// Process the objects
 		foreach($objects as $object) {
-			$slug = WPDKAObject::reset_crowd_metadata($object)->slug;
+			$slug = WPANPObject::reset_crowd_metadata($object)->slug;
 			$result['messages'][] = $object->GUID .' is now reacheable with slug: '. $slug;
 			// Ensure its crowd metadata.
 			// Make sure the object is reachable on its slug - if not, reset its metadata.
@@ -390,7 +392,7 @@ class WPDKA {
 			die();
 		}
 		
-		echo json_encode(WPDKAObject::fetch_social_counts($objects[0], true));
+		echo json_encode(WPANPObject::fetch_social_counts($objects[0], true));
 		
 		die();
 	}
@@ -449,7 +451,7 @@ class WPDKA {
 	public static function print_jwplayer($options, $player_id = 'main-jwplayer') {
 		echo '<div id="'.$player_id.'"><p style="text-align:center;">'.__('Loading the player ...','wpanp').'</p></div>';
 		echo '<script type="text/javascript">';
-		echo 'jwplayer.key="'. get_option('wpdka-jwplayer-api-key') .'";';
+		echo 'jwplayer.key="'. get_option('wpanp-jwplayer-api-key') .'";';
 		echo '$("#main-jwplayer").each(function() {';
 		echo '	jwplayer(this).setup(';
 		echo json_encode($options);
@@ -487,19 +489,19 @@ class WPDKA {
 	 * Load files and libraries
 	 * @return void 
 	 */
-	protected static function load_dependencies() {
-		require_once('wpdkaobject.php');
-		require_once('wpdkasearch.php');
-		require_once('wpdkasitemap.php');
+	public static function load_dependencies() {
+		require_once('wpanpobject.php');
+		require_once('wpanpsearch.php');
+		require_once('wpanpsitemap.php');
 		require_once('widgets/player.php');
 	}
 
 }
 
-register_activation_hook(__FILE__, array('WPDKA', 'install'));
-register_deactivation_hook(__FILE__, array('WPDKA', 'uninstall'));
+register_activation_hook(__FILE__, array('WPANP', 'install'));
+register_deactivation_hook(__FILE__, array('WPANP', 'uninstall'));
 
 //Instantiate
-new WPDKA();
+new WPANP();
 
 //eol
