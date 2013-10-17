@@ -1,6 +1,6 @@
 <?php
 /**
- * @package WP DKA Object
+ * @package WP ANP Object
  * @version 1.0
  */
 ?>

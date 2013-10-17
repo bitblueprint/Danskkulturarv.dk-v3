@@ -1,6 +1,6 @@
 <?php
 /**
- * @package WP DKA Object
+ * @package WP ANP Object
  * @version 1.0
  */
 
@@ -38,7 +38,7 @@ $options = array(
 		"link" => site_url(),
 		"margin" => 20
 	),
-	"abouttext" => sprintf(__("About %s",'wpdka'),get_bloginfo('title')),
+	"abouttext" => sprintf(__("About %s",'wpanp'),get_bloginfo('title')),
 	"aboutlink" => site_url('om'),
 	"playlist" => array(array(
 		"image" => $object->thumbnail,

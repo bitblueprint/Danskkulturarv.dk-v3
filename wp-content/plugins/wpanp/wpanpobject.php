@@ -61,13 +61,13 @@ class WPANPObject {
 		// add_action('admin_init',array(&$this,'check_chaosclient'));
 	
 		// Define the free-text search filter.
-		$this->define_attribute_filters();
+		WPANPObject::define_attribute_filters();
 
 		
 		// Define a filter for object creation.
-		$this->define_object_construction_filters();
+		WPANPObject::define_object_construction_filters();
 
-		add_filter('widgets_init',array(&$this,'register_widgets'));
+		add_action('widgets_init', array(&$this, 'register_widgets'));
 		
 		// Restrict chaos query to this object type.
 		// $objectTypeConstraints = array();
@@ -470,7 +470,17 @@ EOTEXT;
 						if (empty($creator))
 							continue;
 						$role = strtolower(strval($creator['Role']));
-						$role = (isset($role_i18n[$role]) ? $role_i18n[$role] : ucfirst($creator['Role']));
+						if (isset($role_i18n[$role])) {
+							$role = $role_i18n[$role];
+						} else {
+							$creator_role = self::search_for_role($creator);
+							if (empty($creator_role)) {
+								$role = ucfirst($creator['Role']);
+							} else {
+								$role = ucfirst($creator_role[1]);
+								$creator = $creator_role[0];
+							}
+						}
 						$value .= "<dt>".$role."</dt>\n";
 						$value .= "<dd>".$creator."</dd>\n";
 					}
@@ -486,6 +496,22 @@ EOTEXT;
 			$value .= "<p>".__('Not provided','wpanp')."</p>\n";
 		}
 		return $value;
+	}
+
+	/**
+	 * Looking for words in a string with role and creator, e.g. 'producer' and returns creator and role
+	 * @param  string $creator string with creator and role
+	 * @return array          array with two elements (1. creator, 2. role)
+	 */
+	private function search_for_role($creator) {
+		$roles = array('producer', 'producent');
+		foreach ($roles as $r) {
+			if (strpos($creator, $r) !== FALSE) {
+				$c = preg_replace('/\s*\(' . $r . '\)/', '', $creator);
+				return array($c, $r);
+			}
+		}
+		return false;
 	}
 	
 	public function define_object_construction_filters() {

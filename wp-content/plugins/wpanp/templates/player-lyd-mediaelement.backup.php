@@ -1,6 +1,6 @@
 <?php
 /**
- * @package WP DKA Object
+ * @package WP ANP Object
  * @version 1.0
  */
 ?>
@@ -19,7 +19,7 @@
 </div>
 
 <script type="text/javascript">
-jwplayer.key="<?php echo get_option('wpdka-jwplayer-api-key') ?>";
+jwplayer.key="<?php echo get_option('wpanp-jwplayer-api-key') ?>";
 $("#main-jwplayer").each(function () {
 	jwplayer(this).setup({
 		skin: "<?php echo get_template_directory_uri() . '/lib/jwplayer/five.xml' ?>",
@@ -31,7 +31,7 @@ $("#main-jwplayer").each(function () {
 			link: "<?php echo site_url() ?>",
 			margin: 20,
 		},
-		abouttext: "<?php printf(__('About %s','wpdka'),get_bloginfo('title')); ?>",
+		abouttext: "<?php printf(__('About %s','wpanp'),get_bloginfo('title')); ?>",
 		aboutlink: "<?php echo site_url('om') ?>",
 		playlist: [{
 			image: "<?php echo $object->thumbnail ?>",

@@ -45,7 +45,7 @@ class WPANP {
 	 * Construct
 	 */
 	public function __construct() {
-		add_action('init', function() {
+		add_action('plugins_loaded', function() {
 			if(WPANP::check_chaosclient()) {
 
 				WPANP::load_dependencies();
@@ -59,7 +59,7 @@ class WPANP {
 					add_action('wp_ajax_' . WPANP::RESET_CROWD_METADATA_AJAX, 'WPANP::ajax_reset_crowd_metadata');
 					add_action('wp_ajax_' . WPANP::REMOVE_DUPLICATE_SLUGS_AJAX, 'WPANP::ajax_remove_duplicate_slugs');
 					
-					add_filter('wpchaos-config', 'WPANP::settings');
+					add_filter('wpchaos-config', 'WPANP::settings', 10, 1);
 
 				}
 				
@@ -72,7 +72,6 @@ class WPANP {
 
 			}
 		});
-
 	}
 
 	public function load_textdomain() {
@@ -137,13 +136,13 @@ class WPANP {
 	 * Create submenu and call page for settings
 	 * @return void 
 	 */
-	public function create_menu() {
+	public static function create_menu() {
 		add_menu_page(
 			'Archive Network Pilot',
 			'ANP',
 			'manage_options',
 			self::MENU_PAGE,
-			array(&$this, 'create_menu_page'),
+			'WPANP::create_menu_page',
 			'none',
 			81
 		); 

@@ -24,8 +24,8 @@ class WPANPObjectPlayerWidget extends WP_Widget {
 	public function __construct() {
 		
 		parent::__construct(
-			'dka-object-player-widget',
-			__('DKA Object Player','wpanp'),
+			'anp-object-player-widget',
+			__('ANP Object Player','wpanp'),
 			array( 'description' => __('Display a player according to the material format','wpanp') )
 		);
 
