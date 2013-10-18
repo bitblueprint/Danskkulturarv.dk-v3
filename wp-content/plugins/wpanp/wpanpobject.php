@@ -42,7 +42,7 @@ class WPANPObject {
 	
 	// If more GUIDS or languages is added.
 	public static $FREETEXT_SCHEMA_GUIDS = array(self::ANP_SCHEMA_GUID);
-	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE, 'nl', 'it'); // 'de' doesn't work.
+	public static $FREETEXT_LANGUAGE = array(self::METADATA_LANGUAGE, 'nl', 'it', 'da'); // 'de' doesn't work.
 
 	public static $DERIVED_FILES = array(
 		'|^(?P<streamer>rtmp://vod-bonanza\.gss\.dr\.dk/bonanza)/mp4:bonanza/(?P<filename>.+\.mp4)$|i' => 'http://om.gss.dr.dk/MediaCache/_definst_/mp4:content/bonanza/{$matches["filename"]}/Playlist.m3u8'

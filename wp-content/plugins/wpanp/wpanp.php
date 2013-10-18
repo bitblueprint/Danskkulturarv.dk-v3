@@ -163,7 +163,7 @@ class WPANP {
 		}
 		?>
 		<div class="wrap"><h2><?php echo get_admin_page_title() ?></h2>
-		<h3>Resetting Dansk Kulturarv's Crowd Metadata</h3>
+		<h3>Resetting Archive Network Pilot's Crowd Metadata</h3>
 		<p>When installing the website or when experiencing inconsitent crowd metadata it might make sence to reset the crowd metadata.</p>
 		<p><strong>Warning:</strong> This will <strong>remove all</strong> counts on views, shares, likes, ratings and user tags.</p>
 		<style type='text/css'>
@@ -178,7 +178,7 @@ class WPANP {
 		<button class="button button-primary" id="reset-crowd-metadata-stop-button"><?php echo self::RESET_CROWD_METADATA_STOP_BTN ?></button>
 		<div class='media-item' id='progress-objects' style='display:none;'>
 			<div class='progress'><div class='percent'>0%</div><div class='state'><span class='d'>0</span> of <span class='t'>?</span> objects</div><div class='bar'></div></div>
-			<div class='eta'>ETA: <span></span></div>
+			<div class='eta'><?php _e('ETA', 'wpanp'); ?>: <span></span></div>
 		</div>
 		<pre id="ajax-messages"></pre>
 		<script>
