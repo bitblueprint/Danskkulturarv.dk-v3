@@ -31,6 +31,19 @@ function remove_wp_admin_if_last($redirect_to, $request, $user) {
 }
 add_filter( 'login_redirect', 'remove_wp_admin_if_last', 20, 3 );
 
+// Add a logout button to the menu.
+function add_logout_item_to_menu($items, $args) {
+	// Change theme location with your them location name
+	if($args->theme_location != 'primary' || !is_user_logged_in()) {
+		return $items;
+	} else {
+		$redirect = ( is_home() ) ? false : get_permalink();
+		$link = '<a class="dropdown-menu-item" href="' . wp_logout_url( $redirect ) . '" title="' .  __( 'Logout' ) .'">' . __( 'Logout' ) . '</a>';
+		return $items.= '<li id="log-in-out-link" class="menu-item menu-type-link">'. $link . '</li>';
+	}
+}
+add_filter('wp_nav_menu_items', 'add_logout_item_to_menu', 50, 2);
+
 function disableTopToolBar()
 {
 	show_admin_bar(false);

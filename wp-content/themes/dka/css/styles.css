@@ -2566,7 +2566,7 @@ button.close {
     margin-right: 5px;
   }
   .navbar-nav {
-    float: left;
+    float: right;
     margin-top: 0;
     margin-bottom: 0;
   }
@@ -4121,7 +4121,7 @@ hr {
   padding: 0 20px;
 }
 .navbar .navbar-toggle {
-  background-color: #646464;
+  background-color: rgba(255,255,255,0.20);
   margin-right: 10px;
   border: none;
 }
@@ -4651,7 +4651,7 @@ article.container .single-material {
 .nav.info a.no-tag {
   padding: 0;
   background: none;
-  color: #646464;
+  color: rgba(255,255,255,0.20);
 }
 .type-page {
   padding: 20px 20px 20px 20px;
@@ -4736,7 +4736,7 @@ footer .bloginfo-footer {
   font-size: 14px;
   text-transform: uppercase;
   font-weight: 700;
-  color: #646464;
+  color: rgba(255,255,255,0.20);
   margin: 12px 0;
 }
 footer .bloginfo-footer span {
@@ -4758,7 +4758,7 @@ footer ul#menu-footer.nav-footer a {
 }
 footer ul#menu-footer.nav-footer a:hover {
   background: none!important;
-  color: #646464 !important;
+  color: rgba(255,255,255,0.20) !important;
   text-decoration: none;
 }
 footer ul#menu-footer.nav-footer > li + li {
@@ -5068,7 +5068,7 @@ html[xmlns] .slides {
   .navbar-responsive-collapse a.dropdown-menu-item {
     color: #ffffff !important;
     padding: 4px 10px !important;
-    background-color: #646464 !important;
+    background-color: rgba(255,255,255,0.20) !important;
   }
   .search-result-listing a {
     font-size: 14px;
