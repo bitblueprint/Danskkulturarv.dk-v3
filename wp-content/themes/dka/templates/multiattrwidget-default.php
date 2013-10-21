@@ -8,11 +8,9 @@
 <i title="<?php echo WPChaosClient::get_object()->type_title; ?>" class="<?php echo WPChaosClient::get_object()->type_class; ?>"></i>&nbsp;
 <strong class="organization">
 <?php if(WPChaosClient::get_object()->organization_link) : ?>
-	<a class="strong orange" href="<?php echo WPChaosClient::get_object()->organization_link; ?>" title="<?php echo esc_attr(WPChaosClient::get_object()->organization); ?>">
-		<?php echo WPChaosClient::get_object()->organization; ?>
-	</a>
+	<a class="strong" href="<?php echo WPChaosClient::get_object()->organization_link; ?>" title="<?php echo esc_attr(WPChaosClient::get_object()->organization); ?>"><?php echo WPChaosClient::get_object()->organization; ?></a>
 <?php else : ?>
-	<span class="strong orange"><?php echo WPChaosClient::get_object()->organization; ?></span>
+	<span class="strong"><?php echo WPChaosClient::get_object()->organization; ?></span>
 <?php endif; ?>
 </strong>
 <?php if(WPChaosClient::get_object()->published) : ?>

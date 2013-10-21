@@ -4376,8 +4376,8 @@ a.dropdown-toggle:active {
 }
 
 .organization {
-  margin-left: 5px;
-  margin-right: 5px;
+/*  margin-left: 5px;
+  margin-right: 5px;*/ /* TODO: Consider why this was added?pro */
 }
 
 .search-object h5.strong.orange.organization:after {

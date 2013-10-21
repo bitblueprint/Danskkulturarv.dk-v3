@@ -7,8 +7,14 @@
 require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 
 function login_redirect() {
-    if (!is_user_logged_in())
-        auth_redirect();
+    // A different approch is needed when behind a reverse proxy.
+    if (!is_user_logged_in()) {
+        $referer = wp_get_referer();
+	$login_url = wp_login_url($referer);
+	wp_redirect($login_url);
+        exit();
+    }
+        // auth_redirect();
 }
 add_action( 'wp', 'login_redirect' );
 
