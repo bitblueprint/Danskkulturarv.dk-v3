@@ -6,7 +6,7 @@
 
 require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 
-function login_redirect() {
+function ensure_authentication() {
     // A different approch is needed when behind a reverse proxy.
     if (!is_user_logged_in()) {
         $referer = wp_get_referer();
@@ -16,7 +16,18 @@ function login_redirect() {
     }
         // auth_redirect();
 }
-add_action( 'wp', 'login_redirect' );
+add_action( 'wp', 'ensure_authentication' );
+
+// Fixing a strange line in wp-login.php line 611.
+function remove_wp_admin_if_last($redirect_to, $request, $user) {
+	$remove_if_last = 'wp-admin/';
+	$last_occurance = strrpos($redirect_to, $remove_if_last);
+	if(strlen($redirect_to) - $last_occurance == strlen($remove_if_last)) {
+		$redirect_to = substr($redirect_to, 0, $last_occurance);
+	}
+	return $redirect_to;
+}
+add_filter( 'login_redirect', 'remove_wp_admin_if_last', 20, 3 );
 
 function disableTopToolBar()
 {
