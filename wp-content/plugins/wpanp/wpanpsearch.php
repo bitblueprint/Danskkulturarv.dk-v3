@@ -26,12 +26,12 @@ class WPANPSearch {
 			'link' => null,
 			'chaos-value' => null
 		),
-		'titel' => array(
+		'title' => array(
 			'title' => 'Title',
 			'link' => 'title',
 			'chaos-value' => 'FIATIFTA-ANP-Title+asc'
 		),
-		'udgivelse' => array(
+		'published' => array(
 			'title' => 'Published',
 			'link' => 'published',
 			'chaos-value' => 'FIATIFTA-ANP-FirstPublicationDate+asc'
