@@ -561,30 +561,6 @@ EOTEXT;
 			return $object;
 		}, 10, 1);
 	}
-	
-	protected static $legacy_views = array();
-	protected static $legacy_views_file = 'views.csv';
-	
-	public static function restore_views($guid) {
-		if(count(self::$legacy_views) == 0) {
-			$legacy_views_file = realpath(__DIR__ . DIRECTORY_SEPARATOR . self::$legacy_views_file);
-			if($legacy_views_file) {
-				$legacy_views = file_get_contents($legacy_views_file);
-				$legacy_views = explode("\n", $legacy_views);
-				foreach($legacy_views as $row) {
-					$row = explode(',', $row);
-					if($row[0]) {
-						self::$legacy_views[$row[0]] = intval($row[1]);
-					}
-				}
-			}
-		}
-		if(array_key_exists($guid, self::$legacy_views)) {
-			return self::$legacy_views[$guid];
-		} else {
-			return 0;
-		}
-	}
 
 	/**
 	 * Register widgets in WordPress

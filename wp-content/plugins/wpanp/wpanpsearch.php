@@ -11,8 +11,8 @@
  */
 class WPANPSearch {
 	
-	const QUERY_KEY_TYPE = 'med';
-	const QUERY_KEY_ORGANIZATION = 'fra';
+	const QUERY_KEY_TYPE = 'with';
+	const QUERY_KEY_ORGANIZATION = 'from';
 
 	/**
 	 * List of organizations from the WordPress site

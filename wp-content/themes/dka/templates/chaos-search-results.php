@@ -14,7 +14,7 @@ $views = array(
 		'title' => __('View as List','wpchaossearch'),
 		'view' => 'listview',
 		'class' => 'icon-th-list',
-		'link' => 'liste'
+		'link' => 'list'
 	),
 	array(
 		'title' => __('View as Gallery','wpchaossearch'),
