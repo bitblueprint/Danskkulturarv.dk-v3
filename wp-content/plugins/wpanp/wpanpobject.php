@@ -139,8 +139,9 @@ class WPANPObject {
 		$format_types = array();
 		
 		foreach($object->Files as $file) {
-			//FormatID = 10 is thumbnai format. We do not want that here.
-			if($file->FormatID != 10) {
+			//FormatID = 57 is thumbnai format. We do not want that here.
+			if($file->FormatCategory !== 'Thumbnail') {
+			//if($file->FormatID != 57) {
 				$format_types[$file->FormatType] = 1;
 			}
 			
@@ -149,14 +150,6 @@ class WPANPObject {
 		//Video format
 		if(isset($format_types['Video']))
 			return self::TYPE_VIDEO;
-
-		if(isset($format_types['Audio'])) {
-			//Image audio format
-			if(isset($format_types['Image']))
-				return self::TYPE_IMAGE_AUDIO;
-			//Audio format
-			return self::TYPE_AUDIO;
-		}
 		
 		//Image format
 		if(isset($format_types['Image']))
@@ -391,9 +384,9 @@ EOTEXT;
 		add_filter(WPChaosClient::OBJECT_FILTER_PREFIX.'thumbnail', function($value, \WPCHAOSObject $object) {
 			foreach($object->Files as $file) {
 				// FormatID = 10 is thumbnail format. This is what we want here
-				//if($file->FormatID == 10) {
+				if($file->FormatCategory == 'Thumbnail' && $file->FormatType == 'Image') {
 					return $value . htmlspecialchars($file->URL);
-				//}
+				}
 			}
 			// Try another image - any image will do.
 			// TODO: Consider using a serverside cache and downscaling service.

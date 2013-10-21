@@ -22,23 +22,18 @@ class WPANPSearch {
 
 	public static $sorts = array(
 		null => array(
-			'title' => 'Relevans',
+			'title' => 'Default',
 			'link' => null,
 			'chaos-value' => null
 		),
 		'titel' => array(
-			'title' => 'Titel',
-			'link' => 'titel',
+			'title' => 'Title',
+			'link' => 'title',
 			'chaos-value' => 'ANP-Title_string+asc'
 		),
-		'visninger' => array(
-			'title' => 'Visninger',
-			'link' => 'visninger',
-			'chaos-value' => 'ANP-Crowd-Views_int+desc'
-		),
 		'udgivelse' => array(
-			'title' => 'Udgivelsestid',
-			'link' => 'udgivelse',
+			'title' => 'Published',
+			'link' => 'published',
 			'chaos-value' => 'ANP-FirstPublishedDate_date+asc'
 		),
 	);
