@@ -2324,7 +2324,7 @@ button.close {
   position: relative;
   min-height: 50px;
   margin-bottom: 20px;
-  padding-bottom: 15px !important;
+  /*padding-bottom: 15px !important; /* No longer needed, as the menu fixed the padding ussue. */
   padding-left: 15px;
   padding-right: 15px;
   background-color: #eeeeee;
