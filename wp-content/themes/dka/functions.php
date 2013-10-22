@@ -9,7 +9,8 @@ require('wp-bootstrap-navwalker/wp_bootstrap_navwalker.php');
 function ensure_authentication() {
     // A different approch is needed when behind a reverse proxy.
     if (!is_user_logged_in()) {
-        $login_url = wp_login_url(site_url());
+	$permalink = get_permalink(get_option('wpchaos-searchpage'));
+        $login_url = wp_login_url($permalink);
         wp_redirect($login_url);
         exit();
         // auth_redirect();
